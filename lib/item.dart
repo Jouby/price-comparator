@@ -17,6 +17,7 @@ class ItemState extends State<Item> {
   String name;
   List<Map<String, dynamic>> _priceList = [];
   num minPrice = 999999999;
+  String minPriceText;
   String minStore = '';
 
   @override
@@ -28,10 +29,7 @@ class ItemState extends State<Item> {
 
   @override
   Widget build(BuildContext context) {
-    var minPriceText = minPrice != 999999999
-        ? Translate.translate(
-            'The minimum price is %1€ in %2', ['$minPrice', '$minStore'])
-        : Translate.translate('No data');
+    buildMinPriceText();
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('$name'),
@@ -57,6 +55,13 @@ class ItemState extends State<Item> {
         ],
       ),
     );
+  }
+
+  void buildMinPriceText() {
+    minPriceText = minPrice != 999999999
+        ? Translate.translate(
+            'The minimum price is %1€ in %2', ['$minPrice', '$minStore'])
+        : Translate.translate('No data');
   }
 
   void tryRemoveItem() async {
@@ -86,23 +91,36 @@ class ItemState extends State<Item> {
     }
   }
 
+  void resetMinPrice() {
+    minPrice = 999999999;
+    minStore = '';
+  }
+
   void addOrUpdatePriceItem(String store, num price) async {
     var update = false;
+    resetMinPrice();
+
     for (var i = 0; i < _priceList.length; i++) {
       if (_priceList[i]['store'] == store) {
         setState(() {
           _priceList[i]['price'] = price;
-          updateMinPrice(price, store);
         });
         update = true;
       }
+
+      if (_priceList[i]['price'] != '') {
+        debugPrint(_priceList[i]['price'].toString());
+        updateMinPrice(num.parse(_priceList[i]['price'].toString()),
+            _priceList[i]['store']);
+      }
     }
+
     if (!update) {
       setState(() {
         _priceList.add({'store': store, 'price': price});
-        updateMinPrice(price, store);
       });
     }
+    updateMinPrice(price, store);
 
     if (store != null && price != null) {
       final prefs = await SharedPreferences.getInstance();
@@ -111,10 +129,16 @@ class ItemState extends State<Item> {
   }
 
   void updateMinPrice(num price, String store) {
-    if (minPrice > price) {
-      minPrice = price;
-      minStore = store;
-    }
+    setState(() {
+      if (minPrice > price) {
+        minPrice = price;
+        minStore = store;
+        buildMinPriceText();
+        debugPrint(minPrice.toString());
+        debugPrint(minStore);
+        debugPrint(minPriceText);
+      }
+    });
   }
 
   List<String> jsonEncodePriceList() {
@@ -130,7 +154,8 @@ class ItemState extends State<Item> {
     for (var i = 0; i < list.length; i++) {
       returnList.add(jsonDecode(list[i]));
       if (returnList[i]['price'].toString().length > 0) {
-        updateMinPrice(num.parse(returnList[i]['price'].toString()), returnList[i]['store']);
+        updateMinPrice(num.parse(returnList[i]['price'].toString()),
+            returnList[i]['store']);
       }
     }
     return returnList;
