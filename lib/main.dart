@@ -105,7 +105,7 @@ class ItemsListState extends State<ItemsList> {
               MaterialPageRoute(builder: (context) => StoresList()),
             );
           },
-          icon: Icon(Icons.home, color: Colors.white),
+          icon: Icon(Icons.store, color: Colors.white),
           label: new Text('')
         )
       ]),
