@@ -11,13 +11,16 @@ class StoresList extends StatefulWidget {
 class StoresListState extends State<StoresList> {
   List<String> _storesList = [];
 
-  void _addStore(String store) async {
-    if (store.length > 0) {
+  Future<bool> _addStore(String store) async {
+    if (store.length > 0 && !_storesList.contains(store)) {
       setState(() => _storesList.add(store));
 
       final prefs = await SharedPreferences.getInstance();
       prefs.setStringList('stores_list', _storesList);
+      return true;
     }
+
+    return false;
   }
 
   void initList() async {
@@ -57,27 +60,23 @@ class StoresListState extends State<StoresList> {
 
   void _promptRemoveStore(int index) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text(Translate.translate(
-              'Remove "%1" ?', ['${_storesList[index]}'])),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(Translate.translate('CANCEL')),
-              onPressed: () => Navigator.of(context).pop()
-            ),
-            new FlatButton(
-              child: new Text(Translate.translate('REMOVE')),
-              onPressed: () {
-                _removeStore(index);
-                Navigator.of(context).pop();
-              }
-            )
-          ]
-        );
-      }
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+              title: new Text(Translate.translate(
+                  'Remove "%1" ?', ['${_storesList[index]}'])),
+              actions: <Widget>[
+                new FlatButton(
+                    child: new Text(Translate.translate('CANCEL')),
+                    onPressed: () => Navigator.of(context).pop()),
+                new FlatButton(
+                    child: new Text(Translate.translate('REMOVE')),
+                    onPressed: () {
+                      _removeStore(index);
+                      Navigator.of(context).pop();
+                    })
+              ]);
+        });
   }
 
   Widget _buildStoresList() {
@@ -110,32 +109,47 @@ class StoresListState extends State<StoresList> {
       appBar: new AppBar(title: new Text(Translate.translate('Stores'))),
       body: _buildStoresList(),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _pushAddStoreScreen,
-        tooltip: Translate.translate('Add a new store'),
-        child: new Icon(Icons.add)
-      ),
+          onPressed: _pushAddStoreScreen,
+          tooltip: Translate.translate('Add a new store'),
+          child: new Icon(Icons.add)),
     );
   }
 
   void _pushAddStoreScreen() {
-    Navigator.of(context).push(
-      new MaterialPageRoute(builder: (context) {
-        return new Scaffold(
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new Scaffold(
           appBar: new AppBar(
-            title: new Text(Translate.translate('Add a new store'))),
-          body: new TextField(
+              title: new Text(Translate.translate('Add a new store'))),
+          body: TextField(
             autofocus: true,
             onSubmitted: (val) {
-              _addStore(val);
-              Navigator.pop(context);
+              _addStore(val).then((result) {
+                if (result) {
+                  Navigator.pop(context);
+                } else {
+                  String error;
+                  if (val.length == 0) {
+                    error = Translate.translate('Fill this field.');
+                  } else {
+                    error = Translate.translate(
+                        'A store with same name already exists.');
+                  }
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return new AlertDialog(title: Icon(Icons.error),
+                      content: Center(child: Text(error, style: TextStyle(
+                        color: Colors.red[800]
+                      ))));
+                    }
+                  );
+                }
+              });
             },
             decoration: new InputDecoration(
-              hintText: Translate.translate('Enter store name'),
-              contentPadding: const EdgeInsets.all(16.0)
-            ),
-          )
-        );
-      })
-    );
+                hintText: Translate.translate('Enter store name'),
+                contentPadding: const EdgeInsets.all(16.0)),
+          ));
+    }));
   }
 }

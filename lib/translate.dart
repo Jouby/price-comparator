@@ -15,6 +15,8 @@ class Translate extends StatelessWidget {
     'The minimum price is %1€ in %2': 'Le prix minimum est de %1€ à %2',
     'No data': 'Aucune donnée',
     'Enter your price': 'Taper votre prix',
+    'A store with same name already exists.': 'Un magasin avec le même nom a déjà été créé.',
+    'Fill this field.': 'Remplisser le champ',
   };
   @override
   Widget build(BuildContext context) {
