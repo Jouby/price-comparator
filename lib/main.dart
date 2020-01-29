@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:price_compare/item.dart';
-import 'package:price_compare/stores.dart';
-import 'package:price_compare/translate.dart';
+import 'package:the_dead_masked_company.price_comparator/item.dart';
+import 'package:the_dead_masked_company.price_comparator/stores.dart';
+import 'package:the_dead_masked_company.price_comparator/tools.dart';
+import 'package:the_dead_masked_company.price_comparator/translate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Price Compare',
+      title: 'Price Comparator',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -27,13 +28,17 @@ class ItemsList extends StatefulWidget {
 class ItemsListState extends State<ItemsList> {
   List<String> _itemsList = [];
 
-  void _addTodoItem(String task) async {
-    if (task.length > 0) {
-      setState(() => _itemsList.add(task));
+  Future<bool> _addTodoItem(String item) async {
+    if (item.length > 0 && !_itemsList.contains(item)) {
+      setState(() => _itemsList.add(item));
 
       final prefs = await SharedPreferences.getInstance();
       prefs.setStringList('items_list', _itemsList);
+
+      return true;
     }
+
+    return false;
   }
 
   void initList() async {
@@ -69,7 +74,7 @@ class ItemsListState extends State<ItemsList> {
   Widget _buildItem(String name, int index) {
     return Card(
       child: ListTile(
-        title: new Text(name), 
+        title: new Text(name),
         onTap: () {
           _pushItemScreen(context, name);
         },
@@ -81,7 +86,7 @@ class ItemsListState extends State<ItemsList> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute<Map<String, dynamic>>(
-            builder: (BuildContext _) => Item(name: name,)));
+            builder: (BuildContext _) => Item(name: name)));
 
     if (result != null && result['name'] != '') {
       _removeItem(result['name']);
@@ -97,45 +102,53 @@ class ItemsListState extends State<ItemsList> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(title: Text(Translate.translate('Price Comparator')), actions: <Widget>[
-        FlatButton.icon(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StoresList()),
-            );
-          },
-          icon: Icon(Icons.store, color: Colors.white),
-          label: new Text('')
-        )
-      ]),
+      appBar: AppBar(
+          title: Text(Translate.translate('Price Comparator')),
+          actions: <Widget>[
+            FlatButton.icon(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => StoresList()));
+                },
+                icon: Icon(Icons.store, color: Colors.white),
+                label: new Text(''))
+          ]),
       body: _buildItemsList(),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _pushAddTodoScreen,
-        tooltip: Translate.translate('Add a new item'),
-        child: new Icon(Icons.add)
-      ),
+          onPressed: _pushAddTodoScreen,
+          tooltip: Translate.translate('Add a new item'),
+          child: new Icon(Icons.add)),
     );
   }
 
   void _pushAddTodoScreen() {
-    Navigator.of(context).push(
-      new MaterialPageRoute(builder: (context) {
-        return new Scaffold(
-          appBar: new AppBar(title: new Text(Translate.translate('Add a new item'))),
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new Scaffold(
+          appBar: new AppBar(
+              title: new Text(Translate.translate('Add a new item'))),
           body: new TextField(
             autofocus: true,
             onSubmitted: (val) {
-              _addTodoItem(val);
-              Navigator.pop(context);
+              _addTodoItem(val).then((result) {
+                if (result) {
+                  Navigator.pop(context);
+                  _pushItemScreen(context, val);
+                } else {
+                  String error;
+                  if (val.length == 0) {
+                    error = Translate.translate('Fill this field.');
+                  } else {
+                    error = Translate.translate(
+                        'An item with same name already exists.');
+                  }
+                  Tools.showError(context, error);
+                }
+              });
             },
             decoration: new InputDecoration(
-              hintText: Translate.translate('Enter item name'),
-              contentPadding: const EdgeInsets.all(16.0)
-            ),
-          )
-        );
-      })
-    );
+                hintText: Translate.translate('Enter item name'),
+                contentPadding: const EdgeInsets.all(16.0)),
+          ));
+    }));
   }
 }

@@ -16,6 +16,7 @@ class Translate extends StatelessWidget {
     'No data': 'Aucune donnée',
     'Enter your price': 'Taper votre prix',
     'A store with same name already exists.': 'Un magasin avec le même nom a déjà été créé.',
+    'An item with same name already exists.': 'Un object avec le même nom a déjà été créé.',
     'Fill this field.': 'Remplisser le champ',
   };
   @override

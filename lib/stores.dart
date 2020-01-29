@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:price_compare/translate.dart';
+import 'package:the_dead_masked_company.price_comparator/tools.dart';
+import 'package:the_dead_masked_company.price_comparator/translate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StoresList extends StatefulWidget {
@@ -134,15 +135,7 @@ class StoresListState extends State<StoresList> {
                     error = Translate.translate(
                         'A store with same name already exists.');
                   }
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return new AlertDialog(title: Icon(Icons.error),
-                      content: Center(child: Text(error, style: TextStyle(
-                        color: Colors.red[800]
-                      ))));
-                    }
-                  );
+                  Tools.showError(context, error);
                 }
               });
             },

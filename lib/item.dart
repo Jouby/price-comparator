@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:price_compare/translate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:the_dead_masked_company.price_comparator/translate.dart';
 
 class Item extends StatefulWidget {
   final String name;
@@ -109,7 +109,6 @@ class ItemState extends State<Item> {
       }
 
       if (_priceList[i]['price'] != '') {
-        debugPrint(_priceList[i]['price'].toString());
         updateMinPrice(num.parse(_priceList[i]['price'].toString()),
             _priceList[i]['store']);
       }
@@ -134,9 +133,6 @@ class ItemState extends State<Item> {
         minPrice = price;
         minStore = store;
         buildMinPriceText();
-        debugPrint(minPrice.toString());
-        debugPrint(minStore);
-        debugPrint(minPriceText);
       }
     });
   }
