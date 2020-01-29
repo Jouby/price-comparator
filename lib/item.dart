@@ -17,7 +17,7 @@ class ItemState extends State<Item> {
   String name;
   List<Map<String, dynamic>> _priceList = [];
   num minPrice = 999999999;
-  String minPriceText;
+  List<Widget> minPriceTextWidget;
   String minStore = '';
 
   @override
@@ -43,25 +43,56 @@ class ItemState extends State<Item> {
         ],
       ),
       body: Column(
-        children: <Widget>[
-          Text(minPriceText,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              )),
-          Expanded(child: _buildPriceItemsList())
+        children: [
+          ...minPriceTextWidget,
+          ...<Widget>[Expanded(child: _buildPriceItemsList())]
         ],
       ),
     );
   }
 
   void buildMinPriceText() {
-    minPriceText = minPrice != 999999999
-        ? Translate.translate(
-            'The minimum price is %1€ in %2', ['$minPrice', '$minStore'])
-        : Translate.translate('No data');
+    if (minPrice != 999999999) {
+      minPriceTextWidget = [
+        Text(Translate.translate('The minimum price is '),
+            style: TextStyle(
+                fontFamily: 'Letters-for-Learners',
+                color: Colors.black,
+                fontSize: 30)),
+        RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: TextStyle(
+                fontFamily: 'Letters-for-Learners',
+                color: Colors.black,
+                fontSize: 30),
+            children: <TextSpan>[
+              TextSpan(
+                  text: minPrice.toStringAsFixed(2) + '€',
+                  style: TextStyle(
+                      fontFamily: 'HighVoltage',
+                      color: Colors.red[700],
+                      fontSize: 40)),
+              TextSpan(text: Translate.translate(' in ')),
+              TextSpan(
+                  text: minStore,
+                  style: TextStyle(
+                      fontFamily: 'HighVoltage',
+                      color: Colors.red[700],
+                      fontSize: 40)),
+            ],
+          ),
+        )
+      ];
+    } else {
+      minPriceTextWidget = [
+        Text(Translate.translate('No data'),
+            style: TextStyle(
+                fontFamily: 'Letters-for-Learners',
+                color: Colors.black,
+                fontSize: 30))
+      ];
+    }
   }
 
   void tryRemoveItem() async {
@@ -96,7 +127,7 @@ class ItemState extends State<Item> {
     minStore = '';
   }
 
-  void addOrUpdatePriceItem(String store, num price) async {
+  Future<bool> addOrUpdatePriceItem(String store, num price) async {
     var update = false;
     resetMinPrice();
 
@@ -125,6 +156,8 @@ class ItemState extends State<Item> {
       final prefs = await SharedPreferences.getInstance();
       prefs.setStringList('price_list_$name', jsonEncodePriceList());
     }
+
+    return true;
   }
 
   void updateMinPrice(num price, String store) {
@@ -158,12 +191,19 @@ class ItemState extends State<Item> {
   }
 
   Widget _buildPriceItem(int index) {
-    var store = _priceList[index]['store'];
-    var price = _priceList[index]['price'];
+    String price;
+    String store = _priceList[index]['store'];
+
+    if (_priceList[index]['price'] == '') {
+      price = '';
+    } else {
+      price = _priceList[index]['price'].toStringAsFixed(2) + '€';
+    }
+
     return Card(
       child: ListTile(
-          title: new Text("$store"),
-          subtitle: new Text("$price€"),
+          title: new Text(store),
+          subtitle: new Text(price),
           onTap: () => _pushAddPriceScreen(store)),
     );
   }
@@ -173,20 +213,22 @@ class ItemState extends State<Item> {
       return new Scaffold(
         appBar:
             new AppBar(title: new Text(Translate.translate('Add a new price'))),
-        body: new TextField(
+        body: TextField(
           autofocus: true,
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
           inputFormatters: <TextInputFormatter>[
-            WhitelistingTextInputFormatter(RegExp(r'^\d+.?\d{0,2}'))
+            WhitelistingTextInputFormatter(RegExp(r'^\d+(\.)?\d{0,2}'))
           ],
           decoration: new InputDecoration(
             hintText: Translate.translate('Enter your price'),
             contentPadding: const EdgeInsets.all(16.0),
           ),
           onSubmitted: (val) {
-            addOrUpdatePriceItem(store, num.parse(val));
-            //_addPriceItem(store, num.parse(val));
-            Navigator.pop(context);
+            addOrUpdatePriceItem(store, num.parse(val)).then((result) {
+              if (result) {
+                Navigator.pop(context);
+              } 
+            });
           },
         ),
       );
@@ -220,6 +262,15 @@ class ItemState extends State<Item> {
   }
 
   Widget _buildPriceItemsList() {
+    _priceList.sort((a, b) {
+      if (a['price'] == '') {
+        return 1;
+      }
+      if (b['price'] == '') {
+        return -1;
+      }
+      return a['price'].compareTo(b['price']);
+    });
     return new ListView.builder(
       itemCount: _priceList.length,
       itemBuilder: (context, index) {

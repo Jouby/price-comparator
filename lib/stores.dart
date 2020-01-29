@@ -123,6 +123,7 @@ class StoresListState extends State<StoresList> {
               title: new Text(Translate.translate('Add a new store'))),
           body: TextField(
             autofocus: true,
+            maxLength: 25,
             onSubmitted: (val) {
               _addStore(val).then((result) {
                 if (result) {
