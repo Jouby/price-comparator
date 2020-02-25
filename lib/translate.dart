@@ -19,6 +19,11 @@ class Translate extends StatelessWidget {
     'A store with same name already exists.': 'Un magasin avec le même nom a déjà été créé.',
     'An item with same name already exists.': 'Un object avec le même nom a déjà été créé.',
     'Fill this field.': 'Remplisser le champ',
+    'Settings': 'Options',
+    'Create account': 'Créer un compte',
+    'Can': 'Conserve',
+    'Freeze': 'Surgelé',
+    'Bio': 'Bio'
   };
   @override
   Widget build(BuildContext context) {

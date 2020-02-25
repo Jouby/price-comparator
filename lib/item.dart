@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:the_dead_masked_company.price_comparator/price.dart';
+import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/translate.dart';
 
 class Item extends StatefulWidget {
@@ -127,14 +129,19 @@ class ItemState extends State<Item> {
     minStore = '';
   }
 
-  Future<bool> addOrUpdatePriceItem(String store, num price) async {
+  Future<bool> addOrUpdatePriceItem(
+      String store, Map<String, Object> data) async {
     var update = false;
+    var price = num.parse(data['price']);
     resetMinPrice();
 
     for (var i = 0; i < _priceList.length; i++) {
       if (_priceList[i]['store'] == store) {
         setState(() {
           _priceList[i]['price'] = price;
+          _priceList[i]['isBio'] = data['isBio'];
+          _priceList[i]['isCan'] = data['isCan'];
+          _priceList[i]['isFreeze'] = data['isFreeze'];
         });
         update = true;
       }
@@ -147,7 +154,13 @@ class ItemState extends State<Item> {
 
     if (!update) {
       setState(() {
-        _priceList.add({'store': store, 'price': price});
+        _priceList.add({
+          'store': store,
+          'price': price,
+          'isBio': data['isBio'],
+          'isCan': data['isCan'],
+          'isFreeze': data['isFreeze'],
+        });
       });
     }
     updateMinPrice(price, store);
@@ -200,39 +213,53 @@ class ItemState extends State<Item> {
       price = _priceList[index]['price'].toStringAsFixed(2) + '€';
     }
 
+    List<Widget> options = [];
+
+    if (_priceList[index]['isBio'] == true) {
+      options.add(Container(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Text(
+            'BIO',
+            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+          )));
+    }
+
+    if (_priceList[index]['isCan'] == true) {
+      options.add(Container(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          height: 20,
+          child: Icon(CustomIcons.tin_can, color: Colors.grey[800])));
+    }
+
+    if (_priceList[index]['isFreeze'] == true) {
+      options.add(Container(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Icon(Icons.ac_unit, color: Colors.blue[200])));
+    }
+
     return Card(
       child: ListTile(
-          title: new Text(store),
+          title:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(store),
+            Row(
+              children: <Widget>[...options],
+            )
+          ]),
           subtitle: new Text(price),
-          onTap: () => _pushAddPriceScreen(store)),
+          onTap: () => _pushAddPriceScreen(_priceList[index])),
     );
   }
 
-  void _pushAddPriceScreen(String store) {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return new Scaffold(
-        appBar:
-            new AppBar(title: new Text(Translate.translate('Add a new price'))),
-        body: TextField(
-          autofocus: true,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: <TextInputFormatter>[
-            WhitelistingTextInputFormatter(RegExp(r'^\d+(\.)?\d{0,2}'))
-          ],
-          decoration: new InputDecoration(
-            hintText: Translate.translate('Enter your price'),
-            contentPadding: const EdgeInsets.all(16.0),
-          ),
-          onSubmitted: (val) {
-            addOrUpdatePriceItem(store, num.parse(val)).then((result) {
-              if (result) {
-                Navigator.pop(context);
-              } 
-            });
-          },
-        ),
-      );
-    }));
+  void _pushAddPriceScreen(Map<String, Object> data) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Price(data: data)),
+    );
+
+    if (result != null) {
+      addOrUpdatePriceItem(data['store'], result);
+    }
   }
 
   void initPriceList() async {
@@ -244,16 +271,20 @@ class ItemState extends State<Item> {
       }
 
       var storesList = prefs.getStringList('stores_list');
-      for (var storeIndex = 0; storeIndex < storesList.length; storeIndex++) {
-        var found = false;
-        for (var priceIndex = 0; priceIndex < _priceList.length; priceIndex++) {
-          if (_priceList[priceIndex]['store'] == storesList[storeIndex]) {
-            found = true;
-            break;
+      if (storesList != null) {
+        for (var storeIndex = 0; storeIndex < storesList.length; storeIndex++) {
+          var found = false;
+          for (var priceIndex = 0;
+              priceIndex < _priceList.length;
+              priceIndex++) {
+            if (_priceList[priceIndex]['store'] == storesList[storeIndex]) {
+              found = true;
+              break;
+            }
           }
-        }
-        if (!found) {
-          _priceList.add({'store': storesList[storeIndex], 'price': ''});
+          if (!found) {
+            _priceList.add({'store': storesList[storeIndex], 'price': ''});
+          }
         }
       }
 
