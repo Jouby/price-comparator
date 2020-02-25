@@ -128,6 +128,7 @@ class ItemsListState extends State<ItemsList> {
               title: new Text(Translate.translate('Add a new item'))),
           body: new TextField(
             autofocus: true,
+            textCapitalization: TextCapitalization.sentences,
             onSubmitted: (val) {
               _addTodoItem(val).then((result) {
                 if (result) {

@@ -122,6 +122,7 @@ class StoresListState extends State<StoresList> {
           appBar: new AppBar(
               title: new Text(Translate.translate('Add a new store'))),
           body: TextField(
+            textCapitalization: TextCapitalization.sentences,
             autofocus: true,
             maxLength: 25,
             onSubmitted: (val) {
