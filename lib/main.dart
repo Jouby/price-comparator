@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/item.dart';
+import 'package:the_dead_masked_company.price_comparator/services/repository.dart';
+import 'package:the_dead_masked_company.price_comparator/settings.dart';
 import 'package:the_dead_masked_company.price_comparator/stores.dart';
 import 'package:the_dead_masked_company.price_comparator/tools.dart';
 import 'package:the_dead_masked_company.price_comparator/translate.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,9 +32,7 @@ class ItemsListState extends State<ItemsList> {
   Future<bool> _addTodoItem(String item) async {
     if (item.length > 0 && !_itemsList.contains(item)) {
       setState(() => _itemsList.add(item));
-
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setStringList('items_list', _itemsList);
+      Repository.setItemsList(_itemsList);
 
       return true;
     }
@@ -42,19 +41,16 @@ class ItemsListState extends State<ItemsList> {
   }
 
   void initList() async {
-    final prefs = await SharedPreferences.getInstance();
+    _itemsList = await Repository.getItemsList();
     setState(() {
-      _itemsList = prefs.getStringList('items_list');
       if (_itemsList == null) _itemsList = [];
     });
   }
 
   void _removeItem(String name) async {
     setState(() => _itemsList.remove(name));
-
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('items_list', _itemsList);
-    prefs.remove('price_list_$name');
+    Repository.setItemsList(_itemsList);
+    Repository.removePriceListByItem(name);
   }
 
   Widget _buildItemsList() {
@@ -111,6 +107,13 @@ class ItemsListState extends State<ItemsList> {
                       MaterialPageRoute(builder: (context) => StoresList()));
                 },
                 icon: Icon(Icons.store, color: Colors.white),
+                label: new Text('')),
+            FlatButton.icon(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SettingsList()));
+                },
+                icon: Icon(Icons.settings, color: Colors.white),
                 label: new Text(''))
           ]),
       body: _buildItemsList(),

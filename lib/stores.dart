@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:the_dead_masked_company.price_comparator/services/repository.dart';
 import 'package:the_dead_masked_company.price_comparator/tools.dart';
 import 'package:the_dead_masked_company.price_comparator/translate.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class StoresList extends StatefulWidget {
   @override
@@ -15,9 +15,7 @@ class StoresListState extends State<StoresList> {
   Future<bool> _addStore(String store) async {
     if (store.length > 0 && !_storesList.contains(store)) {
       setState(() => _storesList.add(store));
-
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setStringList('stores_list', _storesList);
+      Repository.setStoresList(_storesList);
       return true;
     }
 
@@ -25,9 +23,8 @@ class StoresListState extends State<StoresList> {
   }
 
   void initList() async {
-    final prefs = await SharedPreferences.getInstance();
+    _storesList = await Repository.getStoresList();
     setState(() {
-      _storesList = prefs.getStringList('stores_list');
       if (_storesList == null) _storesList = [];
     });
   }
@@ -35,16 +32,14 @@ class StoresListState extends State<StoresList> {
   void _removeStore(int index) async {
     var storeName = _storesList[index];
     setState(() => _storesList.removeAt(index));
+    Repository.setStoresList(_storesList);
 
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('stores_list', _storesList);
-
-    var itemsList = prefs.getStringList('items_list');
+    var itemsList = await Repository.getItemsList();
     if (itemsList == null) itemsList = [];
 
     for (var i = 0; i < itemsList.length; i++) {
       var name = itemsList[i];
-      var priceItemList = prefs.getStringList('price_list_$name');
+      var priceItemList = await Repository.getPriceListByItem(name);
 
       if (priceItemList != null) {
         for (var i = 0; i < priceItemList.length; i++) {
@@ -55,7 +50,7 @@ class StoresListState extends State<StoresList> {
         }
       }
 
-      prefs.setStringList('price_list_$name', priceItemList);
+      Repository.setPriceListByItem(name, priceItemList);
     }
   }
 

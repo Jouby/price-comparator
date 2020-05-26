@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_dead_masked_company.price_comparator/price.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
+import 'package:the_dead_masked_company.price_comparator/services/repository.dart';
 import 'package:the_dead_masked_company.price_comparator/translate.dart';
 
 class Item extends StatefulWidget {
@@ -166,8 +165,7 @@ class ItemState extends State<Item> {
     updateMinPrice(price, store);
 
     if (store != null && price != null) {
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setStringList('price_list_$name', jsonEncodePriceList());
+      Repository.setPriceListByItem(name, jsonEncodePriceList());
     }
 
     return true;
@@ -263,14 +261,14 @@ class ItemState extends State<Item> {
   }
 
   void initPriceList() async {
-    final prefs = await SharedPreferences.getInstance();
-    var priceItemList = prefs.getStringList('price_list_$name');
+    var priceItemList = await Repository.getPriceListByItem(name);
+    var storesList = await Repository.getStoresList();
+
     setState(() {
       if (priceItemList != null) {
         _priceList = jsonDecodePriceList(priceItemList);
       }
 
-      var storesList = prefs.getStringList('stores_list');
       if (storesList != null) {
         for (var storeIndex = 0; storeIndex < storesList.length; storeIndex++) {
           var found = false;
