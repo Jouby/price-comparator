@@ -76,6 +76,9 @@ class StoresListState extends State<StoresList> {
   }
 
   Widget _buildStoresList() {
+    _storesList.sort((a, b) {
+      return a.toLowerCase().compareTo(b.toLowerCase());
+    });
     return new ListView.builder(
       itemBuilder: (context, index) {
         if (index < _storesList.length) {
