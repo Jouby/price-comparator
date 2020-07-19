@@ -13,9 +13,11 @@ class Price extends StatefulWidget {
 
 class PriceState extends State<Price> {
   TextEditingController priceController = TextEditingController();
+  String price;
   bool isBio;
   bool isCan;
   bool isFreeze;
+  bool isUnavailable;
 
   @override
   void initState() {
@@ -23,6 +25,7 @@ class PriceState extends State<Price> {
     isBio = widget.data['isBio'] ?? false;
     isCan = widget.data['isCan'] ?? false;
     isFreeze = widget.data['isFreeze'] ?? false;
+    isUnavailable = widget.data['isUnavailable'] ?? false;
 
     super.initState();
   }
@@ -44,14 +47,6 @@ class PriceState extends State<Price> {
               hintText: Translate.translate('Enter your price'),
               contentPadding: const EdgeInsets.all(16.0),
             ),
-            onSubmitted: (val) {
-              Navigator.pop(context, {
-                'price': val,
-                'isBio': isBio,
-                'isCan': isCan,
-                'isFreeze': isFreeze,
-              });
-            },
           ),
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -92,7 +87,37 @@ class PriceState extends State<Price> {
                     Text(Translate.translate('Freeze'))
                   ],
                 )
-              ])
+              ]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Checkbox(
+                  value: isUnavailable,
+                  onChanged: (val) {
+                    setState(() {
+                      isUnavailable = val;
+                    });
+                  }),
+              Text(Translate.translate('Unavailable'))
+            ],
+          ),
+          RaisedButton(
+            onPressed: () {
+              submitPrice();
+            },
+            child: Text(Translate.translate('SAVE'),
+                style: TextStyle(fontSize: 20)),
+          ),
         ]));
+  }
+
+  submitPrice() {
+    Navigator.pop(context, {
+      'price': priceController.text,
+      'isBio': isBio,
+      'isCan': isCan,
+      'isFreeze': isFreeze,
+      'isUnavailable': isUnavailable
+    });
   }
 }

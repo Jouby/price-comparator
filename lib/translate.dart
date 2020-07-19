@@ -23,7 +23,8 @@ class Translate extends StatelessWidget {
     'Create account': 'Créer un compte',
     'Can': 'Conserve',
     'Freeze': 'Surgelé',
-    'Bio': 'Bio'
+    'Bio': 'Bio',
+    'Unavailable': 'Non Disponible'
   };
   @override
   Widget build(BuildContext context) {

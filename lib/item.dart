@@ -131,16 +131,20 @@ class ItemState extends State<Item> {
   Future<bool> addOrUpdatePriceItem(
       String store, Map<String, Object> data) async {
     var update = false;
-    var price = num.parse(data['price']);
+    var price = (data['price'] != '' && data['isUnavailable'] != true)
+        ? num.parse(data['price'])
+        : '';
     resetMinPrice();
 
     for (var i = 0; i < _priceList.length; i++) {
+      print(_priceList[i]);
       if (_priceList[i]['store'] == store) {
         setState(() {
           _priceList[i]['price'] = price;
           _priceList[i]['isBio'] = data['isBio'];
           _priceList[i]['isCan'] = data['isCan'];
           _priceList[i]['isFreeze'] = data['isFreeze'];
+          _priceList[i]['isUnavailable'] = data['isUnavailable'];
         });
         update = true;
       }
@@ -159,6 +163,7 @@ class ItemState extends State<Item> {
           'isBio': data['isBio'],
           'isCan': data['isCan'],
           'isFreeze': data['isFreeze'],
+          'isUnavailable': data['isUnavailable']
         });
       });
     }
@@ -202,40 +207,44 @@ class ItemState extends State<Item> {
   }
 
   Widget _buildPriceItem(int index) {
-    String price;
+    String price = '';
     String store = _priceList[index]['store'];
-
-    if (_priceList[index]['price'] == '') {
-      price = '';
-    } else {
-      price = _priceList[index]['price'].toStringAsFixed(2) + '€';
-    }
-
     List<Widget> options = [];
 
-    if (_priceList[index]['isBio'] == true) {
-      options.add(Container(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Text(
-            'BIO',
-            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-          )));
-    }
+    if (_priceList[index]['isUnavailable'] != true) {
+      if (_priceList[index]['price'] != '') {
+        price = _priceList[index]['price'].toStringAsFixed(2) + '€';
+      }
 
-    if (_priceList[index]['isCan'] == true) {
-      options.add(Container(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          height: 20,
-          child: Icon(CustomIcons.tin_can, color: Colors.grey[800])));
-    }
+      if (_priceList[index]['isBio'] == true) {
+        options.add(Container(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Text(
+              'BIO',
+              style:
+                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            )));
+      }
 
-    if (_priceList[index]['isFreeze'] == true) {
-      options.add(Container(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Icon(Icons.ac_unit, color: Colors.blue[200])));
+      if (_priceList[index]['isCan'] == true) {
+        options.add(Container(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            height: 20,
+            child: Icon(CustomIcons.tin_can, color: Colors.grey[800])));
+      }
+
+      if (_priceList[index]['isFreeze'] == true) {
+        options.add(Container(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Icon(Icons.ac_unit, color: Colors.blue[200])));
+      }
     }
 
     return Card(
+        child: Ink(
+      color: (_priceList[index]['isUnavailable'] == true)
+          ? Colors.grey
+          : Colors.transparent,
       child: ListTile(
           title:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -246,7 +255,7 @@ class ItemState extends State<Item> {
           ]),
           subtitle: new Text(price),
           onTap: () => _pushAddPriceScreen(_priceList[index])),
-    );
+    ));
   }
 
   void _pushAddPriceScreen(Map<String, Object> data) async {
