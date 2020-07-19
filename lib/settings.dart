@@ -37,13 +37,13 @@ class SettingsListState extends State<SettingsList> {
                   child: Text(Translate.translate('EXPORT'),
                       style: TextStyle(fontSize: 20)),
                 ),
-                RaisedButton(
-                  onPressed: () {
-                    Repository.getUserDataFromDatabase();
-                  },
-                  child: Text(Translate.translate('IMPORT'),
-                      style: TextStyle(fontSize: 20)),
-                ),
+                // RaisedButton(
+                //   onPressed: () {
+                //     Repository.getUserDataFromDatabase();
+                //   },
+                //   child: Text(Translate.translate('IMPORT'),
+                //       style: TextStyle(fontSize: 20)),
+                // ),
               ],
             )));
   }
