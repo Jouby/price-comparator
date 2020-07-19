@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
+import 'package:the_dead_masked_company.price_comparator/services/repository.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage({this.auth, this.loginCallback});
@@ -36,13 +37,20 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    checkIsLogin();
+
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Flutter login demo'),
+          title: new Text('Connexion'),
         ),
         body: Stack(
           children: <Widget>[
-            Text(this._status),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(this._status)
+              ]
+            ),
             _showForm(),
             _showCircularProgress(),
           ],
@@ -67,16 +75,15 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           // pour ca il faut un formulaire ou on peut renseigner l'adresse email de la personne avec qui on veut partager
           // et une liste des personnes à qui on a partagé
 
-          _userRef.child("users/$userId").push().set(<String, String>{
-            "email": _email,
-            "password": _password,
-          }).then((_) {
-            print('Transaction  committed.');
-          });
+          // _userRef.child("users/$userId").push().set(<String, String>{
+          //   "email": _email,
+          //   "password": _password,
+          // }).then((_) {
+          //   print('Transaction  committed.');
+          // });
+          
         } else {
           userId = await widget.auth.signUp(_email, _password);
-          //widget.auth.sendEmailVerification();
-          //_showVerifyEmailSentDialog();
           print('Signed up user: $userId');
 
           _userRef.child("users/$userId").push().set(<String, String>{
@@ -86,14 +93,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
             print('Transaction  committed.');
           });
         }
+
+        Repository.setUserId(userId);
+        var username = Repository.setUserName(_email);
         setState(() {
           _isLoading = false;
-          _status = "Connected as $userId";
+          _status = "Vous êtes connecté en tant que $username";
         });
-
-        // if (userId.length > 0 && userId != null && _isLoginForm) {
-        //   widget.loginCallback();
-        // }
       } catch (e) {
         print('Error: $e');
         setState(() {
@@ -105,7 +111,16 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     }
   }
 
-    // Check if form is valid before perform login or signup
+  void checkIsLogin() async {
+      var username = await Repository.getUserName();
+      if (username != null) {
+        setState(() {
+          _status = "Vous êtes déjà connecté en tant que $username";
+        });
+      }
+  }
+
+  // Check if form is valid before perform login or signup
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -136,29 +151,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       width: 0.0,
     );
   }
-
-//  void _showVerifyEmailSentDialog() {
-//    showDialog(
-//      context: context,
-//      builder: (BuildContext context) {
-//        // return object of type Dialog
-//        return AlertDialog(
-//          title: new Text("Verify your account"),
-//          content:
-//              new Text("Link to verify account has been sent to your email"),
-//          actions: <Widget>[
-//            new FlatButton(
-//              child: new Text("Dismiss"),
-//              onPressed: () {
-//                toggleFormMode();
-//                Navigator.of(context).pop();
-//              },
-//            ),
-//          ],
-//        );
-//      },
-//    );
-//  }
 
   Widget _showForm() {
     return new Container(
