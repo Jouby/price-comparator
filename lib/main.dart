@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/item.dart';
+import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/services/repository.dart';
 import 'package:the_dead_masked_company.price_comparator/settings.dart';
 import 'package:the_dead_masked_company.price_comparator/stores.dart';
@@ -101,20 +102,24 @@ class ItemsListState extends State<ItemsList> {
       appBar: AppBar(
           title: Text(Translate.translate('Price Comparator')),
           actions: <Widget>[
-            FlatButton.icon(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => StoresList()));
-                },
-                icon: Icon(Icons.store, color: Colors.white),
-                label: new Text('')),
-            FlatButton.icon(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SettingsList()));
-                },
-                icon: Icon(Icons.settings, color: Colors.white),
-                label: new Text(''))
+            IconButton(
+              icon: Icon(CustomIcons.shop),
+              color: Colors.white,
+              tooltip: Translate.translate('Stores'),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StoresList()));
+              },
+            ),
+            IconButton(
+              icon: Icon(CustomIcons.params),
+              color: Colors.white,
+              tooltip: Translate.translate('Settings'),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsList()));
+              },
+            ),
           ]),
       body: _buildItemsList(),
       floatingActionButton: new FloatingActionButton(

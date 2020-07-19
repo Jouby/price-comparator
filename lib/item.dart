@@ -35,12 +35,14 @@ class ItemState extends State<Item> {
       appBar: new AppBar(
         title: new Text('$name'),
         actions: <Widget>[
-          FlatButton.icon(
+          IconButton(
+              icon: Icon(CustomIcons.trash),
+              color: Colors.white,
+              tooltip: Translate.translate('Remove'),
               onPressed: () {
                 tryRemoveItem();
               },
-              icon: Icon(Icons.highlight_off, color: Colors.white),
-              label: new Text(''))
+            ),
         ],
       ),
       body: Column(
@@ -218,25 +220,36 @@ class ItemState extends State<Item> {
 
       if (_priceList[index]['isBio'] == true) {
         options.add(Container(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Text(
+            child: Tooltip(
+              message: Translate.translate('Bio'), 
+              child: Text(
               'BIO',
               style:
                   TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-            )));
+            ))
+            ));
       }
 
       if (_priceList[index]['isCan'] == true) {
         options.add(Container(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            height: 20,
-            child: Icon(CustomIcons.tin_can, color: Colors.grey[800])));
+          child: IconButton(
+            icon: Icon(CustomIcons.cup),
+            color: Colors.grey[800],
+            tooltip: Translate.translate('Can'),
+            onPressed: () {},
+          ),
+        ));
       }
 
       if (_priceList[index]['isFreeze'] == true) {
         options.add(Container(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Icon(Icons.ac_unit, color: Colors.blue[200])));
+          child: IconButton(
+            icon: Icon(Icons.ac_unit),
+            color: Colors.blue[200],
+            tooltip: Translate.translate('Freeze'),
+            onPressed: () {},
+          ),
+        ));
       }
     }
 
