@@ -36,18 +36,20 @@ class ItemState extends State<Item> {
         title: new Text('$name'),
         actions: <Widget>[
           IconButton(
-              icon: Icon(CustomIcons.trash),
-              color: Colors.white,
-              tooltip: Translate.translate('Remove'),
-              onPressed: () {
-                tryRemoveItem();
-              },
-            ),
+            icon: Icon(CustomIcons.trash),
+            color: Colors.white,
+            tooltip: Translate.translate('Remove'),
+            onPressed: () {
+              tryRemoveItem();
+            },
+          ),
         ],
       ),
       body: Column(
         children: [
+          SizedBox(height: 10),
           ...minPriceTextWidget,
+          SizedBox(height: 10),
           ...<Widget>[Expanded(child: _buildPriceItemsList())]
         ],
       ),
@@ -59,30 +61,26 @@ class ItemState extends State<Item> {
       minPriceTextWidget = [
         Text(Translate.translate('The minimum price is '),
             style: TextStyle(
-                fontFamily: 'Letters-for-Learners',
-                color: Colors.black,
-                fontSize: 30)),
+                fontFamily: 'Nunito', color: Colors.black, fontSize: 25)),
         RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
             style: TextStyle(
-                fontFamily: 'Letters-for-Learners',
-                color: Colors.black,
-                fontSize: 30),
+                fontFamily: 'Nunito', color: Colors.black, fontSize: 25),
             children: <TextSpan>[
               TextSpan(
-                  text: minPrice.toStringAsFixed(2) + '€',
+                  text: minPrice.toStringAsFixed(2).replaceAll('.', ',') + '€',
                   style: TextStyle(
-                      fontFamily: 'HighVoltage',
+                      fontFamily: 'Nunito',
                       color: Colors.red[700],
-                      fontSize: 40)),
+                      fontSize: 30)),
               TextSpan(text: Translate.translate(' in ')),
               TextSpan(
                   text: minStore,
                   style: TextStyle(
-                      fontFamily: 'HighVoltage',
+                      fontFamily: 'Nunito',
                       color: Colors.red[700],
-                      fontSize: 40)),
+                      fontSize: 30)),
             ],
           ),
         )
@@ -91,9 +89,7 @@ class ItemState extends State<Item> {
       minPriceTextWidget = [
         Text(Translate.translate('No data'),
             style: TextStyle(
-                fontFamily: 'Letters-for-Learners',
-                color: Colors.black,
-                fontSize: 30))
+                fontFamily: 'Nunito', color: Colors.black, fontSize: 25))
       ];
     }
   }
@@ -221,13 +217,12 @@ class ItemState extends State<Item> {
       if (_priceList[index]['isBio'] == true) {
         options.add(Container(
             child: Tooltip(
-              message: Translate.translate('Bio'), 
-              child: Text(
-              'BIO',
-              style:
-                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-            ))
-            ));
+                message: Translate.translate('Bio'),
+                child: Text(
+                  'BIO',
+                  style: TextStyle(
+                      color: Colors.green, fontWeight: FontWeight.bold),
+                ))));
       }
 
       if (_priceList[index]['isCan'] == true) {
