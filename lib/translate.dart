@@ -26,7 +26,8 @@ class Translate extends StatelessWidget {
     'Can': 'Conserve',
     'Freeze': 'Surgelé',
     'Bio': 'Bio',
-    'Unavailable': 'Non Disponible'
+    'Unavailable': 'Non Disponible',
+    'Search': 'Recherche'
   };
   @override
   Widget build(BuildContext context) {

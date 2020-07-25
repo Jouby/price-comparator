@@ -28,13 +28,15 @@ class ItemsList extends StatefulWidget {
 }
 
 class ItemsListState extends State<ItemsList> {
-  List<String> _itemsList = [];
+  List<String> _displayedItemsList = [];
+  TextEditingController editingController = TextEditingController();
 
-  Future<bool> _addTodoItem(String item) async {
-    if (item.length > 0 && !_itemsList.contains(item)) {
-      setState(() => _itemsList.add(item));
-      Repository.setItemsList(_itemsList);
-
+  Future<bool> _addItem(String item) async {
+    var itemList = await Repository.getItemsList();
+    if (item.length > 0 && !itemList.contains(item)) {
+      itemList.add(item);
+      Repository.setItemsList(itemList);
+      filterSearchResults(editingController.text);
       return true;
     }
 
@@ -42,26 +44,28 @@ class ItemsListState extends State<ItemsList> {
   }
 
   void initList() async {
-    _itemsList = await Repository.getItemsList();
+    _displayedItemsList = await Repository.getItemsList();
     setState(() {
-      if (_itemsList == null) _itemsList = [];
+      if (_displayedItemsList == null) _displayedItemsList = [];
     });
   }
 
   void _removeItem(String name) async {
-    setState(() => _itemsList.remove(name));
-    Repository.setItemsList(_itemsList);
+    var itemList = await Repository.getItemsList();
+    itemList.remove(name);
+    Repository.setItemsList(itemList);
     Repository.removePriceListByItem(name);
+    filterSearchResults(editingController.text);
   }
 
   Widget _buildItemsList() {
-    _itemsList.sort((a, b) {
+    _displayedItemsList.sort((a, b) {
       return a.toLowerCase().compareTo(b.toLowerCase());
     });
     return new ListView.builder(
       itemBuilder: (context, index) {
-        if (index < _itemsList.length) {
-          return _buildItem(_itemsList[index], index);
+        if (index < _displayedItemsList.length) {
+          return _buildItem(_displayedItemsList[index], index);
         }
         return null;
       },
@@ -87,6 +91,30 @@ class ItemsListState extends State<ItemsList> {
 
     if (result != null && result['name'] != '') {
       _removeItem(result['name']);
+    }
+  }
+
+  void filterSearchResults(String query) async {
+    var itemList = await Repository.getItemsList();
+    List<String> dummySearchList = List<String>();
+    dummySearchList.addAll(itemList);
+    if (query.isNotEmpty) {
+      List<String> dummyListData = List<String>();
+      dummySearchList.forEach((item) {
+        if (item.toLowerCase().contains(query.toLowerCase())) {
+          dummyListData.add(item);
+        }
+      });
+      setState(() {
+        _displayedItemsList.clear();
+        _displayedItemsList.addAll(dummyListData);
+      });
+      return;
+    } else {
+      setState(() {
+        _displayedItemsList.clear();
+        _displayedItemsList.addAll(itemList);
+      });
     }
   }
 
@@ -121,15 +149,36 @@ class ItemsListState extends State<ItemsList> {
               },
             ),
           ]),
-      body: _buildItemsList(),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                onChanged: (value) {
+                  filterSearchResults(value);
+                },
+                controller: editingController,
+                decoration: InputDecoration(
+                    labelText: Translate.translate('Search'),
+                    hintText: Translate.translate('Search'),
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              ),
+            ),
+            Expanded(child: _buildItemsList()),
+          ],
+        ),
+      ),
       floatingActionButton: new FloatingActionButton(
-          onPressed: _pushAddTodoScreen,
+          onPressed: _pushAddItemScreen,
           tooltip: Translate.translate('Add a new item'),
           child: new Icon(Icons.add)),
     );
   }
 
-  void _pushAddTodoScreen() {
+  void _pushAddItemScreen() {
     Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
       return new Scaffold(
           appBar: new AppBar(
@@ -138,7 +187,7 @@ class ItemsListState extends State<ItemsList> {
             autofocus: true,
             textCapitalization: TextCapitalization.sentences,
             onSubmitted: (val) {
-              _addTodoItem(val).then((result) {
+              _addItem(val).then((result) {
                 if (result) {
                   Navigator.pop(context);
                   _pushItemScreen(context, val);
