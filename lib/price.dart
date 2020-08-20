@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/translate.dart';
 
 class Price extends StatefulWidget {
@@ -48,67 +49,54 @@ class PriceState extends State<Price> {
               contentPadding: const EdgeInsets.all(16.0),
             ),
           ),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Checkbox(
-                        value: isBio,
-                        onChanged: (val) {
-                          setState(() {
-                            isBio = val;
-                          });
-                        }),
-                    Text(Translate.translate('Bio'))
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Checkbox(
-                        value: isCan,
-                        onChanged: (val) {
-                          setState(() {
-                            isCan = val;
-                          });
-                        }),
-                    Text(Translate.translate('Can'))
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Checkbox(
-                        value: isFreeze,
-                        onChanged: (val) {
-                          setState(() {
-                            isFreeze = val;
-                          });
-                        }),
-                    Text(Translate.translate('Freeze'))
-                  ],
-                )
-              ]),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Checkbox(
-                  value: isUnavailable,
-                  onChanged: (val) {
-                    setState(() {
-                      isUnavailable = val;
-                    });
-                  }),
-              Text(Translate.translate('Unavailable'))
-            ],
-          ),
-          RaisedButton(
-            onPressed: () {
-              submitPrice();
+          Expanded(child: ListView(children: <Widget>[
+            CheckboxListTile(
+            title: Text(Translate.translate('Bio')),
+            value: isBio,
+            onChanged: (val) {
+              setState(() {
+                isBio = val;
+              });
             },
-            child: Text(Translate.translate('SAVE'),
-                style: TextStyle(fontSize: 20)),
+            secondary: const Icon(CustomIcons.leaf, color: Colors.green),
           ),
-        ]));
+          CheckboxListTile(
+            title: Text(Translate.translate('Can')),
+            value: isCan,
+            onChanged: (val) {
+              setState(() {
+                isCan = val;
+              });
+            },
+            secondary: const Icon(CustomIcons.boxes, color: Colors.grey),
+          ),
+          CheckboxListTile(
+            title: Text(Translate.translate('Freeze')),
+            value: isFreeze,
+            onChanged: (val) {
+              setState(() {
+                isFreeze = val;
+              });
+            },
+            secondary: const Icon(CustomIcons.snowflake, color: Color(0xFF90CAF9)),
+          ),
+          CheckboxListTile(
+            title: Text(Translate.translate('Unavailable')),
+            value: isUnavailable,
+            onChanged: (val) {
+              setState(() {
+                isUnavailable = val;
+              });
+            },
+            secondary: const Icon(CustomIcons.times_circle, color: Colors.red),
+          ),
+          ],)),
+        ]),
+        floatingActionButton: new FloatingActionButton(
+          onPressed: submitPrice,
+          tooltip: Translate.translate('SAVE'),
+          child: new Icon(Icons.save)),
+    );
   }
 
   submitPrice() {

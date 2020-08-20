@@ -41,6 +41,36 @@
       "css": "shop",
       "code": 59436,
       "src": "linecons"
+    },
+    {
+      "uid": "2aeb4987b469d22fcb8b471b6d2cdfff",
+      "css": "pencil",
+      "code": 59406,
+      "src": "linecons"
+    },
+    {
+      "uid": "1d9b8bb9fadde5c707c4b660d743f174",
+      "css": "snowflake",
+      "code": 62172,
+      "src": "fontawesome5"
+    },
+    {
+      "uid": "61b733aee486e95fd859ef5dd16541eb",
+      "css": "boxes",
+      "code": 62568,
+      "src": "fontawesome5"
+    },
+    {
+      "uid": "9679450eec893098c6c2aa00ce99b50b",
+      "css": "leaf",
+      "code": 61548,
+      "src": "fontawesome5"
+    },
+    {
+      "uid": "c3f35e2fb502f9865ae9ae98ddff5e3f",
+      "css": "times_circle",
+      "code": 61527,
+      "src": "fontawesome5"
     }
   ]
 }

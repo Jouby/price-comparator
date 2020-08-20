@@ -16,6 +16,10 @@
 ///         Author:    Designmodo for Smashing Magazine
 ///         License:   CC BY ()
 ///         Homepage:  http://designmodo.com/linecons-free/
+/// * Font Awesome 5, Copyright (C) 2016 by Dave Gandy
+///         Author:    Dave Gandy
+///         License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
+///         Homepage:  http://fortawesome.github.com/Font-Awesome/
 ///
 import 'package:flutter/widgets.dart';
 
@@ -26,9 +30,14 @@ class CustomIcons {
   static const _kFontPkg = null;
 
   static const IconData user = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData pencil = IconData(0xe80e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData cup = IconData(0xe811, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData trash = IconData(0xe812, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData cog = IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData params = IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData shop = IconData(0xe82c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData times_circle = IconData(0xf057, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData leaf = IconData(0xf06c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData snowflake = IconData(0xf2dc, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData boxes = IconData(0xf468, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

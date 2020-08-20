@@ -216,20 +216,20 @@ class ItemState extends State<Item> {
 
       if (_priceList[index]['isBio'] == true) {
         options.add(Container(
-            child: Tooltip(
-                message: Translate.translate('Bio'),
-                child: Text(
-                  'BIO',
-                  style: TextStyle(
-                      color: Colors.green, fontWeight: FontWeight.bold),
-                ))));
+          child: IconButton(
+            icon: Icon(CustomIcons.leaf),
+            color: Colors.green,
+            tooltip: Translate.translate('Bio'),
+            onPressed: () {},
+          ),
+        ));
       }
 
       if (_priceList[index]['isCan'] == true) {
         options.add(Container(
           child: IconButton(
-            icon: Icon(CustomIcons.cup),
-            color: Colors.grey[800],
+            icon: Icon(CustomIcons.boxes),
+            color: Colors.grey,
             tooltip: Translate.translate('Can'),
             onPressed: () {},
           ),
@@ -239,7 +239,7 @@ class ItemState extends State<Item> {
       if (_priceList[index]['isFreeze'] == true) {
         options.add(Container(
           child: IconButton(
-            icon: Icon(Icons.ac_unit),
+            icon: Icon(CustomIcons.snowflake),
             color: Colors.blue[200],
             tooltip: Translate.translate('Freeze'),
             onPressed: () {},
@@ -251,18 +251,15 @@ class ItemState extends State<Item> {
     return Card(
         child: Ink(
       color: (_priceList[index]['isUnavailable'] == true)
-          ? Colors.grey
+          ? Colors.grey[200]
           : Colors.transparent,
       child: ListTile(
-          title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(store),
-            Row(
-              children: <Widget>[...options],
-            )
-          ]),
-          subtitle: new Text(price),
-          onTap: () => _pushAddPriceScreen(_priceList[index])),
+        title: Text(store, style: TextStyle(color: (_priceList[index]['isUnavailable'] == true) ? Colors.grey : Colors.black)),
+        subtitle: new Text(price),
+        onTap: () => _pushAddPriceScreen(_priceList[index]),
+        trailing:
+            Row(mainAxisSize: MainAxisSize.min, children: <Widget>[...options]),
+      ),
     ));
   }
 
