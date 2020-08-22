@@ -18,6 +18,7 @@ class PriceState extends State<Price> {
   bool isBio;
   bool isCan;
   bool isFreeze;
+  bool isWrap;
   bool isUnavailable;
 
   @override
@@ -26,6 +27,7 @@ class PriceState extends State<Price> {
     isBio = widget.data['isBio'] ?? false;
     isCan = widget.data['isCan'] ?? false;
     isFreeze = widget.data['isFreeze'] ?? false;
+    isWrap = widget.data['isWrap'] ?? false;    
     isUnavailable = widget.data['isUnavailable'] ?? false;
 
     super.initState();
@@ -34,65 +36,81 @@ class PriceState extends State<Price> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar:
-            new AppBar(title: new Text(Translate.translate('Add a new price'))),
-        body: Column(children: [
-          TextField(
-            controller: priceController,
-            autofocus: true,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: <TextInputFormatter>[
-              WhitelistingTextInputFormatter(RegExp(r'^\d+(\.)?\d{0,2}'))
-            ],
-            decoration: new InputDecoration(
-              hintText: Translate.translate('Enter your price'),
-              contentPadding: const EdgeInsets.all(16.0),
-            ),
+      appBar:
+          new AppBar(title: new Text(Translate.translate('Add a new price'))),
+      body: Column(children: [
+        TextField(
+          controller: priceController,
+          autofocus: true,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: <TextInputFormatter>[
+            WhitelistingTextInputFormatter(RegExp(r'^\d+(\.)?\d{0,2}'))
+          ],
+          decoration: new InputDecoration(
+            hintText: Translate.translate('Enter your price'),
+            contentPadding: const EdgeInsets.all(16.0),
           ),
-          Expanded(child: ListView(children: <Widget>[
+        ),
+        Expanded(
+            child: ListView(
+          children: <Widget>[
             CheckboxListTile(
-            title: Text(Translate.translate('Bio')),
-            value: isBio,
-            onChanged: (val) {
-              setState(() {
-                isBio = val;
-              });
-            },
-            secondary: const Icon(CustomIcons.leaf, color: Colors.green),
-          ),
-          CheckboxListTile(
-            title: Text(Translate.translate('Can')),
-            value: isCan,
-            onChanged: (val) {
-              setState(() {
-                isCan = val;
-              });
-            },
-            secondary: const Icon(CustomIcons.boxes, color: Colors.grey),
-          ),
-          CheckboxListTile(
-            title: Text(Translate.translate('Freeze')),
-            value: isFreeze,
-            onChanged: (val) {
-              setState(() {
-                isFreeze = val;
-              });
-            },
-            secondary: const Icon(CustomIcons.snowflake, color: Color(0xFF90CAF9)),
-          ),
-          CheckboxListTile(
-            title: Text(Translate.translate('Unavailable')),
-            value: isUnavailable,
-            onChanged: (val) {
-              setState(() {
-                isUnavailable = val;
-              });
-            },
-            secondary: const Icon(CustomIcons.times_circle, color: Colors.red),
-          ),
-          ],)),
-        ]),
-        floatingActionButton: new FloatingActionButton(
+              title: Text(Translate.translate('Bio')),
+              value: isBio,
+              onChanged: (val) {
+                setState(() {
+                  isBio = val;
+                });
+              },
+              secondary: const Icon(CustomIcons.leaf, color: Colors.green),
+            ),
+            CheckboxListTile(
+              title: Text(Translate.translate('Can')),
+              value: isCan,
+              onChanged: (val) {
+                setState(() {
+                  isCan = val;
+                });
+              },
+              secondary: const Icon(CustomIcons.boxes, color: Colors.grey),
+            ),
+            CheckboxListTile(
+              title: Text(Translate.translate('Freeze')),
+              value: isFreeze,
+              onChanged: (val) {
+                setState(() {
+                  isFreeze = val;
+                });
+              },
+              secondary:
+                  const Icon(CustomIcons.snowflake, color: Color(0xFF90CAF9)),
+            ),
+            CheckboxListTile(
+              title: Text(Translate.translate('Wrap')),
+              value: isWrap,
+              onChanged: (val) {
+                setState(() {
+                  isWrap = val;
+                });
+              },
+              secondary:
+                  const Icon(CustomIcons.prescription_bottle_alt, color: Colors.black),
+            ),
+            CheckboxListTile(
+              title: Text(Translate.translate('Unavailable')),
+              value: isUnavailable,
+              onChanged: (val) {
+                setState(() {
+                  isUnavailable = val;
+                });
+              },
+              secondary:
+                  const Icon(CustomIcons.times_circle, color: Colors.red),
+            ),
+          ],
+        )),
+      ]),
+      floatingActionButton: new FloatingActionButton(
           onPressed: submitPrice,
           tooltip: Translate.translate('SAVE'),
           child: new Icon(Icons.save)),
@@ -105,6 +123,7 @@ class PriceState extends State<Price> {
       'isBio': isBio,
       'isCan': isCan,
       'isFreeze': isFreeze,
+      'isWrap': isWrap,
       'isUnavailable': isUnavailable
     });
   }

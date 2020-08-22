@@ -71,6 +71,12 @@
       "css": "times_circle",
       "code": 61527,
       "src": "fontawesome5"
+    },
+    {
+      "uid": "51440e4c8f5cde8cb6ab3c4a462363ed",
+      "css": "prescription_bottle_alt",
+      "code": 62598,
+      "src": "fontawesome5"
     }
   ]
 }

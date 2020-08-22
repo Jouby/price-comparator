@@ -11,6 +11,7 @@ class Translate extends StatelessWidget {
     'SAVE': 'Enregistrer',
     'REMOVE': 'SUPPRIMER',
     'Remove': 'Supprimer',
+    'Edit': 'Modifier',
     'Add a new item': 'Ajouter un article',
     'Enter item name': 'Taper le nom de l\'article',
     'Add a new price': 'Ajouter un prix',
@@ -26,6 +27,7 @@ class Translate extends StatelessWidget {
     'Can': 'Conserve',
     'Freeze': 'Surgelé',
     'Bio': 'Bio',
+    'Wrap': 'Avec emballage',
     'Unavailable': 'Non Disponible',
     'Search': 'Recherche'
   };

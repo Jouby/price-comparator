@@ -36,6 +36,13 @@ class ItemState extends State<Item> {
         title: new Text('$name'),
         actions: <Widget>[
           IconButton(
+            icon: Icon(CustomIcons.pencil),
+            color: Colors.white,
+            tooltip: Translate.translate('Edit'),
+            onPressed: () {
+            },
+          ),
+          IconButton(
             icon: Icon(CustomIcons.trash),
             color: Colors.white,
             tooltip: Translate.translate('Remove'),
@@ -142,6 +149,7 @@ class ItemState extends State<Item> {
           _priceList[i]['isBio'] = data['isBio'];
           _priceList[i]['isCan'] = data['isCan'];
           _priceList[i]['isFreeze'] = data['isFreeze'];
+          _priceList[i]['isWrap'] = data['isWrap'];
           _priceList[i]['isUnavailable'] = data['isUnavailable'];
         });
         update = true;
@@ -161,6 +169,7 @@ class ItemState extends State<Item> {
           'isBio': data['isBio'],
           'isCan': data['isCan'],
           'isFreeze': data['isFreeze'],
+          'isWrap': data['isWrap'],
           'isUnavailable': data['isUnavailable']
         });
       });
@@ -246,6 +255,16 @@ class ItemState extends State<Item> {
           ),
         ));
       }
+      if (_priceList[index]['isWrap'] == true) {
+        options.add(Container(
+          child: IconButton(
+            icon: Icon(CustomIcons.prescription_bottle_alt),
+            color: Colors.black,
+            tooltip: Translate.translate('Wrap'),
+            onPressed: () {},
+          ),
+        ));
+      }
     }
 
     return Card(
@@ -254,7 +273,11 @@ class ItemState extends State<Item> {
           ? Colors.grey[200]
           : Colors.transparent,
       child: ListTile(
-        title: Text(store, style: TextStyle(color: (_priceList[index]['isUnavailable'] == true) ? Colors.grey : Colors.black)),
+        title: Text(store,
+            style: TextStyle(
+                color: (_priceList[index]['isUnavailable'] == true)
+                    ? Colors.grey
+                    : Colors.black)),
         subtitle: new Text(price),
         onTap: () => _pushAddPriceScreen(_priceList[index]),
         trailing:

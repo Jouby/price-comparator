@@ -40,4 +40,5 @@ class CustomIcons {
   static const IconData leaf = IconData(0xf06c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData snowflake = IconData(0xf2dc, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData boxes = IconData(0xf468, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData prescription_bottle_alt = IconData(0xf486, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
