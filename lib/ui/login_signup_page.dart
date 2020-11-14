@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
-import 'package:the_dead_masked_company.price_comparator/services/repository.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage({this.auth, this.loginCallback});
@@ -94,11 +94,11 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           });
         }
 
-        Repository.setUserId(userId);
-        var username = Repository.setUserName(_email);
+        UserRepository.setUserId(userId);
+        UserRepository.setUserName(_email);
         setState(() {
           _isLoading = false;
-          _status = "Vous êtes connecté en tant que $username";
+          _status = "Vous êtes connecté en tant que $_email";
         });
       } catch (e) {
         print('Error: $e');
@@ -112,7 +112,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   void checkIsLogin() async {
-      var username = await Repository.getUserName();
+      String username = await UserRepository.getUserName();
       if (username != null) {
         setState(() {
           _status = "Vous êtes déjà connecté en tant que $username";

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// The Translate widget
+/// 
+/// Used for i18n, based language is English
 class Translate extends StatelessWidget {
+  /// English - French translations
   static Map<String, String> translations = {
     'Price Comparator': 'Comparateur de prix',
     'Stores': 'Magasins',
@@ -31,21 +35,24 @@ class Translate extends StatelessWidget {
     'Unavailable': 'Non Disponible',
     'Search': 'Recherche'
   };
+
   @override
   Widget build(BuildContext context) {
     return null;
   }
 
-  static String translate(String string, [List<String> data]) {
+  /// Translate [string] with some [parameters]
+  static String translate(String string, [List<String> parameters]) {
     if (translations.keys.contains(string)) {
       string = translations[string];
-      if (data != null) {
-        for (var i = 1; i <= data.length; i++) {
-          var replace = data[i - 1];
+      if (parameters != null) {
+        for (int i = 1; i <= parameters.length; i++) {
+          String replace = parameters[i - 1];
           string = string.replaceAll('%$i', '$replace');
         }
       }
     }
+
     return string;
   }
 }

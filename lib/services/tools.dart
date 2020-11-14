@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// The Tools widget
+/// 
+/// This widget is used to externalize some functions
 class Tools extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

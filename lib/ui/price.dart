@@ -1,34 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
-import 'package:the_dead_masked_company.price_comparator/translate.dart';
+import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
+/// The Price widget
+/// 
+/// Display price screen to update value or options
 class Price extends StatefulWidget {
-  final Map<String, Object> data;
+  final PriceModel price;
 
-  Price({Key key, @required this.data}) : super(key: key);
+  Price({Key key, @required this.price}) : super(key: key);
 
   @override
-  createState() => new PriceState();
+  createState() => new _PriceState();
 }
 
-class PriceState extends State<Price> {
+class _PriceState extends State<Price> {
   TextEditingController priceController = TextEditingController();
-  String price;
-  bool isBio;
-  bool isCan;
-  bool isFreeze;
-  bool isWrap;
-  bool isUnavailable;
+  PriceModel price;
 
   @override
   void initState() {
-    priceController.text = widget.data['price'].toString();
-    isBio = widget.data['isBio'] ?? false;
-    isCan = widget.data['isCan'] ?? false;
-    isFreeze = widget.data['isFreeze'] ?? false;
-    isWrap = widget.data['isWrap'] ?? false;    
-    isUnavailable = widget.data['isUnavailable'] ?? false;
+    price = widget.price;
+    priceController.text = price.value.toString();
 
     super.initState();
   }
@@ -36,8 +31,7 @@ class PriceState extends State<Price> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar:
-          new AppBar(title: new Text(Translate.translate('Add a new price'))),
+      appBar: AppBar(title: Text(Translate.translate('Add a new price'))),
       body: Column(children: [
         TextField(
           controller: priceController,
@@ -46,7 +40,7 @@ class PriceState extends State<Price> {
           inputFormatters: <TextInputFormatter>[
             WhitelistingTextInputFormatter(RegExp(r'^\d+(\.)?\d{0,2}'))
           ],
-          decoration: new InputDecoration(
+          decoration: InputDecoration(
             hintText: Translate.translate('Enter your price'),
             contentPadding: const EdgeInsets.all(16.0),
           ),
@@ -56,30 +50,30 @@ class PriceState extends State<Price> {
           children: <Widget>[
             CheckboxListTile(
               title: Text(Translate.translate('Bio')),
-              value: isBio,
+              value: price.options['isBio'],
               onChanged: (val) {
                 setState(() {
-                  isBio = val;
+                  price.options['isBio'] = val;
                 });
               },
               secondary: const Icon(CustomIcons.leaf, color: Colors.green),
             ),
             CheckboxListTile(
               title: Text(Translate.translate('Can')),
-              value: isCan,
+              value: price.options['isCan'],
               onChanged: (val) {
                 setState(() {
-                  isCan = val;
+                  price.options['isCan'] = val;
                 });
               },
               secondary: const Icon(CustomIcons.boxes, color: Colors.grey),
             ),
             CheckboxListTile(
               title: Text(Translate.translate('Freeze')),
-              value: isFreeze,
+              value: price.options['isFreeze'],
               onChanged: (val) {
                 setState(() {
-                  isFreeze = val;
+                  price.options['isFreeze'] = val;
                 });
               },
               secondary:
@@ -87,21 +81,21 @@ class PriceState extends State<Price> {
             ),
             CheckboxListTile(
               title: Text(Translate.translate('Wrap')),
-              value: isWrap,
+              value: price.options['isWrap'],
               onChanged: (val) {
                 setState(() {
-                  isWrap = val;
+                  price.options['isWrap'] = val;
                 });
               },
-              secondary:
-                  const Icon(CustomIcons.prescription_bottle_alt, color: Colors.black),
+              secondary: const Icon(CustomIcons.prescription_bottle_alt,
+                  color: Colors.black),
             ),
             CheckboxListTile(
               title: Text(Translate.translate('Unavailable')),
-              value: isUnavailable,
+              value: price.options['isUnavailable'],
               onChanged: (val) {
                 setState(() {
-                  isUnavailable = val;
+                  price.options['isUnavailable'] = val;
                 });
               },
               secondary:
@@ -111,20 +105,17 @@ class PriceState extends State<Price> {
         )),
       ]),
       floatingActionButton: new FloatingActionButton(
-          onPressed: submitPrice,
+          onPressed: _submitPrice,
           tooltip: Translate.translate('SAVE'),
           child: new Icon(Icons.save)),
     );
   }
 
-  submitPrice() {
+  /// Submit price value
+  void _submitPrice() {
+    price.value = double.parse(priceController.text);
     Navigator.pop(context, {
-      'price': priceController.text,
-      'isBio': isBio,
-      'isCan': isCan,
-      'isFreeze': isFreeze,
-      'isWrap': isWrap,
-      'isUnavailable': isUnavailable
+      'price': price
     });
   }
 }

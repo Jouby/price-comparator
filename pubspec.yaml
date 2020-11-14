@@ -12,6 +12,7 @@ description: A Price Comparator to compare price of products in your loved store
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 1.0.2+3
+patch_data_version: 2
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -52,6 +53,9 @@ flutter:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
+
+  assets:
+    - pubspec.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
