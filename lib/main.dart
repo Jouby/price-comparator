@@ -1,17 +1,21 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:the_dead_masked_company.price_comparator/services/patch_manager.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:the_dead_masked_company.price_comparator/services/data_manager.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item_list.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+    Phoenix(
+      child: App(),
+    ),
+  );
+}
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: Get data from DB
-    PatchManager.checkDataVersion();
-    // TODO: If data version was !=, send transform data to DB
+    _upgradeData(context);
+
     return MaterialApp(
       title: 'Price Comparator',
       theme: ThemeData(
@@ -19,5 +23,12 @@ class MyApp extends StatelessWidget {
       ),
       home: ItemList(),
     );
+  }
+
+  void _upgradeData(BuildContext context) async {
+    DataManager.upgradeData().then((reload) {
+      print('reload');
+      if (reload) Phoenix.rebirth(context);
+    });
   }
 }

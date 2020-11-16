@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
 
@@ -46,11 +47,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         body: Stack(
           children: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(this._status)
-              ]
-            ),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[Text(this._status)]),
             _showForm(),
             _showCircularProgress(),
           ],
@@ -81,7 +79,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           // }).then((_) {
           //   print('Transaction  committed.');
           // });
-          
+
         } else {
           userId = await widget.auth.signUp(_email, _password);
           print('Signed up user: $userId');
@@ -100,6 +98,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           _isLoading = false;
           _status = "Vous êtes connecté en tant que $_email";
         });
+
+        Phoenix.rebirth(context);
       } catch (e) {
         print('Error: $e');
         setState(() {
@@ -112,12 +112,12 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   void checkIsLogin() async {
-      String username = await UserRepository.getUserName();
-      if (username != null) {
-        setState(() {
-          _status = "Vous êtes déjà connecté en tant que $username";
-        });
-      }
+    String username = await UserRepository.getUserName();
+    if (username != null) {
+      setState(() {
+        _status = "Vous êtes déjà connecté en tant que $username";
+      });
+    }
   }
 
   // Check if form is valid before perform login or signup

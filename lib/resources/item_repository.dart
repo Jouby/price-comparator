@@ -2,18 +2,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/abstract_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 
-class ItemRepository extends AbstractRepository {
+/// The Item repository
+class ItemRepository {
+  /// Item list key index
   static const key = 'items_list';
-
+  /// Item list
   static List<ItemModel> _itemList;
 
-  static Future<List<ItemModel>> getItemsList() async {
+  /// Get item list from local storage
+  static Future<List<ItemModel>> getItemList() async {
     if (_itemList == null) {
       final prefs = await SharedPreferences.getInstance();
-      List<String> jsonItemList = prefs.getStringList(ItemRepository.key);
+      List<String> jsonItemList = prefs.getStringList(ItemRepository.key) ?? [];
       _itemList = [];
 
       jsonItemList.forEach((jsonElement) {
@@ -24,7 +27,8 @@ class ItemRepository extends AbstractRepository {
     return _itemList;
   }
 
-  static Future<bool> setItemsList(List<ItemModel> itemsList) async {
+  /// Set [itemsList] to local storage
+  static Future<bool> setItemList(List<ItemModel> itemsList) async {
     _itemList = itemsList;
 
     final prefs = await SharedPreferences.getInstance();
@@ -34,13 +38,14 @@ class ItemRepository extends AbstractRepository {
       jsonItemList.add(element.toJson());
     });
 
-    AbstractRepository.sendDataToDatabase(itemsList, type: ItemRepository.key);
+    CoreRepository.sendDataToDatabase(jsonItemList, type: ItemRepository.key);
 
     return prefs.setStringList(ItemRepository.key, jsonItemList);
   }
 
-  static List<ItemModel> removeItem(String name) {
-    PriceRepository.removePriceListByItem(name);
+  /// Remove [item] to local storage
+  static List<ItemModel> removeItem(ItemModel item) {
+    PriceRepository.removePriceListByItem(item);
 
     return _itemList;
   }

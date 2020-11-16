@@ -1,8 +1,14 @@
 import 'dart:convert';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
+import 'package:the_dead_masked_company.price_comparator/models/model_interface.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 
-class PriceModel {
+/// The Price model
+///
+/// 1. A Price is defined for an Item on a specific Store
+/// 2. The value attribut contains the price value ($ or € or whatever currencies)
+/// 3. A price have multiple options (Bio, item used Can, ...)
+class PriceModel implements ModelInterface {
   static const Map<String, bool> DEFAULT_OPTIONS = {
     'isBio': false,
     'isCan': false,
@@ -30,6 +36,17 @@ class PriceModel {
     return toJson();
   }
 
+  @override
+  Map toMap() {
+    return {
+      'item': item.toMap(),
+      'store': store.toMap(),
+      'value': value,
+      'options': options
+    };
+  }
+
+  @override
   String toJson() {
     return jsonEncode({
       'item': item.toMap(),
@@ -39,12 +56,16 @@ class PriceModel {
     });
   }
 
+  @override
   factory PriceModel.fromJson(Map<String, dynamic> parsedJson) {
     return PriceModel(
       ItemModel.fromJson(parsedJson['item']),
       StoreModel.fromJson(parsedJson['store']),
-      value: (parsedJson['value'] != '') ? parsedJson['value'].toDouble() : PriceModel.DEFAULT_VALUE,
-      options: Map<String, bool>.from(parsedJson['options']) ?? PriceModel.DEFAULT_OPTIONS,
+      value: (parsedJson['value'] != '')
+          ? parsedJson['value'].toDouble()
+          : PriceModel.DEFAULT_VALUE,
+      options: Map<String, bool>.from(parsedJson['options']) ??
+          PriceModel.DEFAULT_OPTIONS,
     );
   }
 }

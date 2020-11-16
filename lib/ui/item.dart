@@ -11,7 +11,7 @@ import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
 /// The Item widget
-/// 
+///
 /// Display item (name, price list and minimum price)
 class Item extends StatefulWidget {
   final ItemModel item;
@@ -75,7 +75,7 @@ class _ItemState extends State<Item> {
   ///
   /// For current item, we display one price by store
   Future<void> _initializePriceList() async {
-    _priceList = await PriceRepository.getPriceListByItem(_item.name);
+    _priceList = await PriceRepository.getPriceListByItem(_item);
     List<StoreModel> storesList = await StoreRepository.getStoresList();
 
     setState(() {
@@ -105,13 +105,16 @@ class _ItemState extends State<Item> {
 
   /// Edit [item] with [name]
   Future<bool> _editItem(ItemModel item, String name) async {
-    List<ItemModel> itemList = await ItemRepository.getItemsList();
+    List<ItemModel> itemList = await ItemRepository.getItemList();
 
     if (name.length > 0 && !itemList.contains(name)) {
-      itemList.remove(item);
-      itemList.add(ItemModel(name));
-      PriceRepository.setPriceListByItem(name);
-      ItemRepository.setItemsList(itemList);
+      // TODO test this!! (instead of remove and add)
+      item.name = name;
+      // itemList.remove(item);
+      // item = ItemModel(name);
+      // itemList.add(item);
+      PriceRepository.setPriceListByItem(item);
+      ItemRepository.setItemList(itemList);
       return true;
     }
 
@@ -135,16 +138,16 @@ class _ItemState extends State<Item> {
                   if (newVal.length == 0) {
                     error = Translate.translate('Fill this field.');
                   } else {
-                    error = Translate.translate('An item with same name already exists.');
+                    error = Translate.translate(
+                        'An item with same name already exists.');
                   }
                   Tools.showError(context, error);
                 }
               });
             },
             decoration: InputDecoration(
-              hintText: Translate.translate('Enter item name'),
-              contentPadding: const EdgeInsets.all(16.0)
-            ),
+                hintText: Translate.translate('Enter item name'),
+                contentPadding: const EdgeInsets.all(16.0)),
           ));
     })).then((value) {
       setState(() {});
@@ -217,7 +220,7 @@ class _ItemState extends State<Item> {
 
     if (remove) {
       Navigator.pop(context, {
-        'remove': _item.name,
+        'remove': _item,
       });
     }
   }
@@ -264,7 +267,7 @@ class _ItemState extends State<Item> {
     updateMinimumVariables(price);
 
     if (price != null) {
-      PriceRepository.setPriceListByItem(_item.name);
+      PriceRepository.setPriceListByItem(_item);
     }
 
     return true;

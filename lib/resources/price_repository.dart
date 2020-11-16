@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/abstract_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 
-class PriceRepository extends AbstractRepository {
+// The Price repository
+class PriceRepository {
+  /// Price list
+  static List<PriceModel> _priceList;
 
-    static List<PriceModel> _priceList;
-
-  /// Get price list by item [name] from shared preferences
-  static Future<List<PriceModel>> getPriceListByItem(String name) async {
+  /// Get price list by [item] from local storage
+  static Future<List<PriceModel>> getPriceListByItem(ItemModel item) async {
+    String name = item.name;
     final prefs = await SharedPreferences.getInstance();
     List<String> jsonList = prefs.getStringList('price_list_$name') ?? [];
     _priceList = [];
@@ -21,24 +24,27 @@ class PriceRepository extends AbstractRepository {
     return _priceList;
   }
 
-  /// Set price list by item [name]
-  static Future<bool> setPriceListByItem(String name) async {
+  /// Set price list by [item] to local storage
+  static Future<bool> setPriceListByItem(ItemModel item) async {
+    String name = item.name;
     final prefs = await SharedPreferences.getInstance();
     List<String> jsonList = [];
 
     _priceList.forEach((element) {
       jsonList.add(element.toJson());
     });
-    AbstractRepository.sendDataToDatabase(_priceList, type: 'price_list_$name');
+    CoreRepository.sendDataToDatabase(jsonList, type: 'price_list/$name');
 
-    return prefs.setStringList('price_list_$name', jsonList);
+    return prefs.setStringList('price_list$name', jsonList);
   }
 
-  static Future<bool> removePriceListByItem(String name) async {
+  /// Remove prices by [item] to local storage
+  static Future<bool> removePriceListByItem(ItemModel item) async {
     final prefs = await SharedPreferences.getInstance();
+    String name = item.name;
     Future<bool> result = prefs.remove('price_list_$name');
-    // AbstractRepository.sendDataToDatabase(prefs.getStringList('price_list_$name'),
-    //     type: 'price_list_$name');
+    CoreRepository.sendDataToDatabase(prefs.getStringList('price_list_$name'),
+        type: 'price_list/$name');
     return result;
   }
 }

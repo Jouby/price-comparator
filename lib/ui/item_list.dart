@@ -80,7 +80,7 @@ class _ItemListState extends State<ItemList> {
               // child: _buildItemsList(),
               child: new RefreshIndicator(
                 child: _buildItemList(),
-                onRefresh: DataUpdateRepository.resendNewData
+                onRefresh: DataUpdateRepository.resendData
               ),
             ),
           ],
@@ -96,11 +96,11 @@ class _ItemListState extends State<ItemList> {
   /// Add item by [name]
   Future<bool> _addItem(String name) async {
     ItemModel itemModel = ItemModel(name);
-    List<ItemModel> itemList = await ItemRepository.getItemsList();
+    List<ItemModel> itemList = await ItemRepository.getItemList();
 
     if (itemModel.name.length > 0 && !itemList.contains(itemModel)) {
       itemList.add(itemModel);
-      ItemRepository.setItemsList(itemList);
+      ItemRepository.setItemList(itemList);
       filterSearchResults(editingController.text);
       return true;
     }
@@ -110,18 +110,18 @@ class _ItemListState extends State<ItemList> {
 
   /// Initialize item list
   void _initializeItemList() async {
-    _itemList = await ItemRepository.getItemsList();
+    _itemList = await ItemRepository.getItemList();
     setState(() {
       if (_itemList == null) _itemList = [];
     });
   }
 
-  /// Remove item by [name]
-  void _removeItem(String name) async {
-    List<ItemModel> itemList = await ItemRepository.getItemsList();
-    itemList.remove(name);
-    ItemRepository.setItemsList(itemList);
-    ItemRepository.removeItem(name);
+  /// Remove [item] from item list
+  void _removeItem(ItemModel item) async {
+    List<ItemModel> itemList = await ItemRepository.getItemList();
+    itemList.remove(item);
+    ItemRepository.setItemList(itemList);
+    ItemRepository.removeItem(item);
     filterSearchResults(editingController.text);
   }
 
@@ -168,7 +168,7 @@ class _ItemListState extends State<ItemList> {
 
   /// Filter _itemList with [query]
   void filterSearchResults(String query) async {
-    List<ItemModel> itemList = await ItemRepository.getItemsList();
+    List<ItemModel> itemList = await ItemRepository.getItemList();
     List<ItemModel> dummySearchList = List<ItemModel>();
     dummySearchList.addAll(itemList);
     if (query.isNotEmpty) {
