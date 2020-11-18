@@ -12,6 +12,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/price_reposit
 class StoreRepository {
   /// Store list key index
   static const key = 'stores_list';
+
   /// Store list
   static List<StoreModel> _storeList;
 
@@ -39,8 +40,7 @@ class StoreRepository {
       jsonStoreList.add(element.toJson());
     });
     final prefs = await SharedPreferences.getInstance();
-    CoreRepository.sendDataToDatabase(jsonStoreList,
-        type: StoreRepository.key);
+    CoreRepository.sendDataToDatabase(jsonStoreList, type: StoreRepository.key);
     return prefs.setStringList(StoreRepository.key, jsonStoreList);
   }
 

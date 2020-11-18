@@ -11,5 +11,6 @@ class ModelInterface {
   String toJson() => '';
 
   /// Create model object from parsed json
-  factory ModelInterface.fromJson(Map<String, dynamic> parsedJson) =>ModelInterface();
+  factory ModelInterface.fromJson(Map<String, dynamic> parsedJson) =>
+      ModelInterface();
 }

@@ -10,7 +10,7 @@ import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
 /// The Item list widget
-/// 
+///
 /// Main screen
 /// Display item list (sort alphabetically or possible to filter)
 class ItemList extends StatefulWidget {
@@ -20,6 +20,7 @@ class ItemList extends StatefulWidget {
 
 class _ItemListState extends State<ItemList> {
   List<ItemModel> _itemList = [];
+  List<ItemModel> _displayedItemList = [];
   TextEditingController editingController = TextEditingController();
 
   @override
@@ -31,31 +32,28 @@ class _ItemListState extends State<ItemList> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(title: Text(Translate.translate('Price Comparator')),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(CustomIcons.shop),
-          color: Colors.white,
-          tooltip: Translate.translate('Stores'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StoreList())
-            );
-          },
-        ),
-        IconButton(
-          icon: Icon(CustomIcons.params),
-          color: Colors.white,
-          tooltip: Translate.translate('Settings'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SettingsList())
-            );
-          },
-        ),
-      ]),
+      appBar: AppBar(
+          title: Text(Translate.translate('Price Comparator')),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(CustomIcons.shop),
+              color: Colors.white,
+              tooltip: Translate.translate('Stores'),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StoreList()));
+              },
+            ),
+            IconButton(
+              icon: Icon(CustomIcons.params),
+              color: Colors.white,
+              tooltip: Translate.translate('Settings'),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsList()));
+              },
+            ),
+          ]),
       body: Container(
         child: Column(
           children: <Widget>[
@@ -67,21 +65,18 @@ class _ItemListState extends State<ItemList> {
                 },
                 controller: editingController,
                 decoration: InputDecoration(
-                  labelText: Translate.translate('Search'),
-                  hintText: Translate.translate('Search'),
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25.0))
-                  )
-                ),
+                    labelText: Translate.translate('Search'),
+                    hintText: Translate.translate('Search'),
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
               ),
             ),
             Expanded(
               // child: _buildItemsList(),
               child: new RefreshIndicator(
-                child: _buildItemList(),
-                onRefresh: DataUpdateRepository.resendData
-              ),
+                  child: _buildItemList(),
+                  onRefresh: DataUpdateRepository.resendData),
             ),
           ],
         ),
@@ -100,6 +95,7 @@ class _ItemListState extends State<ItemList> {
 
     if (itemModel.name.length > 0 && !itemList.contains(itemModel)) {
       itemList.add(itemModel);
+      print(itemList);
       ItemRepository.setItemList(itemList);
       filterSearchResults(editingController.text);
       return true;
@@ -111,6 +107,7 @@ class _ItemListState extends State<ItemList> {
   /// Initialize item list
   void _initializeItemList() async {
     _itemList = await ItemRepository.getItemList();
+    _displayedItemList = List.from(_itemList);
     setState(() {
       if (_itemList == null) _itemList = [];
     });
@@ -118,22 +115,22 @@ class _ItemListState extends State<ItemList> {
 
   /// Remove [item] from item list
   void _removeItem(ItemModel item) async {
-    List<ItemModel> itemList = await ItemRepository.getItemList();
-    itemList.remove(item);
-    ItemRepository.setItemList(itemList);
+    _refreshItemList();
+    _itemList.remove(item);
+    ItemRepository.setItemList(_itemList);
     ItemRepository.removeItem(item);
     filterSearchResults(editingController.text);
   }
 
   /// Build item list
   Widget _buildItemList() {
-    _itemList.sort((a, b) {
+    _displayedItemList.sort((a, b) {
       return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
     return new ListView.builder(
       itemBuilder: (context, index) {
-        if (index < _itemList.length) {
-          return _buildItem(_itemList[index]);
+        if (index < _displayedItemList.length) {
+          return _buildItem(_displayedItemList[index]);
         }
         return null;
       },
@@ -153,13 +150,13 @@ class _ItemListState extends State<ItemList> {
   }
 
   /// Go to [item] screen (see ui/item.dart)
-  /// 
+  ///
   /// We used current [context] to send current context to new screen
   void _goToItemScreen(BuildContext context, ItemModel item) async {
     final result = await Navigator.push(
-      context,
-      MaterialPageRoute<Map<String, dynamic>>(builder: (BuildContext _) => Item(item: item))
-    );
+        context,
+        MaterialPageRoute<Map<String, dynamic>>(
+            builder: (BuildContext _) => Item(item: item)));
 
     if (result != null && result['remove'] != '') {
       _removeItem(result['remove']);
@@ -168,10 +165,12 @@ class _ItemListState extends State<ItemList> {
 
   /// Filter _itemList with [query]
   void filterSearchResults(String query) async {
-    List<ItemModel> itemList = await ItemRepository.getItemList();
+    _refreshItemList();
     List<ItemModel> dummySearchList = List<ItemModel>();
-    dummySearchList.addAll(itemList);
+
+    _displayedItemList.clear();
     if (query.isNotEmpty) {
+      dummySearchList.addAll(_itemList);
       List<ItemModel> dummyListData = List<ItemModel>();
       dummySearchList.forEach((item) {
         if (item.name.toLowerCase().contains(query.toLowerCase())) {
@@ -179,16 +178,14 @@ class _ItemListState extends State<ItemList> {
         }
       });
       setState(() {
-        _itemList.clear();
-        _itemList.addAll(dummyListData);
+        _displayedItemList.addAll(dummyListData);
       });
       return;
-    } else {
-      setState(() {
-        _itemList.clear();
-        _itemList.addAll(itemList);
-      });
     }
+
+    setState(() {
+      _displayedItemList.addAll(_itemList);
+    });
   }
 
   /// Show a screen to add a new item
@@ -205,16 +202,21 @@ class _ItemListState extends State<ItemList> {
                   Navigator.pop(context);
                   _goToItemScreen(context, new ItemModel(name));
                 } else {
-                  String error = Translate.translate((name.length == 0) ? 'Fill this field.' : 'An item with same name already exists.');
+                  String error = Translate.translate((name.length == 0)
+                      ? 'Fill this field.'
+                      : 'An item with same name already exists.');
                   Tools.showError(context, error);
                 }
               });
             },
             decoration: InputDecoration(
-              hintText: Translate.translate('Enter item name'),
-              contentPadding: const EdgeInsets.all(16.0)
-            ),
+                hintText: Translate.translate('Enter item name'),
+                contentPadding: const EdgeInsets.all(16.0)),
           ));
     }));
+  }
+
+  void _refreshItemList() async {
+    await ItemRepository.getItemList();
   }
 }

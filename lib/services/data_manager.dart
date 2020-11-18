@@ -15,7 +15,8 @@ class DataManager {
 
   /// Load data from database
   static Future<int> loadData() async {
-    Map<dynamic, dynamic> dataFromDB = await CoreRepository.getUserDataFromDatabase();
+    Map<dynamic, dynamic> dataFromDB =
+        await CoreRepository.getUserDataFromDatabase();
     int dataVersionNumber = dataFromDB[DataManager.dataVersionNumber] ?? 1;
     DataVersionInterface dataVersionPatch;
 

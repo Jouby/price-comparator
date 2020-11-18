@@ -14,13 +14,17 @@ class ImageSplashScreen extends StatefulWidget {
 class SplashScreenState extends State<ImageSplashScreen> {
   /// Image path
   static const imagePath = 'assets/splashscreen.png';
+
   /// Image margin
   static const imageMargin = 20.0;
+
+  Timer _timer;
 
   /// Start Timer
   startTime() async {
     var _duration = new Duration(seconds: 2);
-    return Timer(_duration, navigationPage);
+    _timer = Timer(_duration, navigationPage);
+    return _timer;
   }
 
   /// Navigate to Home screen
@@ -35,13 +39,18 @@ class SplashScreenState extends State<ImageSplashScreen> {
   }
 
   @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.only(
-          left: SplashScreenState.imageMargin,
-          right: SplashScreenState.imageMargin
-        ),
+            left: SplashScreenState.imageMargin,
+            right: SplashScreenState.imageMargin),
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[Image.asset(SplashScreenState.imagePath)],

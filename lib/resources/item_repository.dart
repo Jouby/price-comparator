@@ -9,6 +9,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/price_reposit
 class ItemRepository {
   /// Item list key index
   static const key = 'items_list';
+
   /// Item list
   static List<ItemModel> _itemList;
 

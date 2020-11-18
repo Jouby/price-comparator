@@ -4,7 +4,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/item_reposito
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 
 /// The Data Version 1
-/// 
+///
 /// For more details, see DataManager
 class DataVersion1 implements DataVersionInterface {
   @override

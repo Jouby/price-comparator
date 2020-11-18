@@ -5,7 +5,7 @@ import 'package:the_dead_masked_company.price_comparator/services/custom_icons_i
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
 /// The Price widget
-/// 
+///
 /// Display price screen to update value or options
 class Price extends StatefulWidget {
   final PriceModel price;
@@ -114,8 +114,6 @@ class _PriceState extends State<Price> {
   /// Submit price value
   void _submitPrice() {
     price.value = double.parse(priceController.text);
-    Navigator.pop(context, {
-      'price': price
-    });
+    Navigator.pop(context, {'price': price});
   }
 }

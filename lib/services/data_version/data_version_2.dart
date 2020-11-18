@@ -8,7 +8,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/item_reposito
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 
 /// The Data Version 1
-/// 
+///
 /// For more details, see DataManager
 class DataVersion2 implements DataVersionInterface {
   @override
@@ -24,10 +24,8 @@ class DataVersion2 implements DataVersionInterface {
       ItemModel item = ItemModel.fromJson(jsonDecode(json));
       String itemName = item.name;
       if (dataFromDB['price_list'][itemName] != null) {
-        prefs.setStringList(
-          'price_list_$itemName',
-          List<String>.from(dataFromDB['price_list'][itemName])
-        );
+        prefs.setStringList('price_list_$itemName',
+            List<String>.from(dataFromDB['price_list'][itemName]));
       }
     }
   }

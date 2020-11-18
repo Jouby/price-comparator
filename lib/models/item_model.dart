@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:the_dead_masked_company.price_comparator/models/model_interface.dart';
 
 /// The Item model
-/// 
+///
 /// 1. An item can be buy on store
 /// 2. An item have mutliple prices (maximum one per store)
 class ItemModel implements ModelInterface {

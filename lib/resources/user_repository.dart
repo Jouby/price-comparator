@@ -2,8 +2,7 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// The User repository
-class UserRepository
-{
+class UserRepository {
   /// Get User ID from local storage
   static Future<String> getUserId() async {
     final prefs = await SharedPreferences.getInstance();

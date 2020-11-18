@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// The Translate widget
-/// 
+///
 /// Used for i18n, based language is English
 class Translate extends StatelessWidget {
   /// English - French translations
@@ -23,8 +23,10 @@ class Translate extends StatelessWidget {
     ' in ': ' à ',
     'No data': 'Aucune donnée',
     'Enter your price': 'Taper votre prix',
-    'A store with same name already exists.': 'Un magasin avec le même nom a déjà été créé.',
-    'An item with same name already exists.': 'Un object avec le même nom a déjà été créé.',
+    'A store with same name already exists.':
+        'Un magasin avec le même nom a déjà été créé.',
+    'An item with same name already exists.':
+        'Un object avec le même nom a déjà été créé.',
     'Fill this field.': 'Remplisser le champ',
     'Settings': 'Options',
     'Create account': 'Créer un compte',
