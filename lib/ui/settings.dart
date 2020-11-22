@@ -8,7 +8,7 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 /// Display settings list (connection parameters)
 class SettingsList extends StatefulWidget {
   @override
-  createState() => new _SettingsListState();
+  _SettingsListState createState() => _SettingsListState();
 }
 
 class _SettingsListState extends State<SettingsList> {
@@ -25,9 +25,9 @@ class _SettingsListState extends State<SettingsList> {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        MaterialPageRoute<void>(
                             builder: (context) =>
-                                LoginSignupPage(auth: new Auth())));
+                                LoginSignupPage(auth: Auth())));
                   },
                   child: Text(Translate.translate('LOGIN'),
                       style: TextStyle(fontSize: 20)),

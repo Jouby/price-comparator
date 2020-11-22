@@ -8,21 +8,21 @@ import 'package:the_dead_masked_company.price_comparator/services/constants.dart
 /// Display during 2 second an image before display the main UI screen
 class ImageSplashScreen extends StatefulWidget {
   @override
-  SplashScreenState createState() => new SplashScreenState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class SplashScreenState extends State<ImageSplashScreen> {
+class _SplashScreenState extends State<ImageSplashScreen> {
   /// Image path
-  static const imagePath = 'assets/splashscreen.png';
+  final imagePath = 'assets/splashscreen.png';
 
   /// Image margin
-  static const imageMargin = 20.0;
+  final double imageMargin = 20.0;
 
   Timer _timer;
 
   /// Start Timer
-  startTime() async {
-    var _duration = new Duration(seconds: 2);
+  Future<Timer> startTime() async {
+    var _duration = Duration(seconds: 2);
     _timer = Timer(_duration, navigationPage);
     return _timer;
   }
@@ -48,12 +48,10 @@ class SplashScreenState extends State<ImageSplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: const EdgeInsets.only(
-            left: SplashScreenState.imageMargin,
-            right: SplashScreenState.imageMargin),
+        margin: EdgeInsets.only(left: imageMargin, right: imageMargin),
         child: Stack(
           fit: StackFit.expand,
-          children: <Widget>[Image.asset(SplashScreenState.imagePath)],
+          children: <Widget>[Image.asset(imagePath)],
         ),
       ),
     );

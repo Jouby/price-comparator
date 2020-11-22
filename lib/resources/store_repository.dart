@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
-import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
@@ -20,11 +18,12 @@ class StoreRepository {
   static Future<List<StoreModel>> getStoresList() async {
     if (_storeList == null) {
       final prefs = await SharedPreferences.getInstance();
-      List<String> jsonStoreList = prefs.getStringList(StoreRepository.key);
+      var jsonStoreList = prefs.getStringList(StoreRepository.key);
       _storeList = [];
 
       jsonStoreList.forEach((jsonElement) {
-        _storeList.add(StoreModel.fromJson(jsonDecode(jsonElement)));
+        _storeList.add(StoreModel.fromJson(
+            jsonDecode(jsonElement) as Map<String, dynamic>));
       });
     }
 
@@ -35,7 +34,7 @@ class StoreRepository {
   static Future<bool> setStoresList(List<StoreModel> storesList) async {
     _storeList = storesList;
 
-    List<String> jsonStoreList = [];
+    var jsonStoreList = <String>[];
     storesList.forEach((element) {
       jsonStoreList.add(element.toJson());
     });
@@ -46,23 +45,22 @@ class StoreRepository {
 
   /// Remove [store] in store
   static Future<List<StoreModel>> removeStore(StoreModel store) async {
-    List<ItemModel> itemsList = await ItemRepository.getItemList();
-    if (itemsList == null) itemsList = [];
+    var itemsList = await ItemRepository.getItemList();
+    itemsList ??= [];
 
-    for (int i = 0; i < itemsList.length; i++) {
-      ItemModel item = itemsList[i];
-      List<PriceModel> priceItemList =
-          await PriceRepository.getPriceListByItem(item);
+    for (var i = 0; i < itemsList.length; i++) {
+      var item = itemsList[i];
+      var priceItemList = await PriceRepository.getPriceListByItem(item);
 
       if (priceItemList != null) {
-        for (int i = 0; i < priceItemList.length; i++) {
+        for (var i = 0; i < priceItemList.length; i++) {
           if (priceItemList[i].store.name == store.name) {
             priceItemList.removeAt(i);
           }
         }
       }
 
-      PriceRepository.setPriceListByItem(item);
+      await PriceRepository.setPriceListByItem(item);
     }
 
     return _storeList;

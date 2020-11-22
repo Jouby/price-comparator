@@ -15,7 +15,7 @@ class StoreModel implements ModelInterface {
 
   @override
   Map toMap() {
-    return {'name': name};
+    return <String, dynamic>{'name': name};
   }
 
   @override
@@ -25,6 +25,6 @@ class StoreModel implements ModelInterface {
 
   @override
   factory StoreModel.fromJson(Map<String, dynamic> parsedJson) {
-    return StoreModel(parsedJson['name']);
+    return StoreModel(parsedJson['name'].toString());
   }
 }

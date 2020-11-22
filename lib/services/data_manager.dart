@@ -15,17 +15,17 @@ class DataManager {
 
   /// Load data from database
   static Future<int> loadData() async {
-    Map<dynamic, dynamic> dataFromDB =
-        await CoreRepository.getUserDataFromDatabase();
-    int dataVersionNumber = dataFromDB[DataManager.dataVersionNumber] ?? 1;
+    var dataFromDB = await CoreRepository.getUserDataFromDatabase();
+    var dataVersionNumber =
+        dataFromDB[DataManager.dataVersionNumber] as int ?? 1;
     DataVersionInterface dataVersionPatch;
 
     switch (dataVersionNumber) {
       case 1:
-        dataVersionPatch = new DataVersion1();
+        dataVersionPatch = DataVersion1();
         break;
       case 2:
-        dataVersionPatch = new DataVersion2();
+        dataVersionPatch = DataVersion2();
         break;
       default:
         dataVersionPatch = null;
@@ -44,10 +44,10 @@ class DataManager {
 
     switch (currentDataVersion) {
       case 1:
-        dataVersionPatch = new DataVersion1();
+        dataVersionPatch = DataVersion1();
         break;
       case 2:
-        dataVersionPatch = new DataVersion2();
+        dataVersionPatch = DataVersion2();
         break;
       default:
         dataVersionPatch = null;
@@ -58,7 +58,7 @@ class DataManager {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt(DataManager.dataVersionNumber, currentDataVersion);
+    await prefs.setInt(DataManager.dataVersionNumber, currentDataVersion);
   }
 
   /// Upgrade data
@@ -67,9 +67,9 @@ class DataManager {
   /// 2. Change data if we have new data_version in application
   /// 3. Update and send data to database
   static Future<bool> upgradeData() async {
-    int currentDataVersion = await DataManager.loadData();
-    int appDataVersion = await DataManager.getAppDataVersion();
-    bool update = false;
+    var currentDataVersion = await DataManager.loadData();
+    var appDataVersion = await DataManager.getAppDataVersion();
+    var update = false;
 
     while (currentDataVersion < appDataVersion) {
       switch (currentDataVersion) {
@@ -93,10 +93,10 @@ class DataManager {
 
   /// Get Application data version from pubspec.yaml
   static Future<int> getAppDataVersion() async {
-    String pubspecContent =
+    var pubspecContent =
         await rootBundle.loadString(DataManager.pubspecFilePath);
-    Map yaml = loadYaml(pubspecContent);
+    var yaml = loadYaml(pubspecContent) as Map;
 
-    return yaml[DataManager.dataVersionNumber];
+    return yaml[DataManager.dataVersionNumber] as int;
   }
 }

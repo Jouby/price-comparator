@@ -9,7 +9,7 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 /// Display store list and functionnality to manage stores
 class StoreList extends StatefulWidget {
   @override
-  createState() => new _StoreListState();
+  _StoreListState createState() => _StoreListState();
 }
 
 class _StoreListState extends State<StoreList> {
@@ -25,13 +25,13 @@ class _StoreListState extends State<StoreList> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(title: new Text(Translate.translate('Stores'))),
+    return Scaffold(
+      appBar: AppBar(title: Text(Translate.translate('Stores'))),
       body: _buildStoreList(),
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
           onPressed: _showAddStoreScreen,
           tooltip: Translate.translate('Add a new store'),
-          child: new Icon(Icons.add)),
+          child: Icon(Icons.add)),
     );
   }
 
@@ -43,10 +43,10 @@ class _StoreListState extends State<StoreList> {
 
   /// Add a store with [name]
   Future<bool> _addStore(String name) async {
-    StoreModel storeModel = StoreModel(name);
-    if (storeModel.name.length > 0 && !_storeList.contains(storeModel)) {
+    var storeModel = StoreModel(name);
+    if (storeModel.name.isNotEmpty && !_storeList.contains(storeModel)) {
       setState(() => _storeList.add(storeModel));
-      StoreRepository.setStoresList(_storeList);
+      await StoreRepository.setStoresList(_storeList);
       return true;
     }
 
@@ -65,7 +65,7 @@ class _StoreListState extends State<StoreList> {
     _storeList.sort((a, b) {
       return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
-    return new ListView.builder(
+    return ListView.builder(
       itemBuilder: (context, index) {
         if (index < _storeList.length) {
           return _buildStore(_storeList[index]);
@@ -79,17 +79,15 @@ class _StoreListState extends State<StoreList> {
   Widget _buildStore(StoreModel store) {
     return Card(
       child: ListTile(
-          title: new Text(store.name),
-          onTap: () => _showRemoveStoreDialog(store)),
+          title: Text(store.name), onTap: () => _showRemoveStoreDialog(store)),
     );
   }
 
   /// Show screen to add a new store
   void _showAddStoreScreen() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return new Scaffold(
-          appBar: new AppBar(
-              title: new Text(Translate.translate('Add a new store'))),
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
+      return Scaffold(
+          appBar: AppBar(title: Text(Translate.translate('Add a new store'))),
           body: TextField(
             textCapitalization: TextCapitalization.sentences,
             autofocus: true,
@@ -100,7 +98,7 @@ class _StoreListState extends State<StoreList> {
                   Navigator.pop(context);
                 } else {
                   String error;
-                  if (storeName.length == 0) {
+                  if (storeName.isEmpty) {
                     error = Translate.translate('Fill this field.');
                   } else {
                     error = Translate.translate(
@@ -110,7 +108,7 @@ class _StoreListState extends State<StoreList> {
                 }
               });
             },
-            decoration: new InputDecoration(
+            decoration: InputDecoration(
                 hintText: Translate.translate('Enter store name'),
                 contentPadding: const EdgeInsets.all(16.0)),
           ));
@@ -119,18 +117,18 @@ class _StoreListState extends State<StoreList> {
 
   /// Show a dialog to remove a store
   void _showRemoveStoreDialog(StoreModel store) {
-    showDialog(
+    showDialog<void>(
         context: context,
         builder: (BuildContext context) {
-          return new AlertDialog(
-              title: new Text(
-                  Translate.translate('Remove "%1" ?', ['${store.name}'])),
+          return AlertDialog(
+              title:
+                  Text(Translate.translate('Remove "%1" ?', ['${store.name}'])),
               actions: <Widget>[
-                new FlatButton(
-                    child: new Text(Translate.translate('CANCEL')),
+                FlatButton(
+                    child: Text(Translate.translate('CANCEL')),
                     onPressed: () => Navigator.of(context).pop()),
-                new FlatButton(
-                    child: new Text(Translate.translate('REMOVE')),
+                FlatButton(
+                    child: Text(Translate.translate('REMOVE')),
                     onPressed: () {
                       _removeStore(store);
                       Navigator.of(context).pop();

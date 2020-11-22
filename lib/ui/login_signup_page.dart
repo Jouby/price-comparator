@@ -11,11 +11,11 @@ class LoginSignupPage extends StatefulWidget {
   final VoidCallback loginCallback;
 
   @override
-  State<StatefulWidget> createState() => new _LoginSignupPageState();
+  State<StatefulWidget> createState() => _LoginSignupPageState();
 }
 
 class _LoginSignupPageState extends State<LoginSignupPage> {
-  final _formKey = new GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   String _status = '';
   String _email;
@@ -25,12 +25,12 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   bool _isLoginForm;
   bool _isLoading;
 
-  static FirebaseDatabase database = new FirebaseDatabase();
-  DatabaseReference _userRef = database.reference();
+  static FirebaseDatabase database = FirebaseDatabase();
+  final DatabaseReference _userRef = database.reference();
 
   @override
   void initState() {
-    _errorMessage = "";
+    _errorMessage = '';
     _isLoading = false;
     _isLoginForm = true;
     super.initState();
@@ -40,15 +40,15 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget build(BuildContext context) {
     checkIsLogin();
 
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Connexion'),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Connexion'),
         ),
         body: Stack(
           children: <Widget>[
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[Text(this._status)]),
+                children: <Widget>[Text(_status)]),
             _showForm(),
             _showCircularProgress(),
           ],
@@ -58,11 +58,11 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   // Perform login or signup
   void validateAndSubmit() async {
     setState(() {
-      _errorMessage = "";
+      _errorMessage = '';
       _isLoading = true;
     });
     if (validateAndSave()) {
-      String userId = "";
+      var userId = '';
       try {
         if (_isLoginForm) {
           userId = await widget.auth.signIn(_email, _password);
@@ -84,19 +84,19 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           userId = await widget.auth.signUp(_email, _password);
           print('Signed up user: $userId');
 
-          _userRef.child("users/$userId").push().set(<String, String>{
-            "email": _email,
-            "password": _password,
+          await _userRef.child('users/$userId').push().set(<String, String>{
+            'email': _email,
+            'password': _password,
           }).then((_) {
             print('Transaction  committed.');
           });
         }
 
-        UserRepository.setUserId(userId);
-        UserRepository.setUserName(_email);
+        await UserRepository.setUserId(userId);
+        await UserRepository.setUserName(_email);
         setState(() {
           _isLoading = false;
-          _status = "Vous êtes connecté en tant que $_email";
+          _status = 'Vous êtes connecté en tant que $_email';
         });
 
         Phoenix.rebirth(context);
@@ -104,7 +104,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         print('Error: $e');
         setState(() {
           _isLoading = false;
-          _errorMessage = e.message;
+          _errorMessage = e.message.toString();
           _formKey.currentState.reset();
         });
       }
@@ -112,10 +112,10 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   void checkIsLogin() async {
-    String username = await UserRepository.getUserName();
+    var username = await UserRepository.getUserName();
     if (username != null) {
       setState(() {
-        _status = "Vous êtes déjà connecté en tant que $username";
+        _status = 'Vous êtes déjà connecté en tant que $username';
       });
     }
   }
@@ -132,7 +132,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   void resetForm() {
     _formKey.currentState.reset();
-    _errorMessage = "";
+    _errorMessage = '';
   }
 
   void toggleFormMode() {
@@ -153,11 +153,11 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget _showForm() {
-    return new Container(
+    return Container(
         padding: EdgeInsets.all(16.0),
-        child: new Form(
+        child: Form(
           key: _formKey,
-          child: new ListView(
+          child: ListView(
             shrinkWrap: true,
             children: <Widget>[
               showEmailInput(),
@@ -171,8 +171,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget showErrorMessage() {
-    if (_errorMessage.length > 0 && _errorMessage != null) {
-      return new Text(
+    if (_errorMessage.isNotEmpty && _errorMessage != null) {
+      return Text(
         _errorMessage,
         style: TextStyle(
             fontSize: 13.0,
@@ -181,7 +181,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
             fontWeight: FontWeight.w300),
       );
     } else {
-      return new Container(
+      return Container(
         height: 0.0,
       );
     }
@@ -190,13 +190,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget showEmailInput() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
-      child: new TextFormField(
+      child: TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
-        decoration: new InputDecoration(
+        decoration: InputDecoration(
             hintText: 'Email',
-            icon: new Icon(
+            icon: Icon(
               Icons.mail,
               color: Colors.grey,
             )),
@@ -209,13 +209,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget showPasswordInput() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-      child: new TextFormField(
+      child: TextFormField(
         maxLines: 1,
         obscureText: true,
         autofocus: false,
-        decoration: new InputDecoration(
+        decoration: InputDecoration(
             hintText: 'Password',
-            icon: new Icon(
+            icon: Icon(
               Icons.lock,
               color: Colors.grey,
             )),
@@ -226,25 +226,25 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget showSecondaryButton() {
-    return new FlatButton(
-        child: new Text(
+    return FlatButton(
+        child: Text(
             _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: toggleFormMode);
   }
 
   Widget showPrimaryButton() {
-    return new Padding(
+    return Padding(
         padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
         child: SizedBox(
           height: 40.0,
-          child: new RaisedButton(
+          child: RaisedButton(
             elevation: 5.0,
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0)),
             color: Colors.blue,
-            child: new Text(_isLoginForm ? 'Login' : 'Create account',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            child: Text(_isLoginForm ? 'Login' : 'Create account',
+                style: TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: validateAndSubmit,
           ),
         ));

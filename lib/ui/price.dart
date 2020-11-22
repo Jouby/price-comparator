@@ -13,7 +13,7 @@ class Price extends StatefulWidget {
   Price({Key key, @required this.price}) : super(key: key);
 
   @override
-  createState() => new _PriceState();
+  _PriceState createState() => _PriceState();
 }
 
 class _PriceState extends State<Price> {
@@ -30,7 +30,7 @@ class _PriceState extends State<Price> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       appBar: AppBar(title: Text(Translate.translate('Add a new price'))),
       body: Column(children: [
         TextField(
@@ -105,10 +105,10 @@ class _PriceState extends State<Price> {
           ],
         )),
       ]),
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
           onPressed: _submitPrice,
           tooltip: Translate.translate('SAVE'),
-          child: new Icon(Icons.save)),
+          child: Icon(Icons.save)),
     );
   }
 

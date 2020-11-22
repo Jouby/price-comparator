@@ -39,7 +39,7 @@ class App extends StatelessWidget {
 
   /// Upgrade data using data manager and reload app using [context]
   void _upgradeData(BuildContext context) async {
-    DataManager.upgradeData().then((reload) {
+    await DataManager.upgradeData().then((reload) {
       print('reload');
       if (reload) Phoenix.rebirth(context);
     });

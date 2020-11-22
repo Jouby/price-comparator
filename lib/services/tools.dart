@@ -10,10 +10,10 @@ class Tools extends StatelessWidget {
   }
 
   static void showError(BuildContext context, String content) {
-    showDialog(
+    showDialog<void>(
         context: context,
         builder: (BuildContext context) {
-          return new AlertDialog(
+          return AlertDialog(
               title: Icon(Icons.error),
               content: Center(
                   child:

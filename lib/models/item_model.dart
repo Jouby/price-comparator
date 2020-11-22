@@ -18,7 +18,7 @@ class ItemModel implements ModelInterface {
 
   @override
   Map toMap() {
-    return {'name': name};
+    return <String, dynamic>{'name': name};
   }
 
   @override
@@ -28,6 +28,6 @@ class ItemModel implements ModelInterface {
 
   @override
   factory ItemModel.fromJson(Map<String, dynamic> parsedJson) {
-    return ItemModel(parsedJson['name']);
+    return ItemModel(parsedJson['name'].toString());
   }
 }

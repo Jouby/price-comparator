@@ -15,7 +15,7 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 /// Display item list (sort alphabetically or possible to filter)
 class ItemList extends StatefulWidget {
   @override
-  createState() => new _ItemListState();
+  _ItemListState createState() => _ItemListState();
 }
 
 class _ItemListState extends State<ItemList> {
@@ -31,7 +31,7 @@ class _ItemListState extends State<ItemList> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       appBar: AppBar(
           title: Text(Translate.translate('Price Comparator')),
           actions: <Widget>[
@@ -41,7 +41,7 @@ class _ItemListState extends State<ItemList> {
               tooltip: Translate.translate('Stores'),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => StoreList()));
+                    MaterialPageRoute<void>(builder: (context) => StoreList()));
               },
             ),
             IconButton(
@@ -49,8 +49,10 @@ class _ItemListState extends State<ItemList> {
               color: Colors.white,
               tooltip: Translate.translate('Settings'),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsList()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                        builder: (context) => SettingsList()));
               },
             ),
           ]),
@@ -74,29 +76,29 @@ class _ItemListState extends State<ItemList> {
             ),
             Expanded(
               // child: _buildItemsList(),
-              child: new RefreshIndicator(
+              child: RefreshIndicator(
                   child: _buildItemList(),
                   onRefresh: DataUpdateRepository.resendData),
             ),
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
           onPressed: _showAddItemScreen,
           tooltip: Translate.translate('Add a new item'),
-          child: new Icon(Icons.add)),
+          child: Icon(Icons.add)),
     );
   }
 
   /// Add item by [name]
   Future<bool> _addItem(String name) async {
-    ItemModel itemModel = ItemModel(name);
-    List<ItemModel> itemList = await ItemRepository.getItemList();
+    var itemModel = ItemModel(name);
+    var itemList = await ItemRepository.getItemList();
 
-    if (itemModel.name.length > 0 && !itemList.contains(itemModel)) {
+    if (itemModel.name.isNotEmpty && !itemList.contains(itemModel)) {
       itemList.add(itemModel);
       print(itemList);
-      ItemRepository.setItemList(itemList);
+      await ItemRepository.setItemList(itemList);
       filterSearchResults(editingController.text);
       return true;
     }
@@ -109,7 +111,7 @@ class _ItemListState extends State<ItemList> {
     _itemList = await ItemRepository.getItemList();
     _displayedItemList = List.from(_itemList);
     setState(() {
-      if (_itemList == null) _itemList = [];
+      _itemList ??= [];
     });
   }
 
@@ -117,7 +119,7 @@ class _ItemListState extends State<ItemList> {
   void _removeItem(ItemModel item) async {
     _refreshItemList();
     _itemList.remove(item);
-    ItemRepository.setItemList(_itemList);
+    await ItemRepository.setItemList(_itemList);
     ItemRepository.removeItem(item);
     filterSearchResults(editingController.text);
   }
@@ -127,7 +129,7 @@ class _ItemListState extends State<ItemList> {
     _displayedItemList.sort((a, b) {
       return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
-    return new ListView.builder(
+    return ListView.builder(
       itemBuilder: (context, index) {
         if (index < _displayedItemList.length) {
           return _buildItem(_displayedItemList[index]);
@@ -141,7 +143,7 @@ class _ItemListState extends State<ItemList> {
   Widget _buildItem(ItemModel item) {
     return Card(
       child: ListTile(
-        title: new Text(item.name),
+        title: Text(item.name),
         onTap: () {
           _goToItemScreen(context, item);
         },
@@ -155,10 +157,10 @@ class _ItemListState extends State<ItemList> {
   void _goToItemScreen(BuildContext context, ItemModel item) async {
     final result = await Navigator.push(
         context,
-        MaterialPageRoute<Map<String, dynamic>>(
+        MaterialPageRoute<Map<String, ItemModel>>(
             builder: (BuildContext _) => Item(item: item)));
 
-    if (result != null && result['remove'] != '') {
+    if (result != null && result['remove'] != null) {
       _removeItem(result['remove']);
     }
   }
@@ -166,12 +168,12 @@ class _ItemListState extends State<ItemList> {
   /// Filter _itemList with [query]
   void filterSearchResults(String query) async {
     _refreshItemList();
-    List<ItemModel> dummySearchList = List<ItemModel>();
+    var dummySearchList = <ItemModel>[];
 
     _displayedItemList.clear();
     if (query.isNotEmpty) {
       dummySearchList.addAll(_itemList);
-      List<ItemModel> dummyListData = List<ItemModel>();
+      var dummyListData = <ItemModel>[];
       dummySearchList.forEach((item) {
         if (item.name.toLowerCase().contains(query.toLowerCase())) {
           dummyListData.add(item);
@@ -190,7 +192,7 @@ class _ItemListState extends State<ItemList> {
 
   /// Show a screen to add a new item
   void _showAddItemScreen() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return Scaffold(
           appBar: AppBar(title: Text(Translate.translate('Add a new item'))),
           body: TextField(
@@ -200,9 +202,9 @@ class _ItemListState extends State<ItemList> {
               _addItem(name).then((result) {
                 if (result) {
                   Navigator.pop(context);
-                  _goToItemScreen(context, new ItemModel(name));
+                  _goToItemScreen(context, ItemModel(name));
                 } else {
-                  String error = Translate.translate((name.length == 0)
+                  var error = Translate.translate((name.isEmpty)
                       ? 'Fill this field.'
                       : 'An item with same name already exists.');
                   Tools.showError(context, error);

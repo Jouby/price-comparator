@@ -2,10 +2,11 @@ class ModelInterface {
   ModelInterface();
 
   /// Convert object to String
+  @override
   String toString() => '';
 
   /// Convert object to Map<String, dynamic>
-  Map toMap() => Map();
+  Map toMap() => <String, dynamic>{};
 
   /// Convert object to json: String
   String toJson() => '';

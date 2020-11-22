@@ -17,11 +17,12 @@ class ItemRepository {
   static Future<List<ItemModel>> getItemList() async {
     if (_itemList == null) {
       final prefs = await SharedPreferences.getInstance();
-      List<String> jsonItemList = prefs.getStringList(ItemRepository.key) ?? [];
+      var jsonItemList = prefs.getStringList(ItemRepository.key) ?? [];
       _itemList = [];
 
       jsonItemList.forEach((jsonElement) {
-        _itemList.add(ItemModel.fromJson(jsonDecode(jsonElement)));
+        _itemList.add(ItemModel.fromJson(
+            jsonDecode(jsonElement) as Map<String, dynamic>));
       });
     }
 
@@ -33,7 +34,7 @@ class ItemRepository {
     _itemList = itemsList;
 
     final prefs = await SharedPreferences.getInstance();
-    List<String> jsonItemList = [];
+    var jsonItemList = <String>[];
 
     itemsList.forEach((element) {
       jsonItemList.add(element.toJson());

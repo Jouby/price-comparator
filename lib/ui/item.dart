@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
-import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
@@ -19,7 +18,7 @@ class Item extends StatefulWidget {
   Item({Key key, @required this.item}) : super(key: key);
 
   @override
-  createState() => new _ItemState();
+  _ItemState createState() => _ItemState();
 }
 
 class _ItemState extends State<Item> {
@@ -38,9 +37,9 @@ class _ItemState extends State<Item> {
   @override
   Widget build(BuildContext context) {
     _buildMinimumPriceText();
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(_item.name),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_item.name),
         actions: <Widget>[
           IconButton(
             icon: Icon(CustomIcons.pencil),
@@ -76,15 +75,15 @@ class _ItemState extends State<Item> {
   /// For current item, we display one price by store
   Future<void> _initializePriceList() async {
     _priceList = await PriceRepository.getPriceListByItem(_item);
-    List<StoreModel> storesList = await StoreRepository.getStoresList();
+    var storesList = await StoreRepository.getStoresList();
 
     setState(() {
       checkListToGetMinimumPrice();
 
       if (storesList != null) {
-        for (int storeIndex = 0; storeIndex < storesList.length; storeIndex++) {
-          bool found = false;
-          for (int priceIndex = 0;
+        for (var storeIndex = 0; storeIndex < storesList.length; storeIndex++) {
+          var found = false;
+          for (var priceIndex = 0;
               priceIndex < _priceList.length;
               priceIndex++) {
             if (_priceList[priceIndex].store.name ==
@@ -99,22 +98,22 @@ class _ItemState extends State<Item> {
         }
       }
 
-      if (_priceList == null) _priceList = [];
+      _priceList ??= [];
     });
   }
 
   /// Edit [item] with [name]
   Future<bool> _editItem(ItemModel item, String name) async {
-    List<ItemModel> itemList = await ItemRepository.getItemList();
+    var itemList = await ItemRepository.getItemList();
 
-    if (name.length > 0 && !itemList.contains(name)) {
+    if (name.isNotEmpty && !itemList.contains(name)) {
       // TODO test this!! (instead of remove and add)
       item.name = name;
       // itemList.remove(item);
       // item = ItemModel(name);
       // itemList.add(item);
-      PriceRepository.setPriceListByItem(item);
-      ItemRepository.setItemList(itemList);
+      await PriceRepository.setPriceListByItem(item);
+      await ItemRepository.setItemList(itemList);
       return true;
     }
 
@@ -123,9 +122,9 @@ class _ItemState extends State<Item> {
 
   /// Show screen to edit [item]
   void showEditItemScreen(ItemModel item) {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return new Scaffold(
-          appBar: AppBar(title: new Text(Translate.translate('Edit an item'))),
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
+      return Scaffold(
+          appBar: AppBar(title: Text(Translate.translate('Edit an item'))),
           body: TextField(
             autofocus: true,
             textCapitalization: TextCapitalization.sentences,
@@ -135,7 +134,7 @@ class _ItemState extends State<Item> {
                   Navigator.pop(context);
                 } else {
                   String error;
-                  if (newVal.length == 0) {
+                  if (newVal.isEmpty) {
                     error = Translate.translate('Fill this field.');
                   } else {
                     error = Translate.translate(
@@ -198,9 +197,9 @@ class _ItemState extends State<Item> {
 
   /// Show dialog to remove current item
   void _showRemoveItemDialog() async {
-    bool remove = false;
+    var remove = false;
 
-    await showDialog(
+    await showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -243,10 +242,10 @@ class _ItemState extends State<Item> {
 
   /// Edit [price]
   Future<bool> _editPrice(PriceModel price) async {
-    bool update = false;
+    var update = false;
     resetMinimumVariables();
 
-    for (int i = 0; i < _priceList.length; i++) {
+    for (var i = 0; i < _priceList.length; i++) {
       if (_priceList[i].store == price.store) {
         setState(() {
           _priceList[i] = price;
@@ -267,7 +266,7 @@ class _ItemState extends State<Item> {
     updateMinimumVariables(price);
 
     if (price != null) {
-      PriceRepository.setPriceListByItem(_item);
+      await PriceRepository.setPriceListByItem(_item);
     }
 
     return true;
@@ -275,10 +274,10 @@ class _ItemState extends State<Item> {
 
   /// Check price list to get minimum price to display
   bool checkListToGetMinimumPrice() {
-    bool result = false;
+    var result = false;
 
-    for (int i = 0; i < _priceList.length; i++) {
-      if (_priceList[i].value.toString().length > 0) {
+    for (var i = 0; i < _priceList.length; i++) {
+      if (_priceList[i].value.toString().isNotEmpty) {
         updateMinimumVariables(_priceList[i]);
         result = true;
       }
@@ -289,8 +288,8 @@ class _ItemState extends State<Item> {
 
   /// Build a [price] card for _priceList
   Widget _buildPriceItem(PriceModel price) {
-    String text = '';
-    List<Widget> options = [];
+    var text = '';
+    var options = <Widget>[];
 
     if (price.options['isUnavailable'] != true) {
       if (price.value != 0) {
@@ -353,7 +352,7 @@ class _ItemState extends State<Item> {
                 color: (price.options['isUnavailable'] == true)
                     ? Colors.grey
                     : Colors.black)),
-        subtitle: new Text(text),
+        subtitle: Text(text),
         onTap: () => _showAddPriceScreen(price),
         trailing:
             Row(mainAxisSize: MainAxisSize.min, children: <Widget>[...options]),
@@ -365,11 +364,12 @@ class _ItemState extends State<Item> {
   void _showAddPriceScreen(PriceModel price) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Price(price: price)),
+      MaterialPageRoute<Map<String, PriceModel>>(
+          builder: (context) => Price(price: price)),
     );
 
     if (result['price'] != null) {
-      _editPrice(result['price']);
+      await _editPrice(result['price']);
     }
   }
 
@@ -385,7 +385,7 @@ class _ItemState extends State<Item> {
       return a.value.compareTo(b.value);
     });
 
-    return new ListView.builder(
+    return ListView.builder(
       itemCount: _priceList.length,
       itemBuilder: (context, index) {
         return _buildPriceItem(_priceList[index]);

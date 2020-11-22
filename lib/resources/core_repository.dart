@@ -7,7 +7,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/user_reposito
 /// Used to send and get data from database
 abstract class CoreRepository {
   /// Database
-  static FirebaseDatabase database = new FirebaseDatabase();
+  static FirebaseDatabase database = FirebaseDatabase();
 
   /// Database reference
   static DatabaseReference databaseReference = database.reference();
@@ -24,22 +24,25 @@ abstract class CoreRepository {
   /// A [type] is the key index on database. By default the value is empty so it's replace all current user's data.
   /// The parameter [resend] is used to saved data in data pending queue.
   static void sendDataToDatabase(dynamic data,
-      {type: '', bool resend: true}) async {
-    String userId = await UserRepository.getUserId();
+      {String type = '', bool resend = true}) async {
+    var userId = await UserRepository.getUserId();
 
     if (resend) {
-      DataUpdateRepository.addToDataQueue(data, type);
+      await DataUpdateRepository.addToDataQueue(data, type);
     }
 
     if (userId != '') {
-      String dbChild = type != '' ? 'users/$userId/$type' : 'users/$userId';
+      var dbChild = type != '' ? 'users/$userId/$type' : 'users/$userId';
       print('Start Transaction');
 
-      CoreRepository.getDatabaseReference().child(dbChild).set(data).then((_) {
+      await CoreRepository.getDatabaseReference()
+          .child(dbChild)
+          .set(data)
+          .then((_) {
         print('Transaction  committed.');
         DataUpdateRepository.removeFromDataQueue(data, type);
-      }).catchError((error) {
-        print("Something went wrong: ${error.toString()}");
+      }).catchError((Error error) {
+        print('Something went wrong: ${error.toString()}');
       });
     }
   }
@@ -49,13 +52,13 @@ abstract class CoreRepository {
     var userId = await UserRepository.getUserId();
 
     if (userId != '') {
-      DataSnapshot snapshot = await CoreRepository.getDatabaseReference()
-          .child("users/$userId")
+      var snapshot = await CoreRepository.getDatabaseReference()
+          .child('users/$userId')
           .once();
 
-      return snapshot.value;
+      return snapshot.value as Map<dynamic, dynamic>;
     }
 
-    return {};
+    return <dynamic, dynamic>{};
   }
 }

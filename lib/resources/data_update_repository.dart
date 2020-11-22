@@ -15,11 +15,10 @@ class DataUpdateRepository {
   /// Add data to pending queue
   ///
   /// Pending queue is used to save data locally in case of disconnected device
-  static Future<bool> addToDataQueue(data, type) async {
+  static Future<bool> addToDataQueue(dynamic data, String type) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> newData =
-        prefs.getStringList(DataUpdateRepository.dataQueueKey) ?? [];
-    newData.add(jsonEncode({'type': type, 'data': data}));
+    var newData = prefs.getStringList(DataUpdateRepository.dataQueueKey) ?? [];
+    newData.add(jsonEncode(<String, dynamic>{'type': type, 'data': data}));
 
     return prefs.setStringList(DataUpdateRepository.dataQueueKey, newData);
   }
@@ -27,11 +26,10 @@ class DataUpdateRepository {
   /// Remove data from pending queue
   ///
   /// Pending queue is used to save data locally in case of disconnected device
-  static Future<bool> removeFromDataQueue(data, type) async {
+  static Future<bool> removeFromDataQueue(dynamic data, String type) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> newData =
-        prefs.getStringList(DataUpdateRepository.dataQueueKey);
-    newData.remove(jsonEncode({'type': type, 'data': data}));
+    var newData = prefs.getStringList(DataUpdateRepository.dataQueueKey);
+    newData.remove(jsonEncode(<String, dynamic>{'type': type, 'data': data}));
     return prefs.setStringList(DataUpdateRepository.dataQueueKey, newData);
   }
 
@@ -40,14 +38,13 @@ class DataUpdateRepository {
   /// Pending queue is used to save data locally in case of disconnected device
   static Future<void> resendData() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> newData =
-        prefs.getStringList(DataUpdateRepository.dataQueueKey);
+    var newData = prefs.getStringList(DataUpdateRepository.dataQueueKey);
 
     if (newData != null && newData.isNotEmpty) {
       newData.forEach((element) {
-        var decodeElement = jsonDecode(element);
+        dynamic decodeElement = jsonDecode(element);
         CoreRepository.sendDataToDatabase(decodeElement['data'],
-            type: decodeElement['type'], resend: false);
+            type: decodeElement['type'].toString(), resend: false);
       });
     }
   }

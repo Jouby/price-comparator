@@ -48,8 +48,8 @@ class Translate extends StatelessWidget {
     if (translations.keys.contains(string)) {
       string = translations[string];
       if (parameters != null) {
-        for (int i = 1; i <= parameters.length; i++) {
-          String replace = parameters[i - 1];
+        for (var i = 1; i <= parameters.length; i++) {
+          var replace = parameters[i - 1];
           string = string.replaceAll('%$i', '$replace');
         }
       }
