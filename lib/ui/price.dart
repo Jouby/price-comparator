@@ -38,7 +38,7 @@ class _PriceState extends State<Price> {
           autofocus: true,
           keyboardType: TextInputType.numberWithOptions(decimal: true),
           inputFormatters: <TextInputFormatter>[
-            WhitelistingTextInputFormatter(RegExp(r'^\d+(\.)?\d{0,2}'))
+            FilteringTextInputFormatter(RegExp(r'^\d+(\.)?\d{0,2}'), allow: true)
           ],
           decoration: InputDecoration(
             hintText: Translate.translate('Enter your price'),
