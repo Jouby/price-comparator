@@ -32,12 +32,12 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">68</td>
+            <td class="headerCovTableEntry">69</td>
             <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-11-18 17:02:17</td>
+            <td class="headerValue">2020-11-19 19:09:17</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -67,7 +67,7 @@
 <a name="5"><span class="lineNum">       5 </span>            : import 'package:the_dead_masked_company.price_comparator/services/translate.dart';</a>
 <a name="6"><span class="lineNum">       6 </span>            : </a>
 <a name="7"><span class="lineNum">       7 </span>            : /// The Store list widget</a>
-<a name="8"><span class="lineNum">       8 </span>            : /// </a>
+<a name="8"><span class="lineNum">       8 </span>            : ///</a>
 <a name="9"><span class="lineNum">       9 </span>            : /// Display store list and functionnality to manage stores</a>
 <a name="10"><span class="lineNum">      10 </span>            : class StoreList extends StatefulWidget {</a>
 <a name="11"><span class="lineNum">      11 </span><span class="lineNoCov">          0 :   @override</span></a>
@@ -141,72 +141,66 @@
 <a name="79"><span class="lineNum">      79 </span><span class="lineNoCov">          0 :   Widget _buildStore(StoreModel store) {</span></a>
 <a name="80"><span class="lineNum">      80 </span><span class="lineNoCov">          0 :     return Card(</span></a>
 <a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 :       child: ListTile(</span></a>
-<a name="82"><span class="lineNum">      82 </span><span class="lineNoCov">          0 :         title: new Text(store.name),</span></a>
-<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :         onTap: () =&gt; _showRemoveStoreDialog(store)</span></a>
-<a name="84"><span class="lineNum">      84 </span>            :       ),</a>
-<a name="85"><span class="lineNum">      85 </span>            :     );</a>
-<a name="86"><span class="lineNum">      86 </span>            :   }</a>
-<a name="87"><span class="lineNum">      87 </span>            : </a>
-<a name="88"><span class="lineNum">      88 </span>            :   /// Show screen to add a new store</a>
-<a name="89"><span class="lineNum">      89 </span><span class="lineNoCov">          0 :   void _showAddStoreScreen() {</span></a>
-<a name="90"><span class="lineNum">      90 </span><span class="lineNoCov">          0 :     Navigator.of(context).push(new MaterialPageRoute(builder: (context) {</span></a>
-<a name="91"><span class="lineNum">      91 </span><span class="lineNoCov">          0 :       return new Scaffold(</span></a>
-<a name="92"><span class="lineNum">      92 </span><span class="lineNoCov">          0 :           appBar: new AppBar(</span></a>
-<a name="93"><span class="lineNum">      93 </span><span class="lineNoCov">          0 :             title: new Text(Translate.translate('Add a new store'))</span></a>
-<a name="94"><span class="lineNum">      94 </span>            :           ),</a>
-<a name="95"><span class="lineNum">      95 </span><span class="lineNoCov">          0 :           body: TextField(</span></a>
-<a name="96"><span class="lineNum">      96 </span>            :             textCapitalization: TextCapitalization.sentences,</a>
-<a name="97"><span class="lineNum">      97 </span>            :             autofocus: true,</a>
-<a name="98"><span class="lineNum">      98 </span>            :             maxLength: 25,</a>
-<a name="99"><span class="lineNum">      99 </span><span class="lineNoCov">          0 :             onSubmitted: (String storeName) {</span></a>
-<a name="100"><span class="lineNum">     100 </span><span class="lineNoCov">          0 :               _addStore(storeName).then((result) {</span></a>
-<a name="101"><span class="lineNum">     101 </span>            :                 if (result) {</a>
-<a name="102"><span class="lineNum">     102 </span><span class="lineNoCov">          0 :                   Navigator.pop(context);</span></a>
-<a name="103"><span class="lineNum">     103 </span>            :                 } else {</a>
-<a name="104"><span class="lineNum">     104 </span>            :                   String error;</a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineNoCov">          0 :                   if (storeName.length == 0) {</span></a>
-<a name="106"><span class="lineNum">     106 </span><span class="lineNoCov">          0 :                     error = Translate.translate('Fill this field.');</span></a>
-<a name="107"><span class="lineNum">     107 </span>            :                   } else {</a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineNoCov">          0 :                     error = Translate.translate(</span></a>
-<a name="109"><span class="lineNum">     109 </span>            :                         'A store with same name already exists.');</a>
-<a name="110"><span class="lineNum">     110 </span>            :                   }</a>
-<a name="111"><span class="lineNum">     111 </span><span class="lineNoCov">          0 :                   Tools.showError(context, error);</span></a>
-<a name="112"><span class="lineNum">     112 </span>            :                 }</a>
-<a name="113"><span class="lineNum">     113 </span>            :               });</a>
-<a name="114"><span class="lineNum">     114 </span>            :             },</a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :             decoration: new InputDecoration(</span></a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :               hintText: Translate.translate('Enter store name'),</span></a>
-<a name="117"><span class="lineNum">     117 </span>            :               contentPadding: const EdgeInsets.all(16.0)</a>
-<a name="118"><span class="lineNum">     118 </span>            :             ),</a>
-<a name="119"><span class="lineNum">     119 </span>            :           ));</a>
-<a name="120"><span class="lineNum">     120 </span>            :     }));</a>
-<a name="121"><span class="lineNum">     121 </span>            :   }</a>
-<a name="122"><span class="lineNum">     122 </span>            : </a>
-<a name="123"><span class="lineNum">     123 </span>            :   /// Show a dialog to remove a store</a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineNoCov">          0 :   void _showRemoveStoreDialog(StoreModel store) {</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineNoCov">          0 :     showDialog(</span></a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineNoCov">          0 :       context: context,</span></a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineNoCov">          0 :       builder: (BuildContext context) {</span></a>
-<a name="128"><span class="lineNum">     128 </span><span class="lineNoCov">          0 :         return new AlertDialog(</span></a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineNoCov">          0 :           title: new Text(Translate.translate('Remove &quot;%1&quot; ?', ['${store.name}'])),</span></a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineNoCov">          0 :           actions: &lt;Widget&gt;[</span></a>
-<a name="131"><span class="lineNum">     131 </span><span class="lineNoCov">          0 :             new FlatButton(</span></a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineNoCov">          0 :               child: new Text(Translate.translate('CANCEL')),</span></a>
-<a name="133"><span class="lineNum">     133 </span><span class="lineNoCov">          0 :               onPressed: () =&gt; Navigator.of(context).pop()</span></a>
-<a name="134"><span class="lineNum">     134 </span>            :             ),</a>
-<a name="135"><span class="lineNum">     135 </span><span class="lineNoCov">          0 :             new FlatButton(</span></a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineNoCov">          0 :               child: new Text(Translate.translate('REMOVE')),</span></a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineNoCov">          0 :               onPressed: () {</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :                 _removeStore(store);</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :                 Navigator.of(context).pop();</span></a>
-<a name="140"><span class="lineNum">     140 </span>            :               }</a>
-<a name="141"><span class="lineNum">     141 </span>            :             )</a>
-<a name="142"><span class="lineNum">     142 </span>            :           ]</a>
-<a name="143"><span class="lineNum">     143 </span>            :         );</a>
-<a name="144"><span class="lineNum">     144 </span>            :       }</a>
-<a name="145"><span class="lineNum">     145 </span>            :     );</a>
-<a name="146"><span class="lineNum">     146 </span>            :   }</a>
-<a name="147"><span class="lineNum">     147 </span>            : }</a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineNoCov">          0 :           title: new Text(store.name),</span></a>
+<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :           onTap: () =&gt; _showRemoveStoreDialog(store)),</span></a>
+<a name="84"><span class="lineNum">      84 </span>            :     );</a>
+<a name="85"><span class="lineNum">      85 </span>            :   }</a>
+<a name="86"><span class="lineNum">      86 </span>            : </a>
+<a name="87"><span class="lineNum">      87 </span>            :   /// Show screen to add a new store</a>
+<a name="88"><span class="lineNum">      88 </span><span class="lineNoCov">          0 :   void _showAddStoreScreen() {</span></a>
+<a name="89"><span class="lineNum">      89 </span><span class="lineNoCov">          0 :     Navigator.of(context).push(new MaterialPageRoute(builder: (context) {</span></a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineNoCov">          0 :       return new Scaffold(</span></a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineNoCov">          0 :           appBar: new AppBar(</span></a>
+<a name="92"><span class="lineNum">      92 </span><span class="lineNoCov">          0 :               title: new Text(Translate.translate('Add a new store'))),</span></a>
+<a name="93"><span class="lineNum">      93 </span><span class="lineNoCov">          0 :           body: TextField(</span></a>
+<a name="94"><span class="lineNum">      94 </span>            :             textCapitalization: TextCapitalization.sentences,</a>
+<a name="95"><span class="lineNum">      95 </span>            :             autofocus: true,</a>
+<a name="96"><span class="lineNum">      96 </span>            :             maxLength: 25,</a>
+<a name="97"><span class="lineNum">      97 </span><span class="lineNoCov">          0 :             onSubmitted: (String storeName) {</span></a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineNoCov">          0 :               _addStore(storeName).then((result) {</span></a>
+<a name="99"><span class="lineNum">      99 </span>            :                 if (result) {</a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineNoCov">          0 :                   Navigator.pop(context);</span></a>
+<a name="101"><span class="lineNum">     101 </span>            :                 } else {</a>
+<a name="102"><span class="lineNum">     102 </span>            :                   String error;</a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineNoCov">          0 :                   if (storeName.length == 0) {</span></a>
+<a name="104"><span class="lineNum">     104 </span><span class="lineNoCov">          0 :                     error = Translate.translate('Fill this field.');</span></a>
+<a name="105"><span class="lineNum">     105 </span>            :                   } else {</a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineNoCov">          0 :                     error = Translate.translate(</span></a>
+<a name="107"><span class="lineNum">     107 </span>            :                         'A store with same name already exists.');</a>
+<a name="108"><span class="lineNum">     108 </span>            :                   }</a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineNoCov">          0 :                   Tools.showError(context, error);</span></a>
+<a name="110"><span class="lineNum">     110 </span>            :                 }</a>
+<a name="111"><span class="lineNum">     111 </span>            :               });</a>
+<a name="112"><span class="lineNum">     112 </span>            :             },</a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineNoCov">          0 :             decoration: new InputDecoration(</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 :                 hintText: Translate.translate('Enter store name'),</span></a>
+<a name="115"><span class="lineNum">     115 </span>            :                 contentPadding: const EdgeInsets.all(16.0)),</a>
+<a name="116"><span class="lineNum">     116 </span>            :           ));</a>
+<a name="117"><span class="lineNum">     117 </span>            :     }));</a>
+<a name="118"><span class="lineNum">     118 </span>            :   }</a>
+<a name="119"><span class="lineNum">     119 </span>            : </a>
+<a name="120"><span class="lineNum">     120 </span>            :   /// Show a dialog to remove a store</a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :   void _showRemoveStoreDialog(StoreModel store) {</span></a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineNoCov">          0 :     showDialog(</span></a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :         context: context,</span></a>
+<a name="124"><span class="lineNum">     124 </span><span class="lineNoCov">          0 :         builder: (BuildContext context) {</span></a>
+<a name="125"><span class="lineNum">     125 </span><span class="lineNoCov">          0 :           return new AlertDialog(</span></a>
+<a name="126"><span class="lineNum">     126 </span><span class="lineNoCov">          0 :               title: new Text(</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineNoCov">          0 :                   Translate.translate('Remove &quot;%1&quot; ?', ['${store.name}'])),</span></a>
+<a name="128"><span class="lineNum">     128 </span><span class="lineNoCov">          0 :               actions: &lt;Widget&gt;[</span></a>
+<a name="129"><span class="lineNum">     129 </span><span class="lineNoCov">          0 :                 new FlatButton(</span></a>
+<a name="130"><span class="lineNum">     130 </span><span class="lineNoCov">          0 :                     child: new Text(Translate.translate('CANCEL')),</span></a>
+<a name="131"><span class="lineNum">     131 </span><span class="lineNoCov">          0 :                     onPressed: () =&gt; Navigator.of(context).pop()),</span></a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineNoCov">          0 :                 new FlatButton(</span></a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineNoCov">          0 :                     child: new Text(Translate.translate('REMOVE')),</span></a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineNoCov">          0 :                     onPressed: () {</span></a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineNoCov">          0 :                       _removeStore(store);</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineNoCov">          0 :                       Navigator.of(context).pop();</span></a>
+<a name="137"><span class="lineNum">     137 </span>            :                     })</a>
+<a name="138"><span class="lineNum">     138 </span>            :               ]);</a>
+<a name="139"><span class="lineNum">     139 </span>            :         });</a>
+<a name="140"><span class="lineNum">     140 </span>            :   }</a>
+<a name="141"><span class="lineNum">     141 </span>            : }</a>
 </pre>
       </td>
     </tr>
