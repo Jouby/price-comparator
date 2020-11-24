@@ -28,7 +28,8 @@ class PriceModel implements ModelInterface {
     this.item = item;
     this.store = store;
     this.value = value ?? PriceModel.DEFAULT_VALUE;
-    this.options = options ?? PriceModel.DEFAULT_OPTIONS;
+    this.options =
+        options ?? Map<String, bool>.from(PriceModel.DEFAULT_OPTIONS);
   }
 
   @override

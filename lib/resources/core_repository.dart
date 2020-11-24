@@ -41,8 +41,8 @@ abstract class CoreRepository {
           .then((_) {
         print('Transaction  committed.');
         DataUpdateRepository.removeFromDataQueue(data, type);
-      }).catchError((Error error) {
-        print('Something went wrong: ${error.toString()}');
+      }).catchError((Object e) {
+        print('Something went wrong: ${e.toString()}');
       });
     }
   }
