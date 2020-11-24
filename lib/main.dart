@@ -6,9 +6,7 @@ import 'package:the_dead_masked_company.price_comparator/services/splashscreen.d
 import 'package:the_dead_masked_company.price_comparator/ui/item_list.dart';
 
 void main() {
-  runApp(
-    App()
-  );
+  runApp(App());
 }
 
 class App extends StatelessWidget {
