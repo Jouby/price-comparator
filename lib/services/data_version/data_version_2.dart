@@ -33,9 +33,9 @@ class DataVersion2 implements DataVersionInterface {
 
   @override
   void upgradeData() async {
-    _updateStore_1();
-    _updateItem_1();
-    _updatePrice_1();
+    await _updateStore_1();
+    await _updateItem_1();
+    await _updatePrice_1();
   }
 
   @override
@@ -57,7 +57,7 @@ class DataVersion2 implements DataVersionInterface {
           prefs.getStringList('price_list_$itemName');
     }
 
-    CoreRepository.sendDataToDatabase(data, resend: false);
+    await CoreRepository.sendDataToDatabase(data, resend: false);
   }
 
   void _updateStore_1() async {
@@ -92,7 +92,7 @@ class DataVersion2 implements DataVersionInterface {
     });
 
     // Update price for each item
-    itemList.forEach((item) {
+    await itemList.forEach((item) async {
       var name = item.name;
       var oldList = prefs.getStringList('price_list_$name');
       var newList = <String>[];
@@ -106,7 +106,9 @@ class DataVersion2 implements DataVersionInterface {
           'item': item.toMap(),
           'store': <String, dynamic>{'name': data['store']},
           'value':
-              data['price'] != '' || data['price'] != null ? data['price'] : 0,
+              (data['price'] != null && data['price'].toString().isNotEmpty)
+                  ? double.parse(data['price'].toString())
+                  : 0.0,
           'options': {
             'isBio': data['isBio'] == true,
             'isCan': data['isCan'] == true,
@@ -116,7 +118,7 @@ class DataVersion2 implements DataVersionInterface {
           },
         }));
       });
-      prefs.setStringList('price_list_$name', newList);
+      await prefs.setStringList('price_list_$name', newList);
     });
   }
 }

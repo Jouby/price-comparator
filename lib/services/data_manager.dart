@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/data_version/data_version_1.dart';
 import 'package:the_dead_masked_company.price_comparator/services/data_version/data_version_2.dart';
@@ -32,14 +33,14 @@ class DataManager {
     }
 
     if (dataVersionPatch != null) {
-      dataVersionPatch.loadData(dataFromDB);
+      await dataVersionPatch.loadData(dataFromDB);
     }
 
     return dataVersionNumber;
   }
 
   /// Send new data version to database
-  static void sendData(int currentDataVersion) async {
+  static Future<void> sendData(int currentDataVersion) async {
     DataVersionInterface dataVersionPatch;
 
     switch (currentDataVersion) {
@@ -54,7 +55,7 @@ class DataManager {
     }
 
     if (dataVersionPatch != null) {
-      dataVersionPatch.sendData(currentDataVersion);
+      await dataVersionPatch.sendData(currentDataVersion);
     }
 
     final prefs = await SharedPreferences.getInstance();
@@ -66,29 +67,28 @@ class DataManager {
   /// 1. Load data from databse
   /// 2. Change data if we have new data_version in application
   /// 3. Update and send data to database
-  static Future<bool> upgradeData() async {
-    var currentDataVersion = await DataManager.loadData();
-    var appDataVersion = await DataManager.getAppDataVersion();
-    var update = false;
+  static Future<void> upgradeData() async {
+    await DataManager.loadData().then((currentDataVersion) {
+      DataManager.getAppDataVersion().then((appDataVersion) async {
+        var update = false;
 
-    while (currentDataVersion < appDataVersion) {
-      switch (currentDataVersion) {
-        case 1:
-          DataVersion2().upgradeData();
-          update = true;
-          break;
-        default:
-          currentDataVersion = appDataVersion;
-      }
-      currentDataVersion++;
-    }
+        while (currentDataVersion < appDataVersion) {
+          switch (currentDataVersion) {
+            case 1:
+              await DataVersion2().upgradeData();
+              update = true;
+              break;
+            default:
+              currentDataVersion = appDataVersion;
+          }
+          currentDataVersion++;
+        }
 
-    if (update) {
-      DataManager.sendData(currentDataVersion);
-      return true;
-    }
-
-    return false;
+        if (update) {
+          await DataManager.sendData(currentDataVersion);
+        }
+      });
+    });
   }
 
   /// Get Application data version from pubspec.yaml

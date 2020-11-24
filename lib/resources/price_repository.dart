@@ -35,8 +35,7 @@ class PriceRepository {
       jsonList.add(element.toJson());
     });
     CoreRepository.sendDataToDatabase(jsonList, type: 'price_list/$name');
-
-    return prefs.setStringList('price_list$name', jsonList);
+    return prefs.setStringList('price_list_$name', jsonList);
   }
 
   /// Remove prices by [item] to local storage
