@@ -112,6 +112,8 @@ class _ItemState extends State<Item> {
     var itemList = await ItemRepository.getItemList();
 
     if (name.isNotEmpty && !itemList.contains(name)) {
+      await PriceRepository.removePriceListByItem(item);
+      
       setState(() {
         item.name = name;
       });
