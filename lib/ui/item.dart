@@ -26,6 +26,7 @@ class _ItemState extends State<Item> {
   List<PriceModel> _priceList = [];
   List<Widget> _minPriceTextWidget;
   PriceModel _minimumPrice;
+  Map<String, dynamic> returnData = <String, dynamic>{};
 
   @override
   void initState() {
@@ -40,6 +41,10 @@ class _ItemState extends State<Item> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_item.name),
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left),
+          onPressed: () => Navigator.pop(context, returnData),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(CustomIcons.pencil),
@@ -107,13 +112,13 @@ class _ItemState extends State<Item> {
     var itemList = await ItemRepository.getItemList();
 
     if (name.isNotEmpty && !itemList.contains(name)) {
-      // TODO test this!! (instead of remove and add)
-      item.name = name;
-      // itemList.remove(item);
-      // item = ItemModel(name);
-      // itemList.add(item);
+      setState(() {
+        item.name = name;
+      });
+
       await PriceRepository.setPriceListByItem(item);
       await ItemRepository.setItemList(itemList);
+
       return true;
     }
 
@@ -127,11 +132,13 @@ class _ItemState extends State<Item> {
           appBar: AppBar(title: Text(Translate.translate('Edit an item'))),
           body: TextField(
             autofocus: true,
+            controller: TextEditingController(text: item.name),
             textCapitalization: TextCapitalization.sentences,
             onSubmitted: (newVal) {
               _editItem(item, newVal).then((result) {
                 if (result) {
                   Navigator.pop(context);
+                  returnData['update'] = true;
                 } else {
                   String error;
                   if (newVal.isEmpty) {
@@ -218,9 +225,8 @@ class _ItemState extends State<Item> {
         });
 
     if (remove) {
-      Navigator.pop(context, {
-        'remove': _item,
-      });
+      returnData['remove'] = _item;
+      Navigator.pop(context, returnData);
     }
   }
 

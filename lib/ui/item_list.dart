@@ -97,7 +97,6 @@ class _ItemListState extends State<ItemList> {
 
     if (itemModel.name.isNotEmpty && !itemList.contains(itemModel)) {
       itemList.add(itemModel);
-      print(itemList);
       await ItemRepository.setItemList(itemList);
       filterSearchResults(editingController.text);
       return true;
@@ -108,11 +107,15 @@ class _ItemListState extends State<ItemList> {
 
   /// Initialize item list
   void _initializeItemList() async {
-    _itemList = await ItemRepository.getItemList();
-    _displayedItemList = List.from(_itemList);
-    setState(() {
-      _itemList ??= [];
+    await ItemRepository.getItemList().then((list) {
+      setState(() {
+        _itemList = list;
+        _displayedItemList = List.from(_itemList);
+      });
     });
+
+    _itemList ??= [];
+    _displayedItemList ??= [];
   }
 
   /// Remove [item] from item list
@@ -157,11 +160,17 @@ class _ItemListState extends State<ItemList> {
   void _goToItemScreen(BuildContext context, ItemModel item) async {
     final result = await Navigator.push(
         context,
-        MaterialPageRoute<Map<String, ItemModel>>(
+        MaterialPageRoute<Map<String, dynamic>>(
             builder: (BuildContext _) => Item(item: item)));
 
-    if (result != null && result['remove'] != null) {
-      _removeItem(result['remove']);
+    if (result != null) {
+      if (result['remove'] != null) {
+        _removeItem(result['remove'] as ItemModel);
+      }
+
+      if (result['update'] as bool == true) {
+        setState(() {});
+      }
     }
   }
 

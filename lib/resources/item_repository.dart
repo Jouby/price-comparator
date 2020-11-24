@@ -30,19 +30,25 @@ class ItemRepository {
   }
 
   /// Set [itemsList] to local storage
-  static Future<bool> setItemList(List<ItemModel> itemsList) async {
-    _itemList = itemsList;
-
+  static Future<bool> _saveItemList() async {
     final prefs = await SharedPreferences.getInstance();
     var jsonItemList = <String>[];
 
-    itemsList.forEach((element) {
+    _itemList.forEach((element) {
       jsonItemList.add(element.toJson());
     });
 
     CoreRepository.sendDataToDatabase(jsonItemList, type: ItemRepository.key);
 
     return prefs.setStringList(ItemRepository.key, jsonItemList);
+  }
+
+  /// Set displayed item list
+  static Future<List<ItemModel>> setItemList(List<ItemModel> list) async {
+    _itemList = List.from(list);
+    await _saveItemList();
+
+    return _itemList;
   }
 
   /// Remove [item] to local storage
