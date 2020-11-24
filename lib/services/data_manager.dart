@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/data_version/data_version_1.dart';
 import 'package:the_dead_masked_company.price_comparator/services/data_version/data_version_2.dart';
