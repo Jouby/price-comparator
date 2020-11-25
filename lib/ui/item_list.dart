@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/data_update_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
