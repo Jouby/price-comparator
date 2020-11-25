@@ -19,6 +19,7 @@ class Price extends StatefulWidget {
 class _PriceState extends State<Price> {
   TextEditingController priceController = TextEditingController();
   PriceModel price;
+  Map<String, dynamic> returnData = <String, dynamic>{};
 
   @override
   void initState() {
@@ -31,7 +32,13 @@ class _PriceState extends State<Price> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(Translate.translate('Add a new price'))),
+      appBar: AppBar(
+        title: Text(Translate.translate('Add a new price')),
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left),
+          onPressed: () => Navigator.pop(context, returnData),
+        ),
+      ),
       body: Column(children: [
         TextField(
           controller: priceController,
@@ -115,6 +122,7 @@ class _PriceState extends State<Price> {
   /// Submit price value
   void _submitPrice() {
     price.value = double.parse(priceController.text);
-    Navigator.pop(context, {'price': price});
+    returnData['price'] = price;
+    Navigator.pop(context, returnData);
   }
 }

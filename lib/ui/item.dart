@@ -372,12 +372,12 @@ class _ItemState extends State<Item> {
   void _showAddPriceScreen(PriceModel price) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute<Map<String, PriceModel>>(
+      MaterialPageRoute<Map<String, dynamic>>(
           builder: (context) => Price(price: price)),
     );
 
     if (result['price'] != null) {
-      await _editPrice(result['price']);
+      await _editPrice(result['price'] as PriceModel);
     }
   }
 
