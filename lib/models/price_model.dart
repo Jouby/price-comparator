@@ -16,15 +16,15 @@ class PriceModel implements ModelInterface {
     'isWrap': false,
     'isUnavailable': false,
   };
-  static const double DEFAULT_VALUE = 0;
+  static const num DEFAULT_VALUE = 0;
 
   ItemModel item;
   StoreModel store;
-  double value;
+  num value;
   Map<String, bool> options;
 
   PriceModel(ItemModel item, StoreModel store,
-      {double value, Map<String, bool> options}) {
+      {num value, Map<String, bool> options}) {
     this.item = item;
     this.store = store;
     this.value = value ?? PriceModel.DEFAULT_VALUE;
@@ -62,7 +62,7 @@ class PriceModel implements ModelInterface {
     return PriceModel(
       ItemModel.fromJson(parsedJson['item'] as Map<String, dynamic>),
       StoreModel.fromJson(parsedJson['store'] as Map<String, dynamic>),
-      value: parsedJson['value'] as double ?? PriceModel.DEFAULT_VALUE,
+      value: parsedJson['value'] as num ?? PriceModel.DEFAULT_VALUE,
       options: Map<String, bool>.from(
               parsedJson['options'] as Map<dynamic, dynamic>) ??
           PriceModel.DEFAULT_OPTIONS,

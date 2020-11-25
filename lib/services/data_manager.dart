@@ -13,8 +13,42 @@ class DataManager {
   static const pubspecFilePath = 'pubspec.yaml';
   static const dataVersionNumber = 'data_version';
 
+  /// Upgrade data
+  ///
+  /// 1. Load data from databse
+  /// 2. Change data if we have new data_version in application
+  /// 3. Update and send data to database
+  static Future<void> upgradeData() async {
+    await DataManager._loadData().then((currentDataVersion) {
+      DataManager._getAppDataVersion().then((appDataVersion) async {
+        var update = false;
+
+        // TODO : Apply Data Update
+        // If data to send
+        // apply data to local storage
+        // update = true
+
+        while (currentDataVersion < appDataVersion) {
+          switch (currentDataVersion) {
+            case 1:
+              await DataVersion2().upgradeData();
+              update = true;
+              break;
+            default:
+              currentDataVersion = appDataVersion;
+          }
+          currentDataVersion++;
+        }
+
+        if (update) {
+          await DataManager._sendData(currentDataVersion);
+        }
+      });
+    });
+  }
+
   /// Load data from database
-  static Future<int> loadData() async {
+  static Future<int> _loadData() async {
     var dataFromDB = await CoreRepository.getUserDataFromDatabase();
     var dataVersionNumber =
         dataFromDB[DataManager.dataVersionNumber] as int ?? 1;
@@ -39,7 +73,7 @@ class DataManager {
   }
 
   /// Send new data version to database
-  static Future<void> sendData(int currentDataVersion) async {
+  static Future<void> _sendData(int currentDataVersion) async {
     DataVersionInterface dataVersionPatch;
 
     switch (currentDataVersion) {
@@ -61,37 +95,8 @@ class DataManager {
     await prefs.setInt(DataManager.dataVersionNumber, currentDataVersion);
   }
 
-  /// Upgrade data
-  ///
-  /// 1. Load data from databse
-  /// 2. Change data if we have new data_version in application
-  /// 3. Update and send data to database
-  static Future<void> upgradeData() async {
-    await DataManager.loadData().then((currentDataVersion) {
-      DataManager.getAppDataVersion().then((appDataVersion) async {
-        var update = false;
-
-        while (currentDataVersion < appDataVersion) {
-          switch (currentDataVersion) {
-            case 1:
-              await DataVersion2().upgradeData();
-              update = true;
-              break;
-            default:
-              currentDataVersion = appDataVersion;
-          }
-          currentDataVersion++;
-        }
-
-        if (update) {
-          await DataManager.sendData(currentDataVersion);
-        }
-      });
-    });
-  }
-
   /// Get Application data version from pubspec.yaml
-  static Future<int> getAppDataVersion() async {
+  static Future<int> _getAppDataVersion() async {
     var pubspecContent =
         await rootBundle.loadString(DataManager.pubspecFilePath);
     var yaml = loadYaml(pubspecContent) as Map;

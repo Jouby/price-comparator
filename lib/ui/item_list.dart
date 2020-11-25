@@ -75,10 +75,10 @@ class _ItemListState extends State<ItemList> {
               ),
             ),
             Expanded(
-              // child: _buildItemsList(),
-              child: RefreshIndicator(
-                  child: _buildItemList(),
-                  onRefresh: DataUpdateRepository.resendData),
+               child: _buildItemList(),
+              // child: RefreshIndicator(
+              //     child: _buildItemList(),
+              //     onRefresh: DataUpdateRepository.resendData),
             ),
           ],
         ),

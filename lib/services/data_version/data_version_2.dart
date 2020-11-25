@@ -21,12 +21,13 @@ class DataVersion2 implements DataVersionInterface {
         List<String>.from(dataFromDB[StoreRepository.key] as Iterable));
     await prefs.setStringList(ItemRepository.key, itemsList);
 
-    for (var json in itemsList) {
-      var item = ItemModel.fromJson(jsonDecode(json) as Map<String, dynamic>);
+    for (var jsonItem in itemsList) {
+      var item =
+          ItemModel.fromJson(json.decode(jsonItem) as Map<String, dynamic>);
       var itemName = item.name;
       if (dataFromDB['price_list'][itemName] != null) {
-        await prefs.setStringList('price_list_$itemName',
-            List<String>.from(dataFromDB['price_list'][itemName] as Iterable));
+        await prefs.setString('price_list_$itemName',
+            json.encode(dataFromDB['price_list'][itemName]));
       }
     }
   }
@@ -50,11 +51,11 @@ class DataVersion2 implements DataVersionInterface {
       'price_list': <String, dynamic>{}
     };
 
-    for (var json in itemList) {
-      var item = ItemModel.fromJson(jsonDecode(json) as Map<String, dynamic>);
+    for (var jsonItem in itemList) {
+      var item = ItemModel.fromJson(json.decode(jsonItem) as Map<String, dynamic>);
       var itemName = item.name;
       (data['price_list'] as dynamic)[itemName] =
-          prefs.getStringList('price_list_$itemName');
+          json.decode(prefs.getString('price_list_$itemName') ?? '{}');
     }
 
     await CoreRepository.sendDataToDatabase(data, resend: false);
@@ -95,14 +96,14 @@ class DataVersion2 implements DataVersionInterface {
     await itemList.forEach((item) async {
       var name = item.name;
       var oldList = prefs.getStringList('price_list_$name');
-      var newList = <String>[];
+      var map = <dynamic, dynamic>{};
 
       if (oldList == null) {
         return;
       }
       oldList.forEach((element) {
         var data = jsonDecode(element) as Map<String, dynamic>;
-        newList.add(jsonEncode(<String, dynamic>{
+        map[data['store']] = <String, dynamic>{
           'item': item.toMap(),
           'store': <String, dynamic>{'name': data['store']},
           'value':
@@ -116,9 +117,9 @@ class DataVersion2 implements DataVersionInterface {
             'isUnavailable': data['isUnavailable'] == true,
             'isWrap': data['isWrap'] == true,
           },
-        }));
+        };
       });
-      await prefs.setStringList('price_list_$name', newList);
+      await prefs.setString('price_list_$name', json.encode(map));
     });
   }
 }

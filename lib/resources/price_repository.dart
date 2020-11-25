@@ -14,12 +14,12 @@ class PriceRepository {
   static Future<List<PriceModel>> getPriceListByItem(ItemModel item) async {
     var name = item.name;
     final prefs = await SharedPreferences.getInstance();
-    var jsonList = prefs.getStringList('price_list_$name') ?? [];
+    var map = json.decode(prefs.getString('price_list_$name') ?? '{}')
+        as Map<dynamic, dynamic>;
     _priceList = <PriceModel>[];
 
-    jsonList.forEach((jsonElement) {
-      _priceList.add(
-          PriceModel.fromJson(jsonDecode(jsonElement) as Map<String, dynamic>));
+    map.forEach((dynamic storeName, dynamic jsonElement) {
+      _priceList.add(PriceModel.fromJson(jsonElement as Map<String, dynamic>));
     });
 
     return _priceList;
@@ -30,12 +30,15 @@ class PriceRepository {
     var name = item.name;
     final prefs = await SharedPreferences.getInstance();
     var jsonList = <String>[];
+    var map = <dynamic, dynamic>{};
 
     _priceList.forEach((element) {
       jsonList.add(element.toJson());
+      map[element.store.name] = element.toMap();
     });
-    CoreRepository.sendDataToDatabase(jsonList, type: 'price_list/$name');
-    return prefs.setStringList('price_list_$name', jsonList);
+
+    CoreRepository.sendDataToDatabase(map, type: 'price_list/$name');
+    return prefs.setString('price_list_$name', json.encode(map));
   }
 
   /// Remove prices by [item] to local storage
@@ -43,8 +46,10 @@ class PriceRepository {
     final prefs = await SharedPreferences.getInstance();
     var name = item.name;
     var result = prefs.remove('price_list_$name');
-    CoreRepository.sendDataToDatabase(prefs.getStringList('price_list_$name'),
+    CoreRepository.sendDataToDatabase(
+        json.decode(prefs.getString('price_list_$name')),
         type: 'price_list/$name');
+
     return result;
   }
 }
