@@ -52,7 +52,8 @@ class DataVersion2 implements DataVersionInterface {
     };
 
     for (var jsonItem in itemList) {
-      var item = ItemModel.fromJson(json.decode(jsonItem) as Map<String, dynamic>);
+      var item =
+          ItemModel.fromJson(json.decode(jsonItem) as Map<String, dynamic>);
       var itemName = item.name;
       (data['price_list'] as dynamic)[itemName] =
           json.decode(prefs.getString('price_list_$itemName') ?? '{}');
