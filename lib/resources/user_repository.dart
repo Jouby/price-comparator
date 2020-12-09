@@ -6,7 +6,7 @@ class UserRepository {
   /// Get User ID from local storage
   static Future<String> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('user_id');
+    return prefs.getString('user_id') ?? '';
   }
 
   /// Get User Name from local storage

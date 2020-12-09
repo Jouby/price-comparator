@@ -37,16 +37,16 @@ class _StoreListState extends State<StoreList> {
 
   /// Initialize store list
   void _initializeStoreList() async {
-    _storeList = await StoreRepository.getStoresList() ?? [];
+    _storeList = await StoreRepository.getAll() ?? [];
     setState(() {});
   }
 
   /// Add a store with [name]
   Future<bool> _addStore(String name) async {
-    var storeModel = StoreModel(name);
-    if (storeModel.name.isNotEmpty && !_storeList.contains(storeModel)) {
-      setState(() => _storeList.add(storeModel));
-      await StoreRepository.setStoresList(_storeList);
+    var store = StoreModel(name);
+    if (store.name.isNotEmpty && !_storeList.contains(store)) {
+      await StoreRepository.add(store);
+      setState(() {});
       return true;
     }
 
@@ -55,9 +55,8 @@ class _StoreListState extends State<StoreList> {
 
   /// Delete [store] from store list
   void _removeStore(StoreModel store) {
-    StoreRepository.removeStore(store);
     setState(() => _storeList.remove(store));
-    StoreRepository.setStoresList(_storeList);
+    StoreRepository.remove(store);
   }
 
   /// Build store list widget

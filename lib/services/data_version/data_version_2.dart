@@ -13,21 +13,23 @@ import 'package:the_dead_masked_company.price_comparator/resources/store_reposit
 class DataVersion2 implements DataVersionInterface {
   @override
   void loadData(Map<dynamic, dynamic> dataFromDB) async {
-    final prefs = await SharedPreferences.getInstance();
+    if (dataFromDB.isNotEmpty) {
+      final prefs = await SharedPreferences.getInstance();
 
-    var itemsList =
-        List<String>.from(dataFromDB[ItemRepository.key] as Iterable);
-    await prefs.setStringList(StoreRepository.key,
-        List<String>.from(dataFromDB[StoreRepository.key] as Iterable));
-    await prefs.setStringList(ItemRepository.key, itemsList);
+      var itemsList =
+          List<String>.from(dataFromDB[ItemRepository.key] as Iterable);
+      await prefs.setStringList(StoreRepository.key,
+          List<String>.from(dataFromDB[StoreRepository.key] as Iterable));
+      await prefs.setStringList(ItemRepository.key, itemsList);
 
-    for (var jsonItem in itemsList) {
-      var item =
-          ItemModel.fromJson(json.decode(jsonItem) as Map<String, dynamic>);
-      var itemName = item.name;
-      if (dataFromDB['price_list'][itemName] != null) {
-        await prefs.setString('price_list_$itemName',
-            json.encode(dataFromDB['price_list'][itemName]));
+      for (var jsonItem in itemsList) {
+        var item =
+            ItemModel.fromJson(json.decode(jsonItem) as Map<String, dynamic>);
+        var itemName = item.name;
+        if (dataFromDB['price_list'][itemName] != null) {
+          await prefs.setString('price_list_$itemName',
+              json.encode(dataFromDB['price_list'][itemName]));
+        }
       }
     }
   }
@@ -59,7 +61,7 @@ class DataVersion2 implements DataVersionInterface {
           json.decode(prefs.getString('price_list_$itemName') ?? '{}');
     }
 
-    await CoreRepository.sendDataToDatabase(data, resend: false);
+    // await CoreRepository.sendDataToDatabase(data, resend: false);
   }
 
   void _updateStore_1() async {

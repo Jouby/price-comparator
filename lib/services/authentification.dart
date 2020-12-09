@@ -6,13 +6,11 @@ abstract class BaseAuth {
 
   Future<String> signUp(String email, String password);
 
-  Future<FirebaseUser> getCurrentUser();
+  User getCurrentUser();
 
   Future<void> sendEmailVerification();
 
   Future<void> signOut();
-
-  Future<bool> isEmailVerified();
 }
 
 class Auth implements BaseAuth {
@@ -37,10 +35,8 @@ class Auth implements BaseAuth {
   }
 
   @override
-  Future<FirebaseUser> getCurrentUser() async {
-    var user = await _firebaseAuth.currentUser();
-
-    return user;
+  User getCurrentUser() {
+    return _firebaseAuth.currentUser;
   }
 
   @override
@@ -50,14 +46,7 @@ class Auth implements BaseAuth {
 
   @override
   Future<void> sendEmailVerification() async {
-    var user = await _firebaseAuth.currentUser();
+    var user = _firebaseAuth.currentUser;
     await user.sendEmailVerification();
-  }
-
-  @override
-  Future<bool> isEmailVerified() async {
-    var user = await _firebaseAuth.currentUser();
-
-    return user.isEmailVerified;
   }
 }

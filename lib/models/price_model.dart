@@ -18,6 +18,7 @@ class PriceModel implements ModelInterface {
   };
   static const num DEFAULT_VALUE = 0;
 
+  String id;
   ItemModel item;
   StoreModel store;
   num value;
@@ -34,11 +35,14 @@ class PriceModel implements ModelInterface {
 
   @override
   String toString() {
-    return toJson();
+    return jsonEncode(<String, dynamic>{
+      ...<String, dynamic>{'id': id},
+      ...toMap(),
+    });
   }
 
   @override
-  Map toMap() {
+  Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'item': item.toMap(),
       'store': store.toMap(),
@@ -49,12 +53,7 @@ class PriceModel implements ModelInterface {
 
   @override
   String toJson() {
-    return jsonEncode({
-      'item': item.toMap(),
-      'store': store.toMap(),
-      'value': value,
-      'options': options
-    });
+    return jsonEncode(toMap());
   }
 
   @override

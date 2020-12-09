@@ -1,6 +1,5 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
 
@@ -25,8 +24,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   bool _isLoginForm;
   bool _isLoading;
 
-  static FirebaseDatabase database = FirebaseDatabase();
-  final DatabaseReference _userRef = database.reference();
+  /// Database reference
+  static final FirebaseFirestore databaseReference = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -84,7 +83,10 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           userId = await widget.auth.signUp(_email, _password);
           print('Signed up user: $userId');
 
-          await _userRef.child('users/$userId').push().set(<String, String>{
+          await databaseReference
+              .collection('users')
+              .doc(userId)
+              .set(<String, String>{
             'email': _email,
             'password': _password,
           }).then((_) {
@@ -98,8 +100,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           _isLoading = false;
           _status = 'Vous êtes connecté en tant que $_email';
         });
-
-        Phoenix.rebirth(context);
       } catch (e) {
         print('Error: $e');
         setState(() {

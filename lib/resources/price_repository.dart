@@ -1,55 +1,135 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 
 // The Price repository
 class PriceRepository {
+  /// Price key index
+  static const key = 'prices';
+
   /// Price list
-  static List<PriceModel> _priceList;
+  static final Map<String, List<PriceModel>> _priceList = {};
 
-  /// Get price list by [item] from local storage
-  static Future<List<PriceModel>> getPriceListByItem(ItemModel item) async {
-    var name = item.name;
-    final prefs = await SharedPreferences.getInstance();
-    var map = json.decode(prefs.getString('price_list_$name') ?? '{}')
-        as Map<dynamic, dynamic>;
-    _priceList = <PriceModel>[];
+  /// Get prices by [item]
+  static Future<List<PriceModel>> getAllByItem(ItemModel item) async {
+    if (_priceList[item.id] == null) {
+      /// Get all datas from database for current user
 
-    map.forEach((dynamic storeName, dynamic jsonElement) {
-      _priceList.add(PriceModel.fromJson(jsonElement as Map<String, dynamic>));
-    });
+      var userId = await UserRepository.getUserId();
+      _priceList[item.id] = [];
 
-    return _priceList;
+      if (userId.isNotEmpty) {
+        var itemKey = ItemRepository.key;
+        var priceKey = PriceRepository.key;
+        var itemId = item.id;
+        var query = await CoreRepository.getDatabaseReference()
+            .doc(userId)
+            .collection(itemKey)
+            .doc(itemId)
+            .collection(priceKey)
+            .get();
+
+        query.docs.forEach((QueryDocumentSnapshot qds) {
+          var price = PriceModel.fromJson(qds.data());
+          price.id = qds.id;
+          price.item.id = item.id;
+          _priceList[item.id].add(price);
+        });
+      }
+    }
+
+    return _priceList[item.id];
   }
 
-  /// Set price list by [item] to local storage
-  static Future<bool> setPriceListByItem(ItemModel item) async {
-    var name = item.name;
-    final prefs = await SharedPreferences.getInstance();
-    var jsonList = <String>[];
-    var map = <dynamic, dynamic>{};
+  /// Add [price]
+  static Future<List<PriceModel>> add(PriceModel price) async {
+    if (price.id != null) {
+      return _update(price);
+    }
 
-    _priceList.forEach((element) {
-      jsonList.add(element.toJson());
-      map[element.store.name] = element.toMap();
-    });
+    await PriceRepository.getAllByItem(price.item);
 
-    CoreRepository.sendDataToDatabase(map, type: 'price_list/$name');
-    return prefs.setString('price_list_$name', json.encode(map));
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      var itemKey = ItemRepository.key;
+      var priceKey = PriceRepository.key;
+      var itemId = price.item.id;
+
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(itemKey)
+          .doc(itemId)
+          .collection(priceKey)
+          .add(price.toMap())
+          .then((docRef) {
+        price.id = docRef.id;
+        price.item.prices[price.id] = price.toMap();
+        _priceList[price.item.id].add(price);
+      }).catchError((dynamic error) {
+        print('Error adding price document: $error');
+      });
+    }
+
+    return _priceList[price.item.id];
   }
 
-  /// Remove prices by [item] to local storage
-  static Future<bool> removePriceListByItem(ItemModel item) async {
-    final prefs = await SharedPreferences.getInstance();
-    var name = item.name;
-    var result = prefs.remove('price_list_$name');
-    CoreRepository.sendDataToDatabase(
-        json.decode(prefs.getString('price_list_$name')),
-        type: 'price_list/$name');
+  /// Update [price]
+  static Future<List<PriceModel>> _update(PriceModel price) async {
+    await PriceRepository.getAllByItem(price.item);
 
-    return result;
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      var itemKey = ItemRepository.key;
+      var priceKey = PriceRepository.key;
+      var itemId = price.item.id;
+
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(itemKey)
+          .doc(itemId)
+          .collection(priceKey)
+          .doc(price.id)
+          .set(price.toMap())
+          .catchError((dynamic error) {
+        print('Error updating price document: $error');
+      });
+    }
+
+    return _priceList[price.item.id];
+  }
+
+  /// Remove [price]
+  static Future<List<PriceModel>> remove(PriceModel price) async {
+    await PriceRepository.getAllByItem(price.item);
+
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      var itemKey = ItemRepository.key;
+      var priceKey = PriceRepository.key;
+      var itemId = price.item.id;
+      var storeId = price.store.id;
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(itemKey)
+          .doc(itemId)
+          .collection(priceKey)
+          .doc(storeId)
+          .delete()
+          .then((docRef) {
+        price.item.prices.remove(price.id);
+        _priceList.remove(price);
+      }).catchError((dynamic error) {
+        print('Error removing price document: $error');
+      });
+    }
+
+    return _priceList[price.item.id];
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
@@ -122,7 +123,9 @@ class _PriceState extends State<Price> {
   /// Submit price value
   void _submitPrice() {
     price.value = double.parse(priceController.text);
-    returnData['price'] = price;
+    PriceRepository.add(price);
+
+    // returnData['price'] = price;
     Navigator.pop(context, returnData);
   }
 }

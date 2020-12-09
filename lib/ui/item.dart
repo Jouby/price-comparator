@@ -79,8 +79,8 @@ class _ItemState extends State<Item> {
   ///
   /// For current item, we display one price by store
   Future<void> _initializePriceList() async {
-    _priceList = await PriceRepository.getPriceListByItem(_item);
-    var storesList = await StoreRepository.getStoresList();
+    _priceList = await PriceRepository.getAllByItem(_item);
+    var storesList = await StoreRepository.getAll();
 
     setState(() {
       checkListToGetMinimumPrice();
@@ -109,17 +109,13 @@ class _ItemState extends State<Item> {
 
   /// Edit [item] with [name]
   Future<bool> _editItem(ItemModel item, String name) async {
-    var itemList = await ItemRepository.getItemList();
+    var itemList = await ItemRepository.getAll();
 
     if (name.isNotEmpty && !itemList.contains(name)) {
-      await PriceRepository.removePriceListByItem(item);
-
       setState(() {
         item.name = name;
       });
-
-      await PriceRepository.setPriceListByItem(item);
-      await ItemRepository.setItemList(itemList);
+      await ItemRepository.add(item);
 
       return true;
     }
@@ -250,7 +246,6 @@ class _ItemState extends State<Item> {
 
   /// Edit [price]
   Future<bool> _editPrice(PriceModel price) async {
-    var update = false;
     resetMinimumVariables();
 
     for (var i = 0; i < _priceList.length; i++) {
@@ -258,7 +253,6 @@ class _ItemState extends State<Item> {
         setState(() {
           _priceList[i] = price;
         });
-        update = true;
       }
 
       if (_priceList[i].value != 0) {
@@ -266,16 +260,7 @@ class _ItemState extends State<Item> {
       }
     }
 
-    if (!update) {
-      setState(() {
-        _priceList.add(price);
-      });
-    }
     updateMinimumVariables(price);
-
-    if (price != null) {
-      await PriceRepository.setPriceListByItem(_item);
-    }
 
     return true;
   }
@@ -370,14 +355,14 @@ class _ItemState extends State<Item> {
 
   /// Show screen to add a new [price]
   void _showAddPriceScreen(PriceModel price) async {
-    final result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute<Map<String, dynamic>>(
           builder: (context) => Price(price: price)),
     );
 
-    if (result['price'] != null) {
-      await _editPrice(result['price'] as PriceModel);
+    if (price != null) {
+      await _editPrice(price);
     }
   }
 

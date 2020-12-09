@@ -7,23 +7,30 @@ import 'package:the_dead_masked_company.price_comparator/models/model_interface.
 /// 1. An item can be buy on store
 /// 2. An item have mutliple prices (maximum one per store)
 class ItemModel implements ModelInterface {
+  String id;
   String name;
+  Map<String, Map> prices;
 
   ItemModel(this.name);
 
   @override
   String toString() {
-    return name;
+    return jsonEncode(<String, dynamic>{
+      ...<String, dynamic>{'id': id},
+      ...toMap(),
+    });
   }
 
   @override
-  Map toMap() {
-    return <String, dynamic>{'name': name};
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'name': name,
+    };
   }
 
   @override
   String toJson() {
-    return jsonEncode({'name': name});
+    return jsonEncode(toMap());
   }
 
   @override

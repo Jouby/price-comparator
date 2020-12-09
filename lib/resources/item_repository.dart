@@ -1,59 +1,126 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 
 /// The Item repository
 class ItemRepository {
   /// Item list key index
-  static const key = 'items_list';
+  static const key = 'items';
 
   /// Item list
   static List<ItemModel> _itemList;
 
-  /// Get item list from local storage
-  static Future<List<ItemModel>> getItemList() async {
+  /// Get items
+  static Future<List<ItemModel>> getAll() async {
     if (_itemList == null) {
-      final prefs = await SharedPreferences.getInstance();
-      var jsonItemList = prefs.getStringList(ItemRepository.key) ?? [];
+      /// Get all datas from database for current user
+
+      var userId = await UserRepository.getUserId();
       _itemList = [];
 
-      jsonItemList.forEach((jsonElement) {
-        _itemList.add(ItemModel.fromJson(
-            jsonDecode(jsonElement) as Map<String, dynamic>));
+      if (userId.isNotEmpty) {
+        var key = ItemRepository.key;
+        var query = await CoreRepository.getDatabaseReference()
+            .doc(userId)
+            .collection(key)
+            .get();
+
+        query.docs.forEach((QueryDocumentSnapshot qds) {
+          var item = ItemModel.fromJson(qds.data());
+          item.id = qds.id;
+          _itemList.add(item);
+        });
+      }
+    }
+
+    return _itemList;
+  }
+
+  /// Get item by [id]
+  static FutureOr<ItemModel> get(String id) async {
+    await ItemRepository.getAll();
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(ItemRepository.key)
+          .doc(id)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          return ItemModel.fromJson(doc.data());
+        } else {
+          print('Error getting item document: $id');
+        }
+      }).catchError((dynamic error) {
+        print('Error updating price document: $error');
+      });
+    }
+
+    return null;
+  }
+
+  /// Add [item]
+  static Future<List<ItemModel>> add(ItemModel item) async {
+    if (item.id != null) {
+      return _update(item);
+    }
+    await ItemRepository.getAll();
+
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(ItemRepository.key)
+          .add(item.toMap())
+          .then((docRef) {
+        item.id = docRef.id.toString();
+        _itemList.add(item);
+      }).catchError((dynamic error) {
+        print('Error updating price document: $error');
       });
     }
 
     return _itemList;
   }
 
-  /// Set [itemsList] to local storage
-  static Future<bool> _saveItemList() async {
-    final prefs = await SharedPreferences.getInstance();
-    var jsonItemList = <String>[];
+  /// Update [item]
+  static Future<List<ItemModel>> _update(ItemModel item) async {
+    await ItemRepository.getAll();
 
-    _itemList.forEach((element) {
-      jsonItemList.add(element.toJson());
-    });
+    var userId = await UserRepository.getUserId();
 
-    CoreRepository.sendDataToDatabase(jsonItemList, type: ItemRepository.key);
-
-    return prefs.setStringList(ItemRepository.key, jsonItemList);
-  }
-
-  /// Set displayed item list
-  static Future<List<ItemModel>> setItemList(List<ItemModel> list) async {
-    _itemList = List.from(list);
-    await _saveItemList();
+    if (userId.isNotEmpty) {
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(ItemRepository.key)
+          .doc(item.id)
+          .set(item.toMap())
+          .catchError((dynamic error) {
+        print('Error updating store document: $error');
+      });
+    }
 
     return _itemList;
   }
 
-  /// Remove [item] to local storage
-  static List<ItemModel> removeItem(ItemModel item) {
-    PriceRepository.removePriceListByItem(item);
+  /// Remove [item]
+  static Future<List<ItemModel>> remove(ItemModel item) async {
+    await ItemRepository.getAll();
+
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      var key = ItemRepository.key;
+      var name = item.name;
+      await CoreRepository.getDatabaseReference()
+          .doc('$userId/$key/$name')
+          .delete();
+    }
 
     return _itemList;
   }

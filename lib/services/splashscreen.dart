@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:the_dead_masked_company.price_comparator/services/constants.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/all.dart';
+import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 
 /// The Splash Screen Widget
 ///
 /// Display during 2 second an image before display the main UI screen
-class ImageSplashScreen extends StatefulWidget {
+class ImageSplashScreen extends StatefulHookWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -20,16 +22,22 @@ class _SplashScreenState extends State<ImageSplashScreen> {
 
   Timer _timer;
 
+  FirestoreNotifier firestoreNotifier;
+
   /// Start Timer
   Future<Timer> startTime() async {
-    var _duration = Duration(seconds: 2);
+    var _duration = Duration(seconds: 1);
     _timer = Timer(_duration, navigationPage);
     return _timer;
   }
 
   /// Navigate to Home screen
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed(Constants.homeScreen);
+    if (firestoreNotifier.isLoaded) {
+      Navigator.of(context).pushReplacementNamed(Constants.homeScreen);
+    } else {
+      startTime();
+    }
   }
 
   @override
@@ -46,6 +54,8 @@ class _SplashScreenState extends State<ImageSplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    firestoreNotifier = useProvider(firestoreProvider);
+
     return Scaffold(
       body: Container(
         margin: EdgeInsets.only(left: imageMargin, right: imageMargin),

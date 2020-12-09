@@ -1,12 +1,43 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:the_dead_masked_company.price_comparator/services/constants.dart';
-import 'package:the_dead_masked_company.price_comparator/services/data_manager.dart';
+import 'package:hooks_riverpod/all.dart';
+import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 import 'package:the_dead_masked_company.price_comparator/services/splashscreen.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item_list.dart';
 
-void main() {
-  runApp(App());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(ProviderScope(child: StartApp()));
+}
+
+class StartApp extends StatelessWidget {
+  // Create the initialization Future outside of `build`:
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          print('ERRRRRRRROR');
+          print(snapshot.error);
+          // TODO : handle when error to connect to DB
+          return App();
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          context.read(firestoreProvider).loaded();
+        }
+
+        return App();
+      },
+    );
+  }
 }
 
 class App extends StatelessWidget {
@@ -18,7 +49,8 @@ class App extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    _upgradeData(context);
+    // TODO : reuse upgrade functionnality
+    // _upgradeData(context);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -33,7 +65,7 @@ class App extends StatelessWidget {
   }
 
   /// Upgrade data using data manager and reload app using [context]
-  void _upgradeData(BuildContext context) async {
-    await DataManager.upgradeData();
-  }
+  // void _upgradeData(BuildContext context) async {
+  //   await DataManager.upgradeData();
+  // }
 }

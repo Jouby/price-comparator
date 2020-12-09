@@ -1,66 +1,104 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 
 /// The Store repository
 class StoreRepository {
   /// Store list key index
-  static const key = 'stores_list';
+  static const key = 'stores';
 
   /// Store list
   static List<StoreModel> _storeList;
 
-  /// Get store list from shared preferences
-  static Future<List<StoreModel>> getStoresList() async {
+  /// Get stores
+  static Future<List<StoreModel>> getAll() async {
     if (_storeList == null) {
-      final prefs = await SharedPreferences.getInstance();
-      var jsonStoreList = prefs.getStringList(StoreRepository.key);
+      var userId = await UserRepository.getUserId();
       _storeList = [];
 
-      jsonStoreList.forEach((jsonElement) {
-        _storeList.add(StoreModel.fromJson(
-            jsonDecode(jsonElement) as Map<String, dynamic>));
+      if (userId.isNotEmpty) {
+        var key = StoreRepository.key;
+        var query = await CoreRepository.getDatabaseReference()
+            .doc(userId)
+            .collection(key)
+            .get();
+
+        query.docs.forEach((QueryDocumentSnapshot qds) {
+          var store = StoreModel.fromJson(qds.data());
+          store.id = qds.id;
+          _storeList.add(store);
+        });
+      }
+    }
+
+    return _storeList;
+  }
+
+  /// Add [store]
+  static Future<List<StoreModel>> add(StoreModel store) async {
+    if (store.id != null) {
+      return _update(store);
+    }
+    await StoreRepository.getAll();
+
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(StoreRepository.key)
+          .add(store.toMap())
+          .then((docRef) {
+        store.id = docRef.id;
+        _storeList.add(store);
+      }).catchError((dynamic error) {
+        print('Error adding store document: $error');
       });
     }
 
     return _storeList;
   }
 
-  /// Set [storesList] on shared preferences
-  static Future<bool> setStoresList(List<StoreModel> storesList) async {
-    _storeList = storesList;
+  /// Update [store]
+  static Future<List<StoreModel>> _update(StoreModel store) async {
+    await StoreRepository.getAll();
 
-    var jsonStoreList = <String>[];
-    storesList.forEach((element) {
-      jsonStoreList.add(element.toJson());
-    });
-    final prefs = await SharedPreferences.getInstance();
-    CoreRepository.sendDataToDatabase(jsonStoreList, type: StoreRepository.key);
-    return prefs.setStringList(StoreRepository.key, jsonStoreList);
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(StoreRepository.key)
+          .doc(store.id)
+          .set(store.toMap())
+          .catchError((dynamic error) {
+        print('Error updating store document: $error');
+      });
+    }
+
+    return _storeList;
   }
 
-  /// Remove [store] in store
-  static Future<List<StoreModel>> removeStore(StoreModel store) async {
-    var itemsList = await ItemRepository.getItemList();
-    itemsList ??= [];
+  /// Remove [store]
+  static Future<List<StoreModel>> remove(StoreModel store) async {
+    await StoreRepository.getAll();
 
-    for (var i = 0; i < itemsList.length; i++) {
-      var item = itemsList[i];
-      var priceItemList = await PriceRepository.getPriceListByItem(item);
+    var userId = await UserRepository.getUserId();
 
-      if (priceItemList != null) {
-        for (var i = 0; i < priceItemList.length; i++) {
-          if (priceItemList[i].store.name == store.name) {
-            priceItemList.removeAt(i);
-          }
-        }
-      }
-
-      await PriceRepository.setPriceListByItem(item);
+    if (userId.isNotEmpty) {
+      var key = StoreRepository.key;
+      var name = store.id;
+      await CoreRepository.getDatabaseReference()
+          .doc('$userId/$key/$name')
+          .delete()
+          .then((docRef) {
+        _storeList.remove(store);
+        // TODO remove all price with this store
+      }).catchError((dynamic error) {
+        print('Error removing store document: $error');
+      });
     }
 
     return _storeList;

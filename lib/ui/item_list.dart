@@ -90,13 +90,11 @@ class _ItemListState extends State<ItemList> {
   }
 
   /// Add item by [name]
-  Future<bool> _addItem(String name) async {
-    var itemModel = ItemModel(name);
-    var itemList = await ItemRepository.getItemList();
+  Future<bool> _addItem(ItemModel item) async {
+    var itemList = await ItemRepository.getAll();
 
-    if (itemModel.name.isNotEmpty && !itemList.contains(itemModel)) {
-      itemList.add(itemModel);
-      await ItemRepository.setItemList(itemList);
+    if (item.name.isNotEmpty && !itemList.contains(item)) {
+      await ItemRepository.add(item);
       filterSearchResults(editingController.text);
       return true;
     }
@@ -106,7 +104,7 @@ class _ItemListState extends State<ItemList> {
 
   /// Initialize item list
   void _initializeItemList() async {
-    await ItemRepository.getItemList().then((list) {
+    await ItemRepository.getAll().then((list) {
       setState(() {
         _itemList = list;
         _displayedItemList = List.from(_itemList);
@@ -119,10 +117,8 @@ class _ItemListState extends State<ItemList> {
 
   /// Remove [item] from item list
   void _removeItem(ItemModel item) async {
-    _refreshItemList();
     _itemList.remove(item);
-    await ItemRepository.setItemList(_itemList);
-    ItemRepository.removeItem(item);
+    await ItemRepository.remove(item);
     filterSearchResults(editingController.text);
   }
 
@@ -175,7 +171,6 @@ class _ItemListState extends State<ItemList> {
 
   /// Filter _itemList with [query]
   void filterSearchResults(String query) async {
-    _refreshItemList();
     var dummySearchList = <ItemModel>[];
 
     _displayedItemList.clear();
@@ -207,10 +202,11 @@ class _ItemListState extends State<ItemList> {
             autofocus: true,
             textCapitalization: TextCapitalization.sentences,
             onSubmitted: (String name) {
-              _addItem(name).then((result) {
+              var item = ItemModel(name);
+              _addItem(item).then((result) {
                 if (result) {
                   Navigator.pop(context);
-                  _goToItemScreen(context, ItemModel(name));
+                  _goToItemScreen(context, item);
                 } else {
                   var error = Translate.translate((name.isEmpty)
                       ? 'Fill this field.'
@@ -224,9 +220,5 @@ class _ItemListState extends State<ItemList> {
                 contentPadding: const EdgeInsets.all(16.0)),
           ));
     }));
-  }
-
-  void _refreshItemList() async {
-    await ItemRepository.getItemList();
   }
 }
