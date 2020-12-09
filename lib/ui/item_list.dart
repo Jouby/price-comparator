@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item.dart';
@@ -155,8 +156,8 @@ class _ItemListState extends State<ItemList> {
   void _goToItemScreen(BuildContext context, ItemModel item) async {
     final result = await Navigator.push(
         context,
-        MaterialPageRoute<Map<String, dynamic>>(
-            builder: (BuildContext _) => Item(item: item)));
+        PageTransition<Map<String, dynamic>>(
+            type: PageTransitionType.rightToLeft, child: Item(item: item)));
 
     if (result != null) {
       if (result['remove'] != null) {
@@ -195,30 +196,30 @@ class _ItemListState extends State<ItemList> {
 
   /// Show a screen to add a new item
   void _showAddItemScreen() {
-    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
-      return Scaffold(
-          appBar: AppBar(title: Text(Translate.translate('Add a new item'))),
-          body: TextField(
-            autofocus: true,
-            textCapitalization: TextCapitalization.sentences,
-            onSubmitted: (String name) {
-              var item = ItemModel(name);
-              _addItem(item).then((result) {
-                if (result) {
-                  Navigator.pop(context);
-                  _goToItemScreen(context, item);
-                } else {
-                  var error = Translate.translate((name.isEmpty)
-                      ? 'Fill this field.'
-                      : 'An item with same name already exists.');
-                  Tools.showError(context, error);
-                }
-              });
-            },
-            decoration: InputDecoration(
-                hintText: Translate.translate('Enter item name'),
-                contentPadding: const EdgeInsets.all(16.0)),
-          ));
-    }));
+    Navigator.of(context).push(PageTransition<Map<String, dynamic>>(
+        type: PageTransitionType.bottomToTop,
+        child: Scaffold(
+            appBar: AppBar(title: Text(Translate.translate('Add a new item'))),
+            body: TextField(
+              autofocus: true,
+              textCapitalization: TextCapitalization.sentences,
+              onSubmitted: (String name) {
+                var item = ItemModel(name);
+                _addItem(item).then((result) {
+                  if (result) {
+                    Navigator.pop(context);
+                    _goToItemScreen(context, item);
+                  } else {
+                    var error = Translate.translate((name.isEmpty)
+                        ? 'Fill this field.'
+                        : 'An item with same name already exists.');
+                    Tools.showError(context, error);
+                  }
+                });
+              },
+              decoration: InputDecoration(
+                  hintText: Translate.translate('Enter item name'),
+                  contentPadding: const EdgeInsets.all(16.0)),
+            ))));
   }
 }
