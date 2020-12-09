@@ -38,3 +38,7 @@ lib/generated_plugin_registrant.dart
 
 # Credentials
 android/key.properties
+
+# Security
+ios/GoogleService-Info.plist
+android/app/google-services.json
