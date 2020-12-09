@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:the_dead_masked_company.price_comparator/services/data_version/data_version_interface.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/data_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
