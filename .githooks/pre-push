@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-
 flutter analyze
 if [ $? -ne 0 ]; then
-  echo 'Analyze failed'
+  echo >&2 "Analyze failed"
   exit 1
 fi
 
 flutter test
 if [ $? -ne 0 ]; then
-  echo 'Test failed'
+  echo >&2 "Test failed"
   exit 1
 fi
