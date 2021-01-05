@@ -8,6 +8,11 @@ abstract class CoreRepository {
   /// Database reference
   static final FirebaseFirestore databaseReference = FirebaseFirestore.instance;
 
+  /// Get the root database reference
+  static FirebaseFirestore getRootDatabaseReference() {
+    return databaseReference;
+  }
+
   /// Get the database reference
   static CollectionReference getDatabaseReference() {
     return databaseReference.collection('users');

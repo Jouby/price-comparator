@@ -44,8 +44,8 @@ class PriceModel implements ModelInterface {
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'item': item.toMap(),
-      'store': store.toMap(),
+      'item': item.id,
+      'store': store.id,
       'value': value,
       'options': options
     };
@@ -59,8 +59,8 @@ class PriceModel implements ModelInterface {
   @override
   factory PriceModel.fromJson(Map<String, dynamic> parsedJson) {
     return PriceModel(
-      ItemModel.fromJson(parsedJson['item'] as Map<String, dynamic>),
-      StoreModel.fromJson(parsedJson['store'] as Map<String, dynamic>),
+      parsedJson['item'] as ItemModel,
+      parsedJson['store'] as StoreModel,
       value: parsedJson['value'] as num ?? PriceModel.DEFAULT_VALUE,
       options: Map<String, bool>.from(
               parsedJson['options'] as Map<dynamic, dynamic>) ??

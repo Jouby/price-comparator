@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
 /// The Store repository
 class StoreRepository {
@@ -10,13 +11,13 @@ class StoreRepository {
   static const key = 'stores';
 
   /// Store list
-  static List<StoreModel> _storeList;
+  static Map<String, StoreModel> _storeList;
 
   /// Get stores
-  static Future<List<StoreModel>> getAll() async {
+  static Future<Map<String, StoreModel>> getAll() async {
     if (_storeList == null) {
       var userId = await UserRepository.getUserId();
-      _storeList = [];
+      _storeList = {};
 
       if (userId.isNotEmpty) {
         var key = StoreRepository.key;
@@ -28,7 +29,7 @@ class StoreRepository {
         query.docs.forEach((QueryDocumentSnapshot qds) {
           var store = StoreModel.fromJson(qds.data());
           store.id = qds.id;
-          _storeList.add(store);
+          _storeList[store.id] = store;
         });
       }
     }
@@ -36,71 +37,155 @@ class StoreRepository {
     return _storeList;
   }
 
+  /// Get item by [id]
+  static FutureOr<StoreModel> get(String id) async {
+    await StoreRepository.getAll();
+
+    if (_storeList[id] != null) {
+      return _storeList[id];
+    }
+
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(StoreRepository.key)
+          .doc(id)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          return StoreModel.fromJson(doc.data());
+        } else {
+          print('Error getting item document: $id');
+        }
+      }).catchError((dynamic error) {
+        print('Error updating price document: $error');
+      });
+    }
+
+    return null;
+  }
+
+  /// Check if we can add [store]
+  static String _canAdd(StoreModel store) {
+    var canAdd = '';
+    for (var storeFromList in _storeList.values) {
+      if (storeFromList.name == store.name) {
+        print('Error adding store document: duplicate ' + store.name);
+        canAdd = Translate.translate('A store with same name already exists.');
+      }
+    }
+
+    return canAdd;
+  }
+
   /// Add [store]
-  static Future<List<StoreModel>> add(StoreModel store) async {
+  static Future<Map<String, dynamic>> add(StoreModel store) async {
+    Map<String, dynamic> result = <String, bool>{'success': false};
+
     if (store.id != null) {
       return _update(store);
     }
+
     await StoreRepository.getAll();
 
-    var userId = await UserRepository.getUserId();
+    var check = StoreRepository._canAdd(store);
 
-    if (userId.isNotEmpty) {
-      await CoreRepository.getDatabaseReference()
-          .doc(userId)
-          .collection(StoreRepository.key)
-          .add(store.toMap())
-          .then((docRef) {
-        store.id = docRef.id;
-        _storeList.add(store);
-      }).catchError((dynamic error) {
-        print('Error adding store document: $error');
-      });
+    if (check == '') {
+      var userId = await UserRepository.getUserId();
+
+      if (userId.isNotEmpty) {
+        await CoreRepository.getDatabaseReference()
+            .doc(userId)
+            .collection(StoreRepository.key)
+            .add(store.toMap())
+            .then((docRef) {
+          store.id = docRef.id;
+          _storeList[store.id] = store;
+          result['success'] = true;
+        }).catchError((dynamic error) {
+          print('Error adding store document: $error');
+          result = <String, String>{
+            'error': 'Error adding store document: $error'
+          };
+        });
+      }
+    } else {
+      result = <String, String>{'error': check};
     }
 
-    return _storeList;
+    return result;
+  }
+
+  /// Check if we can update [store]
+  static String _canUpdate(StoreModel store) {
+    var canUpdate = '';
+
+    for (var storeFromList in _storeList.values) {
+      if (storeFromList.id != store.id && storeFromList.name == store.name) {
+        print('Error updating store document: duplicate ' + store.name);
+        canUpdate =
+            Translate.translate('A store with same name already exists.');
+      }
+    }
+
+    return canUpdate;
   }
 
   /// Update [store]
-  static Future<List<StoreModel>> _update(StoreModel store) async {
+  static Future<Map<String, dynamic>> _update(StoreModel store) async {
+    Map<String, dynamic> result;
+
     await StoreRepository.getAll();
 
-    var userId = await UserRepository.getUserId();
+    var check = StoreRepository._canUpdate(store);
 
-    if (userId.isNotEmpty) {
-      await CoreRepository.getDatabaseReference()
-          .doc(userId)
-          .collection(StoreRepository.key)
-          .doc(store.id)
-          .set(store.toMap())
-          .catchError((dynamic error) {
-        print('Error updating store document: $error');
-      });
+    if (check == '') {
+      var userId = await UserRepository.getUserId();
+
+      if (userId.isNotEmpty) {
+        await CoreRepository.getDatabaseReference()
+            .doc(userId)
+            .collection(StoreRepository.key)
+            .doc(store.id)
+            .set(store.toMap())
+            .then((docRef) {
+          result = <String, bool>{'success': true};
+        }).catchError((dynamic error) {
+          print('Error updating store document: $error');
+          result = <String, String>{
+            'error': 'Error updating store document: $error'
+          };
+        });
+      }
+    } else {
+      result = <String, String>{'error': check};
     }
 
-    return _storeList;
+    return result;
   }
 
   /// Remove [store]
-  static Future<List<StoreModel>> remove(StoreModel store) async {
+  static Future<bool> remove(StoreModel store) async {
     await StoreRepository.getAll();
 
     var userId = await UserRepository.getUserId();
 
     if (userId.isNotEmpty) {
       var key = StoreRepository.key;
-      var name = store.id;
+      var id = store.id;
       await CoreRepository.getDatabaseReference()
-          .doc('$userId/$key/$name')
+          .doc('$userId/$key/$id')
           .delete()
           .then((docRef) {
-        _storeList.remove(store);
-        // TODO remove all price with this store
+        _storeList.remove(store.id);
       }).catchError((dynamic error) {
         print('Error removing store document: $error');
+        return false;
       });
     }
 
-    return _storeList;
+    return true;
   }
 }

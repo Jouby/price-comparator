@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
@@ -37,26 +38,43 @@ class _StoreListState extends State<StoreList> {
 
   /// Initialize store list
   void _initializeStoreList() async {
-    _storeList = await StoreRepository.getAll() ?? [];
+    var list = await StoreRepository.getAll() ?? {};
+    _storeList = list.entries.map((e) => e.value).toList();
     setState(() {});
   }
 
   /// Add a store with [name]
   Future<bool> _addStore(String name) async {
-    var store = StoreModel(name);
-    if (store.name.isNotEmpty && !_storeList.contains(store)) {
-      await StoreRepository.add(store);
-      setState(() {});
-      return true;
+    var result = false;
+
+    if (name.isEmpty) {
+      Tools.showError(context, Translate.translate('Fill this field.'));
+    } else {
+      var store = StoreModel(name);
+      if (store.name.isNotEmpty && !_storeList.contains(store)) {
+        await StoreRepository.add(store).then((e) {
+          if (e['success'] == true) {
+            setState(() {
+              _storeList.add(store);
+            });
+            result = true;
+          } else {
+            Tools.showError(context, e['error'].toString());
+          }
+        });
+      }
     }
 
-    return false;
+    return result;
   }
 
   /// Delete [store] from store list
-  void _removeStore(StoreModel store) {
-    setState(() => _storeList.remove(store));
-    StoreRepository.remove(store);
+  void _removeStore(StoreModel store) async {
+    await StoreRepository.remove(store);
+    await PriceRepository.removeByStore(store);
+    setState(() {
+      _storeList.remove(store);
+    });
   }
 
   /// Build store list widget
@@ -95,15 +113,6 @@ class _StoreListState extends State<StoreList> {
               _addStore(storeName).then((result) {
                 if (result) {
                   Navigator.pop(context);
-                } else {
-                  String error;
-                  if (storeName.isEmpty) {
-                    error = Translate.translate('Fill this field.');
-                  } else {
-                    error = Translate.translate(
-                        'A store with same name already exists.');
-                  }
-                  Tools.showError(context, error);
                 }
               });
             },

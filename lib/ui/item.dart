@@ -86,21 +86,21 @@ class _ItemState extends State<Item> {
       checkListToGetMinimumPrice();
 
       if (storesList != null) {
-        for (var storeIndex = 0; storeIndex < storesList.length; storeIndex++) {
+        storesList.forEach((key, store) {
           var found = false;
           for (var priceIndex = 0;
               priceIndex < _priceList.length;
               priceIndex++) {
-            if (_priceList[priceIndex].store.name ==
-                storesList[storeIndex].name) {
+            if (_priceList[priceIndex].store.id == store.id) {
               found = true;
               break;
             }
           }
+
           if (!found) {
-            _priceList.add(PriceModel(_item, storesList[storeIndex]));
+            _priceList.add(PriceModel(_item, store));
           }
-        }
+        });
       }
 
       _priceList ??= [];
@@ -109,18 +109,23 @@ class _ItemState extends State<Item> {
 
   /// Edit [item] with [name]
   Future<bool> _editItem(ItemModel item, String name) async {
-    var itemList = await ItemRepository.getAll();
+    var result = false;
 
-    if (name.isNotEmpty && !itemList.contains(name)) {
-      setState(() {
-        item.name = name;
+    if (name.isEmpty) {
+      Tools.showError(context, Translate.translate('Fill this field.'));
+    } else {
+      item.name = name;
+      await ItemRepository.add(item).then((e) async {
+        if (e['success'] == true) {
+          setState(() {});
+          result = true;
+        } else {
+          Tools.showError(context, e['error'].toString());
+        }
       });
-      await ItemRepository.add(item);
-
-      return true;
     }
 
-    return false;
+    return result;
   }
 
   /// Show screen to edit [item]
@@ -137,15 +142,6 @@ class _ItemState extends State<Item> {
                 if (result) {
                   Navigator.pop(context);
                   returnData['update'] = true;
-                } else {
-                  String error;
-                  if (newVal.isEmpty) {
-                    error = Translate.translate('Fill this field.');
-                  } else {
-                    error = Translate.translate(
-                        'An item with same name already exists.');
-                  }
-                  Tools.showError(context, error);
                 }
               });
             },

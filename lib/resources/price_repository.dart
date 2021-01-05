@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
+import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 
 // The Price repository
@@ -23,18 +25,22 @@ class PriceRepository {
       _priceList[item.id] = [];
 
       if (userId.isNotEmpty) {
-        var itemKey = ItemRepository.key;
         var priceKey = PriceRepository.key;
-        var itemId = item.id;
         var query = await CoreRepository.getDatabaseReference()
             .doc(userId)
-            .collection(itemKey)
-            .doc(itemId)
             .collection(priceKey)
+            .where('item', isEqualTo: item.id)
             .get();
 
-        query.docs.forEach((QueryDocumentSnapshot qds) {
-          var price = PriceModel.fromJson(qds.data());
+        await query.docs.forEach((QueryDocumentSnapshot qds) async {
+          var priceData = qds.data();
+
+          priceData['item'] =
+              await ItemRepository.get(priceData['item'].toString());
+          priceData['store'] =
+              await StoreRepository.get(priceData['store'].toString());
+
+          var price = PriceModel.fromJson(priceData);
           price.id = qds.id;
           price.item.id = item.id;
           _priceList[item.id].add(price);
@@ -56,14 +62,10 @@ class PriceRepository {
     var userId = await UserRepository.getUserId();
 
     if (userId.isNotEmpty) {
-      var itemKey = ItemRepository.key;
       var priceKey = PriceRepository.key;
-      var itemId = price.item.id;
 
       await CoreRepository.getDatabaseReference()
           .doc(userId)
-          .collection(itemKey)
-          .doc(itemId)
           .collection(priceKey)
           .add(price.toMap())
           .then((docRef) {
@@ -85,14 +87,10 @@ class PriceRepository {
     var userId = await UserRepository.getUserId();
 
     if (userId.isNotEmpty) {
-      var itemKey = ItemRepository.key;
       var priceKey = PriceRepository.key;
-      var itemId = price.item.id;
 
       await CoreRepository.getDatabaseReference()
           .doc(userId)
-          .collection(itemKey)
-          .doc(itemId)
           .collection(priceKey)
           .doc(price.id)
           .set(price.toMap())
@@ -111,25 +109,43 @@ class PriceRepository {
     var userId = await UserRepository.getUserId();
 
     if (userId.isNotEmpty) {
-      var itemKey = ItemRepository.key;
       var priceKey = PriceRepository.key;
-      var itemId = price.item.id;
-      var storeId = price.store.id;
       await CoreRepository.getDatabaseReference()
           .doc(userId)
-          .collection(itemKey)
-          .doc(itemId)
           .collection(priceKey)
-          .doc(storeId)
+          .doc(price.id)
           .delete()
           .then((docRef) {
-        price.item.prices.remove(price.id);
+        // price.item.prices.remove(price.id);
         _priceList.remove(price);
       }).catchError((dynamic error) {
         print('Error removing price document: $error');
       });
     }
 
-    return _priceList[price.item.id];
+    return _priceList[price.id];
+  }
+
+  static Future<void> removeByStore(StoreModel store) async {
+    var userId = await UserRepository.getUserId();
+
+    if (userId.isNotEmpty) {
+      var priceKey = PriceRepository.key;
+
+      await CoreRepository.getDatabaseReference()
+          .doc(userId)
+          .collection(priceKey)
+          .where('store', isEqualTo: store.id)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        var batch = CoreRepository.getRootDatabaseReference().batch();
+        querySnapshot.docs.forEach((DocumentSnapshot doc) {
+          batch.delete(doc.reference);
+          _priceList[doc.get('item')]
+              .removeWhere((price) => price.id == doc.id);
+        });
+        return batch.commit();
+      });
+    }
   }
 }

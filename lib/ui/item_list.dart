@@ -94,8 +94,10 @@ class _ItemListState extends State<ItemList> {
   Future<bool> _addItem(ItemModel item) async {
     var itemList = await ItemRepository.getAll();
 
-    if (item.name.isNotEmpty && !itemList.contains(item)) {
+    if (item.name.isNotEmpty && !itemList.containsKey(item.id)) {
       await ItemRepository.add(item);
+      _itemList.add(item);
+      _displayedItemList.add(item);
       filterSearchResults(editingController.text);
       return true;
     }
@@ -107,7 +109,7 @@ class _ItemListState extends State<ItemList> {
   void _initializeItemList() async {
     await ItemRepository.getAll().then((list) {
       setState(() {
-        _itemList = list;
+        _itemList = list.entries.map((e) => e.value).toList();
         _displayedItemList = List.from(_itemList);
       });
     });
