@@ -16,5 +16,10 @@ unset-git-hooks:
 	git config core.hooksPath .git/hooks/
 generate-coverage:
 	flutter test --coverage && genhtml coverage/lcov.info -o coverage 
-format:
+run-format:
 	flutter format .
+run-analyze:
+	flutter analyze
+run-test:
+	flutter test
+run: run-format run-analyze run-test
