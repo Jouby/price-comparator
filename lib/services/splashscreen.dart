@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 
 /// The Splash Screen Widget
@@ -32,11 +33,14 @@ class _SplashScreenState extends State<ImageSplashScreen> {
   }
 
   /// Navigate to Home screen
-  void navigationPage() {
+  void navigationPage() async {
     if (firestoreNotifier.isLoaded) {
-      Navigator.of(context).pushReplacementNamed(Constants.homeScreen);
+      var username = await UserRepository.getUserName();
+      var route =
+          username != null ? Constants.homeScreen : Constants.loginScreen;
+      await Navigator.of(context).pushReplacementNamed(route);
     } else {
-      startTime();
+      await startTime();
     }
   }
 

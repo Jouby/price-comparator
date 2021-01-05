@@ -26,4 +26,11 @@ class UserRepository {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setString('user_name', userName);
   }
+
+  /// Dispose user data
+  static void dispose() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_id');
+    await prefs.remove('user_name');
+  }
 }

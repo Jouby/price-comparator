@@ -185,4 +185,9 @@ class ItemRepository {
 
     return _itemList;
   }
+
+  /// Dispose item data
+  static void dispose() {
+    if (_itemList != null) _itemList = null;
+  }
 }

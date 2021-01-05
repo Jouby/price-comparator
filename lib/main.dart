@@ -2,9 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 import 'package:the_dead_masked_company.price_comparator/services/splashscreen.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item_list.dart';
+import 'package:the_dead_masked_company.price_comparator/ui/login_signup_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +60,8 @@ class App extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
       routes: <String, WidgetBuilder>{
         Constants.splashScreen: (BuildContext context) => ImageSplashScreen(),
+        Constants.loginScreen: (BuildContext context) =>
+            LoginSignupPage(auth: Auth()),
         Constants.homeScreen: (BuildContext context) => ItemList()
       },
       initialRoute: Constants.splashScreen,

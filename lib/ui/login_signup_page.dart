@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
+import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage({this.auth, this.loginCallback});
@@ -16,16 +16,12 @@ class LoginSignupPage extends StatefulWidget {
 class _LoginSignupPageState extends State<LoginSignupPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String _status = '';
   String _email;
   String _password;
   String _errorMessage;
 
   bool _isLoginForm;
   bool _isLoading;
-
-  /// Database reference
-  static final FirebaseFirestore databaseReference = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -37,17 +33,12 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    checkIsLogin();
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Connexion'),
         ),
         body: Stack(
           children: <Widget>[
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[Text(_status)]),
             _showForm(),
             _showCircularProgress(),
           ],
@@ -82,41 +73,22 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         } else {
           userId = await widget.auth.signUp(_email, _password);
           print('Signed up user: $userId');
-
-          await databaseReference
-              .collection('users')
-              .doc(userId)
-              .set(<String, String>{
-            'email': _email,
-            'password': _password,
-          }).then((_) {
-            print('Transaction  committed.');
-          });
         }
 
         await UserRepository.setUserId(userId);
         await UserRepository.setUserName(_email);
         setState(() {
           _isLoading = false;
-          _status = 'Vous êtes connecté en tant que $_email';
         });
+        await Navigator.of(context).pushReplacementNamed(Constants.homeScreen);
       } catch (e) {
         print('Error: $e');
         setState(() {
           _isLoading = false;
-          _errorMessage = e.message.toString();
+          _errorMessage = e.toString();
           _formKey.currentState.reset();
         });
       }
-    }
-  }
-
-  void checkIsLogin() async {
-    var username = await UserRepository.getUserName();
-    if (username != null) {
-      setState(() {
-        _status = 'Vous êtes déjà connecté en tant que $username';
-      });
     }
   }
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:the_dead_masked_company.price_comparator/ui/login_signup_page.dart';
-import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
 /// The Settings list widget
@@ -22,30 +25,18 @@ class _SettingsListState extends State<SettingsList> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 RaisedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                            builder: (context) =>
-                                LoginSignupPage(auth: Auth())));
+                  onPressed: () async {
+                    UserRepository.dispose();
+                    PriceRepository.dispose();
+                    ItemRepository.dispose();
+                    StoreRepository.dispose();
+                    Navigator.pop(context);
+                    await Navigator.of(context)
+                        .pushReplacementNamed(Constants.loginScreen);
                   },
-                  child: Text(Translate.translate('LOGIN'),
+                  child: Text(Translate.translate('LOGOUT'),
                       style: TextStyle(fontSize: 20)),
                 ),
-                // RaisedButton(
-                //   onPressed: () {
-                //     Repository.exportUserDataToDatabase();
-                //   },
-                //   child: Text(Translate.translate('EXPORT'),
-                //       style: TextStyle(fontSize: 20)),
-                // ),
-                // RaisedButton(
-                //   onPressed: () {
-                //     Repository.getUserDataFromDatabase();
-                //   },
-                //   child: Text(Translate.translate('IMPORT'),
-                //       style: TextStyle(fontSize: 20)),
-                // ),
               ],
             )));
   }

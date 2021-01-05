@@ -188,4 +188,9 @@ class StoreRepository {
 
     return true;
   }
+
+  /// Dispose store data
+  static void dispose() {
+    if (_storeList != null) _storeList = null;
+  }
 }

@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/all.dart';
 class Constants {
   static String splashScreen = 'SPLASH_SCREEN';
   static String homeScreen = 'HOME_SCREEN';
+  static String loginScreen = 'LOGIN_SCREEN';
 }
 
 class FirestoreNotifier extends ChangeNotifier {

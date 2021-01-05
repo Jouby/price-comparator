@@ -14,7 +14,7 @@ class PriceRepository {
   static const key = 'prices';
 
   /// Price list
-  static final Map<String, List<PriceModel>> _priceList = {};
+  static Map<String, List<PriceModel>> _priceList = {};
 
   /// Get prices by [item]
   static Future<List<PriceModel>> getAllByItem(ItemModel item) async {
@@ -147,5 +147,10 @@ class PriceRepository {
         return batch.commit();
       });
     }
+  }
+
+  /// Dispose price data
+  static void dispose() {
+    if (_priceList != null) _priceList = null;
   }
 }
