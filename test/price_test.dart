@@ -6,7 +6,6 @@ import 'package:the_dead_masked_company.price_comparator/models/price_model.dart
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/ui/item.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/price.dart';
 
 class MockPriceRepository extends Mock implements PriceRepository {}
