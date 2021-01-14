@@ -10,8 +10,9 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 /// Display price screen to update value or options
 class Price extends StatefulWidget {
   final PriceModel price;
+  final PriceRepository priceRepository;
 
-  Price({Key key, @required this.price}) : super(key: key);
+  Price({Key key, @required this.price, this.priceRepository}) : super(key: key);
 
   @override
   _PriceState createState() => _PriceState();
@@ -123,7 +124,7 @@ class _PriceState extends State<Price> {
   /// Submit price value
   void _submitPrice() {
     price.value = double.parse(priceController.text);
-    PriceRepository.add(price);
+    widget.priceRepository.add(price);
 
     // returnData['price'] = price;
     Navigator.pop(context, returnData);

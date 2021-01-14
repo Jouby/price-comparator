@@ -20,7 +20,7 @@ abstract class CoreRepository {
 
   /// Get all datas from database for current user
   static Future<Map<String, dynamic>> getUserDataFromDatabase() async {
-    var userId = await UserRepository.getUserId();
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       var snapshot =

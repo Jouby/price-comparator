@@ -37,10 +37,10 @@ class _SettingsListState extends State<SettingsList> {
                   children: [
                     RaisedButton(
                       onPressed: () async {
-                        UserRepository.dispose();
-                        PriceRepository.dispose();
+                        UserRepository().dispose();
+                        PriceRepository().dispose();
                         ItemRepository().dispose();
-                        StoreRepository.dispose();
+                        StoreRepository().dispose();
                         Navigator.pop(context);
                         await Navigator.of(context)
                             .pushReplacementNamed(Constants.loginScreen);

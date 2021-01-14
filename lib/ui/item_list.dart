@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/settings.dart';
@@ -15,8 +17,10 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 /// Display item list (sort alphabetically or possible to filter)
 class ItemList extends StatefulWidget {
   final ItemRepository itemRepository;
+  final PriceRepository priceRepository;
+  final StoreRepository storeRepository;
 
-  ItemList({Key key, @required this.itemRepository}) : super(key: key);
+  ItemList({Key key, @required this.itemRepository, this.priceRepository, this.storeRepository}) : super(key: key);
   @override
   _ItemListState createState() => _ItemListState();
 }
@@ -44,7 +48,7 @@ class _ItemListState extends State<ItemList> {
               tooltip: Translate.translate('Stores'),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute<void>(builder: (context) => StoreList()));
+                    MaterialPageRoute<void>(builder: (context) => StoreList(storeRepository: widget.storeRepository,)));
               },
             ),
             IconButton(
@@ -165,7 +169,12 @@ class _ItemListState extends State<ItemList> {
     final result = await Navigator.push(
         context,
         PageTransition<Map<String, dynamic>>(
-            type: PageTransitionType.rightToLeft, child: Item(item: item)));
+            type: PageTransitionType.rightToLeft,
+            child: Item(
+              item: item,
+              priceRepository: widget.priceRepository,
+              storeRepository: widget.storeRepository,
+            )));
 
     if (result != null) {
       if (result['remove'] != null) {

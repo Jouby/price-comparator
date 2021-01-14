@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 import 'package:the_dead_masked_company.price_comparator/services/splashscreen.dart';
@@ -65,6 +67,8 @@ class App extends StatelessWidget {
             LoginSignupPage(auth: Auth()),
         Constants.homeScreen: (BuildContext context) => ItemList(
               itemRepository: ItemRepository(),
+              priceRepository: PriceRepository(),
+              storeRepository: StoreRepository(),
             )
       },
       initialRoute: Constants.splashScreen,

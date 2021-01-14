@@ -14,8 +14,15 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 /// Display item (name, price list and minimum price)
 class Item extends StatefulWidget {
   final ItemModel item;
+  final PriceRepository priceRepository;
+  final StoreRepository storeRepository;
 
-  Item({Key key, @required this.item}) : super(key: key);
+  Item(
+      {Key key,
+      @required this.item,
+      this.priceRepository,
+      this.storeRepository})
+      : super(key: key);
 
   @override
   _ItemState createState() => _ItemState();
@@ -79,31 +86,25 @@ class _ItemState extends State<Item> {
   ///
   /// For current item, we display one price by store
   Future<void> _initializePriceList() async {
-    _priceList = await PriceRepository.getAllByItem(_item);
-    var storesList = await StoreRepository.getAll();
+    _priceList = await widget.priceRepository.getAllByItem(_item) ?? [];
+    var storesList = await widget.storeRepository.getAll() ?? {};
 
     setState(() {
       checkListToGetMinimumPrice();
 
-      if (storesList != null) {
-        storesList.forEach((key, store) {
-          var found = false;
-          for (var priceIndex = 0;
-              priceIndex < _priceList.length;
-              priceIndex++) {
-            if (_priceList[priceIndex].store.id == store.id) {
-              found = true;
-              break;
-            }
+      storesList.forEach((key, store) {
+        var found = false;
+        for (var priceIndex = 0; priceIndex < _priceList.length; priceIndex++) {
+          if (_priceList[priceIndex].store.id == store.id) {
+            found = true;
+            break;
           }
+        }
 
-          if (!found) {
-            _priceList.add(PriceModel(_item, store));
-          }
-        });
-      }
-
-      _priceList ??= [];
+        if (!found) {
+          _priceList.add(PriceModel(_item, store));
+        }
+      });
     });
   }
 

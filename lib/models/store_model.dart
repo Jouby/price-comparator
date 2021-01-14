@@ -9,7 +9,7 @@ class StoreModel implements ModelInterface {
   String name;
 
   StoreModel(this.name) {
-    StoreRepository.getAll().then((storeList) {
+    StoreRepository().getAll().then((storeList) {
       storeList.forEach((key, value) {
         if (name == value.name) {
           id = value.id;

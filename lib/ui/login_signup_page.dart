@@ -75,8 +75,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           print('Signed up user: $userId');
         }
 
-        await UserRepository.setUserId(userId);
-        await UserRepository.setUserName(_email);
+        await UserRepository().setUserId(userId);
+        await UserRepository().setUserName(_email);
         setState(() {
           _isLoading = false;
         });

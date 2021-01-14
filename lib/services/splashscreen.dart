@@ -35,7 +35,7 @@ class _SplashScreenState extends State<ImageSplashScreen> {
   /// Navigate to Home screen
   void navigationPage() async {
     if (firestoreNotifier.isLoaded) {
-      var username = await UserRepository.getUserName();
+      var username = await UserRepository().getUserName();
       var route =
           username != null ? Constants.homeScreen : Constants.loginScreen;
       await Navigator.of(context).pushReplacementNamed(route);

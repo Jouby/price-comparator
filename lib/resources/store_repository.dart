@@ -13,10 +13,17 @@ class StoreRepository {
   /// Store list
   static Map<String, StoreModel> _storeList;
 
+  static final StoreRepository _singleton = StoreRepository._internal();
+
+  factory StoreRepository() {
+    return _singleton;
+  }
+  StoreRepository._internal();
+
   /// Get stores
-  static Future<Map<String, StoreModel>> getAll() async {
+  Future<Map<String, StoreModel>> getAll() async {
     if (_storeList == null) {
-      var userId = await UserRepository.getUserId();
+      var userId = await UserRepository().getUserId();
       _storeList = {};
 
       if (userId.isNotEmpty) {
@@ -38,14 +45,14 @@ class StoreRepository {
   }
 
   /// Get item by [id]
-  static FutureOr<StoreModel> get(String id) async {
-    await StoreRepository.getAll();
+  FutureOr<StoreModel> get(String id) async {
+    await getAll();
 
     if (_storeList[id] != null) {
       return _storeList[id];
     }
 
-    var userId = await UserRepository.getUserId();
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       await CoreRepository.getDatabaseReference()
@@ -68,7 +75,7 @@ class StoreRepository {
   }
 
   /// Check if we can add [store]
-  static String _canAdd(StoreModel store) {
+  String _canAdd(StoreModel store) {
     var canAdd = '';
     for (var storeFromList in _storeList.values) {
       if (storeFromList.name == store.name) {
@@ -81,19 +88,19 @@ class StoreRepository {
   }
 
   /// Add [store]
-  static Future<Map<String, dynamic>> add(StoreModel store) async {
+  Future<Map<String, dynamic>> add(StoreModel store) async {
     Map<String, dynamic> result = <String, bool>{'success': false};
 
     if (store.id != null) {
       return _update(store);
     }
 
-    await StoreRepository.getAll();
+    await getAll();
 
-    var check = StoreRepository._canAdd(store);
+    var check = _canAdd(store);
 
     if (check == '') {
-      var userId = await UserRepository.getUserId();
+      var userId = await UserRepository().getUserId();
 
       if (userId.isNotEmpty) {
         await CoreRepository.getDatabaseReference()
@@ -119,7 +126,7 @@ class StoreRepository {
   }
 
   /// Check if we can update [store]
-  static String _canUpdate(StoreModel store) {
+  String _canUpdate(StoreModel store) {
     var canUpdate = '';
 
     for (var storeFromList in _storeList.values) {
@@ -134,15 +141,15 @@ class StoreRepository {
   }
 
   /// Update [store]
-  static Future<Map<String, dynamic>> _update(StoreModel store) async {
+  Future<Map<String, dynamic>> _update(StoreModel store) async {
     Map<String, dynamic> result;
 
-    await StoreRepository.getAll();
+    await getAll();
 
-    var check = StoreRepository._canUpdate(store);
+    var check = _canUpdate(store);
 
     if (check == '') {
-      var userId = await UserRepository.getUserId();
+      var userId = await UserRepository().getUserId();
 
       if (userId.isNotEmpty) {
         await CoreRepository.getDatabaseReference()
@@ -167,10 +174,10 @@ class StoreRepository {
   }
 
   /// Remove [store]
-  static Future<bool> remove(StoreModel store) async {
-    await StoreRepository.getAll();
+  Future<bool> remove(StoreModel store) async {
+    await getAll();
 
-    var userId = await UserRepository.getUserId();
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       var key = StoreRepository.key;
@@ -190,7 +197,7 @@ class StoreRepository {
   }
 
   /// Dispose store data
-  static void dispose() {
+  void dispose() {
     if (_storeList != null) _storeList = null;
   }
 }

@@ -3,32 +3,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// The User repository
 class UserRepository {
+  static final UserRepository _singleton = UserRepository._internal();
+
+  factory UserRepository() {
+    return _singleton;
+  }
+  UserRepository._internal();
+
   /// Get User ID from local storage
-  static Future<String> getUserId() async {
+  Future<String> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('user_id') ?? '';
   }
 
   /// Get User Name from local storage
-  static Future<String> getUserName() async {
+  Future<String> getUserName() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('user_name');
   }
 
   /// Set User ID to local storage
-  static Future<bool> setUserId(String userId) async {
+  Future<bool> setUserId(String userId) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setString('user_id', userId);
   }
 
   /// Set User Name to local storage
-  static Future<bool> setUserName(String userName) async {
+  Future<bool> setUserName(String userName) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setString('user_name', userName);
   }
 
   /// Dispose user data
-  static void dispose() async {
+  void dispose() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('user_id');
     await prefs.remove('user_name');

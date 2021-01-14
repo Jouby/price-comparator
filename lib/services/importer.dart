@@ -30,7 +30,7 @@ class Importer extends StatelessWidget {
     jsonResult.remove('items_list');
 
     for (var name in jsonResult['stores_list'] as List<dynamic>) {
-      await StoreRepository.add(StoreModel(name.toString()));
+      await StoreRepository().add(StoreModel(name.toString()));
     }
     jsonResult.remove('stores_list');
 
@@ -51,7 +51,7 @@ class Importer extends StatelessWidget {
                 'isUnavailable':
                     priceValue['isUnavailable'].toString() == 'true',
               });
-          PriceRepository.add(price);
+          PriceRepository().add(price);
         }
       }
     });

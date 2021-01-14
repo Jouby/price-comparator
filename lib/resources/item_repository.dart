@@ -25,7 +25,7 @@ class ItemRepository {
     if (_itemList == null) {
       /// Get all datas from database for current user
 
-      var userId = await UserRepository.getUserId();
+      var userId = await UserRepository().getUserId();
       _itemList = {};
 
       if (userId.isNotEmpty) {
@@ -54,7 +54,7 @@ class ItemRepository {
       return _itemList[id];
     }
 
-    var userId = await UserRepository.getUserId();
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       await CoreRepository.getDatabaseReference()
@@ -102,7 +102,7 @@ class ItemRepository {
     var check = _canAdd(item);
 
     if (check == '') {
-      var userId = await UserRepository.getUserId();
+      var userId = await UserRepository().getUserId();
 
       if (userId.isNotEmpty) {
         await CoreRepository.getDatabaseReference()
@@ -151,7 +151,7 @@ class ItemRepository {
     var check = _canUpdate(item);
 
     if (check == '') {
-      var userId = await UserRepository.getUserId();
+      var userId = await UserRepository().getUserId();
 
       if (userId.isNotEmpty) {
         await CoreRepository.getDatabaseReference()
@@ -179,7 +179,7 @@ class ItemRepository {
   Future<Map<String, ItemModel>> remove(ItemModel item) async {
     await getAll();
 
-    var userId = await UserRepository.getUserId();
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       var key = ItemRepository.key;

@@ -16,12 +16,19 @@ class PriceRepository {
   /// Price list
   static Map<String, List<PriceModel>> _priceList = {};
 
+  static final PriceRepository _singleton = PriceRepository._internal();
+
+  factory PriceRepository() {
+    return _singleton;
+  }
+  PriceRepository._internal();
+
   /// Get prices by [item]
-  static Future<List<PriceModel>> getAllByItem(ItemModel item) async {
+  Future<List<PriceModel>> getAllByItem(ItemModel item) async {
     if (_priceList[item.id] == null) {
       /// Get all datas from database for current user
 
-      var userId = await UserRepository.getUserId();
+      var userId = await UserRepository().getUserId();
       _priceList[item.id] = [];
 
       if (userId.isNotEmpty) {
@@ -38,7 +45,7 @@ class PriceRepository {
           priceData['item'] =
               await ItemRepository().get(priceData['item'].toString());
           priceData['store'] =
-              await StoreRepository.get(priceData['store'].toString());
+              await StoreRepository().get(priceData['store'].toString());
 
           var price = PriceModel.fromJson(priceData);
           price.id = qds.id;
@@ -52,14 +59,14 @@ class PriceRepository {
   }
 
   /// Add [price]
-  static Future<List<PriceModel>> add(PriceModel price) async {
+  Future<List<PriceModel>> add(PriceModel price) async {
     if (price.id != null) {
       return _update(price);
     }
 
-    await PriceRepository.getAllByItem(price.item);
+    await getAllByItem(price.item);
 
-    var userId = await UserRepository.getUserId();
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       var priceKey = PriceRepository.key;
@@ -81,10 +88,10 @@ class PriceRepository {
   }
 
   /// Update [price]
-  static Future<List<PriceModel>> _update(PriceModel price) async {
-    await PriceRepository.getAllByItem(price.item);
+  Future<List<PriceModel>> _update(PriceModel price) async {
+    await getAllByItem(price.item);
 
-    var userId = await UserRepository.getUserId();
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       var priceKey = PriceRepository.key;
@@ -103,10 +110,10 @@ class PriceRepository {
   }
 
   /// Remove [price]
-  static Future<List<PriceModel>> remove(PriceModel price) async {
-    await PriceRepository.getAllByItem(price.item);
+  Future<List<PriceModel>> remove(PriceModel price) async {
+    await getAllByItem(price.item);
 
-    var userId = await UserRepository.getUserId();
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       var priceKey = PriceRepository.key;
@@ -126,8 +133,8 @@ class PriceRepository {
     return _priceList[price.id];
   }
 
-  static Future<void> removeByStore(StoreModel store) async {
-    var userId = await UserRepository.getUserId();
+  Future<void> removeByStore(StoreModel store) async {
+    var userId = await UserRepository().getUserId();
 
     if (userId.isNotEmpty) {
       var priceKey = PriceRepository.key;
@@ -150,7 +157,7 @@ class PriceRepository {
   }
 
   /// Dispose price data
-  static void dispose() {
+  void dispose() {
     if (_priceList != null) _priceList = null;
   }
 }

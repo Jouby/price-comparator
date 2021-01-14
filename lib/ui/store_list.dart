@@ -9,6 +9,13 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 ///
 /// Display store list and functionnality to manage stores
 class StoreList extends StatefulWidget {
+  final StoreRepository storeRepository;
+
+    StoreList(
+      {Key key,
+      @required this.storeRepository})
+      : super(key: key);
+
   @override
   _StoreListState createState() => _StoreListState();
 }
@@ -38,7 +45,7 @@ class _StoreListState extends State<StoreList> {
 
   /// Initialize store list
   void _initializeStoreList() async {
-    var list = await StoreRepository.getAll() ?? {};
+    var list = await widget.storeRepository.getAll() ?? {};
     _storeList = list.entries.map((e) => e.value).toList();
     setState(() {});
   }
@@ -52,7 +59,7 @@ class _StoreListState extends State<StoreList> {
     } else {
       var store = StoreModel(name);
       if (store.name.isNotEmpty && !_storeList.contains(store)) {
-        await StoreRepository.add(store).then((e) {
+        await widget.storeRepository.add(store).then((e) {
           if (e['success'] == true) {
             setState(() {
               _storeList.add(store);
@@ -70,8 +77,8 @@ class _StoreListState extends State<StoreList> {
 
   /// Delete [store] from store list
   void _removeStore(StoreModel store) async {
-    await StoreRepository.remove(store);
-    await PriceRepository.removeByStore(store);
+    await widget.storeRepository.remove(store);
+    await PriceRepository().removeByStore(store);
     setState(() {
       _storeList.remove(store);
     });
