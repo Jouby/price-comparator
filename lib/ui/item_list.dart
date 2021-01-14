@@ -20,7 +20,12 @@ class ItemList extends StatefulWidget {
   final PriceRepository priceRepository;
   final StoreRepository storeRepository;
 
-  ItemList({Key key, @required this.itemRepository, this.priceRepository, this.storeRepository}) : super(key: key);
+  ItemList(
+      {Key key,
+      @required this.itemRepository,
+      this.priceRepository,
+      this.storeRepository})
+      : super(key: key);
   @override
   _ItemListState createState() => _ItemListState();
 }
@@ -47,8 +52,12 @@ class _ItemListState extends State<ItemList> {
               color: Colors.white,
               tooltip: Translate.translate('Stores'),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute<void>(builder: (context) => StoreList(storeRepository: widget.storeRepository,)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                        builder: (context) => StoreList(
+                              storeRepository: widget.storeRepository,
+                            )));
               },
             ),
             IconButton(

@@ -27,7 +27,7 @@ void main() {
         data: MediaQueryData(),
         child: MaterialApp(
             home: Price(
-              price: price,
+          price: price,
           priceRepository: mockPriceRepository,
         )));
 

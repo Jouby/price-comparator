@@ -11,10 +11,7 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 class StoreList extends StatefulWidget {
   final StoreRepository storeRepository;
 
-    StoreList(
-      {Key key,
-      @required this.storeRepository})
-      : super(key: key);
+  StoreList({Key key, @required this.storeRepository}) : super(key: key);
 
   @override
   _StoreListState createState() => _StoreListState();

@@ -12,7 +12,8 @@ class Price extends StatefulWidget {
   final PriceModel price;
   final PriceRepository priceRepository;
 
-  Price({Key key, @required this.price, this.priceRepository}) : super(key: key);
+  Price({Key key, @required this.price, this.priceRepository})
+      : super(key: key);
 
   @override
   _PriceState createState() => _PriceState();

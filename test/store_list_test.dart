@@ -24,7 +24,7 @@ void main() {
           '2': store2,
         });
 
-       Widget testWidget = MediaQuery(
+    Widget testWidget = MediaQuery(
         data: MediaQueryData(),
         child: MaterialApp(
             home: StoreList(
