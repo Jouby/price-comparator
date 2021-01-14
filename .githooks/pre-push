@@ -11,6 +11,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+make coverage-generate
+if [ $? -ne 0 ]; then
+  echo >&2 "Generate coverage failed"
+  exit 1
+fi
+
 make coverage-upload
 if [ $? -ne 0 ]; then
   echo >&2 "Upload coverage failed"
