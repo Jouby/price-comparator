@@ -45,16 +45,19 @@ class _ItemListState extends State<ItemList> {
               },
             ),
             IconButton(
-              icon: Icon(CustomIcons.params),
-              color: Colors.white,
-              tooltip: Translate.translate('Settings'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                        builder: (context) => SettingsList()));
-              },
-            ),
+                icon: Icon(CustomIcons.params),
+                color: Colors.white,
+                tooltip: Translate.translate('Settings'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                          builder: (context) => SettingsList())).then((value) {
+                    setState(() {
+                      _initializeItemList();
+                    });
+                  });
+                }),
           ]),
       body: Container(
         child: Column(

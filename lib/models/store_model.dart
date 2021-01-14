@@ -1,13 +1,22 @@
 import 'dart:convert';
 
 import 'package:the_dead_masked_company.price_comparator/models/model_interface.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 
 /// The Store model
 class StoreModel implements ModelInterface {
   String id;
   String name;
 
-  StoreModel(this.name);
+  StoreModel(this.name) {
+    StoreRepository.getAll().then((storeList) {
+      storeList.forEach((key, value) {
+        if (name == value.name) {
+          id = value.id;
+        }
+      });
+    });
+  }
 
   @override
   String toString() {
