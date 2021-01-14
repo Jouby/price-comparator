@@ -14,8 +14,10 @@ set-git-hooks:
 	git config core.hooksPath .githooks/
 unset-git-hooks: 
 	git config core.hooksPath .git/hooks/
-generate-coverage:
+coverage-generate:
 	flutter test --coverage && genhtml coverage/lcov.info -o coverage 
+coverage-upload: 
+	curl -s https://codecov.io/bash | bash -s -
 run-format:
 	flutter format .
 run-analyze:
