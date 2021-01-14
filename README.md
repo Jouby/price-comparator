@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gl/Jouby/price-comparator/branch/master/graph/badge.svg?token=8TTLMQ5BZS)](https://codecov.io/gl/Jouby/price-comparator)
+
 # Price Comparator
 
 A Flutter project created to compare price in differents local store. You have to create your current stores and your current article in the app. You can associate a price with an article and a store.
