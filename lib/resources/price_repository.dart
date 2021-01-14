@@ -36,7 +36,7 @@ class PriceRepository {
           var priceData = qds.data();
 
           priceData['item'] =
-              await ItemRepository.get(priceData['item'].toString());
+              await ItemRepository().get(priceData['item'].toString());
           priceData['store'] =
               await StoreRepository.get(priceData['store'].toString());
 

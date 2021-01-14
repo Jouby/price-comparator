@@ -14,6 +14,9 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 /// Main screen
 /// Display item list (sort alphabetically or possible to filter)
 class ItemList extends StatefulWidget {
+  final ItemRepository itemRepository;
+
+  ItemList({Key key, @required this.itemRepository}) : super(key: key);
   @override
   _ItemListState createState() => _ItemListState();
 }
@@ -95,10 +98,10 @@ class _ItemListState extends State<ItemList> {
 
   /// Add item by [name]
   Future<bool> _addItem(ItemModel item) async {
-    var itemList = await ItemRepository.getAll();
+    var itemList = await widget.itemRepository.getAll();
 
     if (item.name.isNotEmpty && !itemList.containsKey(item.id)) {
-      await ItemRepository.add(item);
+      await widget.itemRepository.add(item);
       _itemList.add(item);
       _displayedItemList.add(item);
       filterSearchResults(editingController.text);
@@ -110,7 +113,7 @@ class _ItemListState extends State<ItemList> {
 
   /// Initialize item list
   void _initializeItemList() async {
-    await ItemRepository.getAll().then((list) {
+    await widget.itemRepository.getAll().then((list) {
       setState(() {
         _itemList = list.entries.map((e) => e.value).toList();
         _displayedItemList = List.from(_itemList);
@@ -124,7 +127,7 @@ class _ItemListState extends State<ItemList> {
   /// Remove [item] from item list
   void _removeItem(ItemModel item) async {
     _itemList.remove(item);
-    await ItemRepository.remove(item);
+    await widget.itemRepository.remove(item);
     filterSearchResults(editingController.text);
   }
 

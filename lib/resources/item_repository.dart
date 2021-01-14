@@ -13,8 +13,15 @@ class ItemRepository {
   /// Item list
   static Map<String, ItemModel> _itemList;
 
+  static final ItemRepository _singleton = ItemRepository._internal();
+
+  factory ItemRepository() {
+    return _singleton;
+  }
+  ItemRepository._internal();
+
   /// Get items
-  static Future<Map<String, ItemModel>> getAll() async {
+  Future<Map<String, ItemModel>> getAll() async {
     if (_itemList == null) {
       /// Get all datas from database for current user
 
@@ -40,8 +47,8 @@ class ItemRepository {
   }
 
   /// Get item by [id]
-  static FutureOr<ItemModel> get(String id) async {
-    await ItemRepository.getAll();
+  FutureOr<ItemModel> get(String id) async {
+    await getAll();
 
     if (_itemList[id] != null) {
       return _itemList[id];
@@ -70,7 +77,7 @@ class ItemRepository {
   }
 
   /// Check if we can add [item]
-  static String _canAdd(ItemModel item) {
+  String _canAdd(ItemModel item) {
     var canAdd = '';
     for (var itemFromList in _itemList.values) {
       if (itemFromList.name == item.name) {
@@ -83,16 +90,16 @@ class ItemRepository {
   }
 
   /// Add [item]
-  static Future<Map<String, dynamic>> add(ItemModel item) async {
+  Future<Map<String, dynamic>> add(ItemModel item) async {
     Map<String, dynamic> result = <String, bool>{'success': false};
 
     if (item.id != null) {
       return _update(item);
     }
 
-    await ItemRepository.getAll();
+    await getAll();
 
-    var check = ItemRepository._canAdd(item);
+    var check = _canAdd(item);
 
     if (check == '') {
       var userId = await UserRepository.getUserId();
@@ -121,7 +128,7 @@ class ItemRepository {
   }
 
   /// Check if we can update [item]
-  static String _canUpdate(ItemModel item) {
+  String _canUpdate(ItemModel item) {
     var canUpdate = '';
 
     for (var itemFromList in _itemList.values) {
@@ -136,12 +143,12 @@ class ItemRepository {
   }
 
   /// Update [item]
-  static Future<Map<String, dynamic>> _update(ItemModel item) async {
+  Future<Map<String, dynamic>> _update(ItemModel item) async {
     Map<String, dynamic> result;
 
-    await ItemRepository.getAll();
+    await getAll();
 
-    var check = ItemRepository._canUpdate(item);
+    var check = _canUpdate(item);
 
     if (check == '') {
       var userId = await UserRepository.getUserId();
@@ -169,8 +176,8 @@ class ItemRepository {
   }
 
   /// Remove [item]
-  static Future<Map<String, ItemModel>> remove(ItemModel item) async {
-    await ItemRepository.getAll();
+  Future<Map<String, ItemModel>> remove(ItemModel item) async {
+    await getAll();
 
     var userId = await UserRepository.getUserId();
 
@@ -187,7 +194,7 @@ class ItemRepository {
   }
 
   /// Dispose item data
-  static void dispose() {
+  void dispose() {
     if (_itemList != null) _itemList = null;
   }
 }

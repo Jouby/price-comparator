@@ -25,7 +25,7 @@ class Importer extends StatelessWidget {
     var jsonResult = json.decode(data) as Map<String, dynamic>;
 
     for (var name in jsonResult['items_list'] as List<dynamic>) {
-      await ItemRepository.add(ItemModel(name.toString()));
+      await ItemRepository().add(ItemModel(name.toString()));
     }
     jsonResult.remove('items_list');
 

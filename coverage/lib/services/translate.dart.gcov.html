@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">4</td>
             <td class="headerCovTableEntry">8</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-11-19 19:09:17</td>
+            <td class="headerValue">2021-01-14 17:23:14</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -67,7 +67,7 @@
 <a name="5"><span class="lineNum">       5 </span>            : /// Used for i18n, based language is English</a>
 <a name="6"><span class="lineNum">       6 </span>            : class Translate extends StatelessWidget {</a>
 <a name="7"><span class="lineNum">       7 </span>            :   /// English - French translations</a>
-<a name="8"><span class="lineNum">       8 </span><span class="lineNoCov">          0 :   static Map&lt;String, String&gt; translations = {</span></a>
+<a name="8"><span class="lineNum">       8 </span><span class="lineCov">          3 :   static Map&lt;String, String&gt; translations = {</span></a>
 <a name="9"><span class="lineNum">       9 </span>            :     'Price Comparator': 'Comparateur de prix',</a>
 <a name="10"><span class="lineNum">      10 </span>            :     'Stores': 'Magasins',</a>
 <a name="11"><span class="lineNum">      11 </span>            :     'Add a new store': 'Ajouter un nouveau magasin',</a>
@@ -106,12 +106,12 @@
 <a name="44"><span class="lineNum">      44 </span>            :   }</a>
 <a name="45"><span class="lineNum">      45 </span>            : </a>
 <a name="46"><span class="lineNum">      46 </span>            :   /// Translate [string] with some [parameters]</a>
-<a name="47"><span class="lineNum">      47 </span><span class="lineNoCov">          0 :   static String translate(String string, [List&lt;String&gt; parameters]) {</span></a>
-<a name="48"><span class="lineNum">      48 </span><span class="lineNoCov">          0 :     if (translations.keys.contains(string)) {</span></a>
-<a name="49"><span class="lineNum">      49 </span><span class="lineNoCov">          0 :       string = translations[string];</span></a>
+<a name="47"><span class="lineNum">      47 </span><span class="lineCov">          1 :   static String translate(String string, [List&lt;String&gt; parameters]) {</span></a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineCov">          3 :     if (translations.keys.contains(string)) {</span></a>
+<a name="49"><span class="lineNum">      49 </span><span class="lineCov">          2 :       string = translations[string];</span></a>
 <a name="50"><span class="lineNum">      50 </span>            :       if (parameters != null) {</a>
-<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :         for (int i = 1; i &lt;= parameters.length; i++) {</span></a>
-<a name="52"><span class="lineNum">      52 </span><span class="lineNoCov">          0 :           String replace = parameters[i - 1];</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :         for (var i = 1; i &lt;= parameters.length; i++) {</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineNoCov">          0 :           var replace = parameters[i - 1];</span></a>
 <a name="53"><span class="lineNum">      53 </span><span class="lineNoCov">          0 :           string = string.replaceAll('%$i', '$replace');</span></a>
 <a name="54"><span class="lineNum">      54 </span>            :         }</a>
 <a name="55"><span class="lineNum">      55 </span>            :       }</a>

@@ -39,7 +39,7 @@ class _SettingsListState extends State<SettingsList> {
                       onPressed: () async {
                         UserRepository.dispose();
                         PriceRepository.dispose();
-                        ItemRepository.dispose();
+                        ItemRepository().dispose();
                         StoreRepository.dispose();
                         Navigator.pop(context);
                         await Navigator.of(context)

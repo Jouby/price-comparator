@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 import 'package:the_dead_masked_company.price_comparator/services/splashscreen.dart';
@@ -62,7 +63,9 @@ class App extends StatelessWidget {
         Constants.splashScreen: (BuildContext context) => ImageSplashScreen(),
         Constants.loginScreen: (BuildContext context) =>
             LoginSignupPage(auth: Auth()),
-        Constants.homeScreen: (BuildContext context) => ItemList()
+        Constants.homeScreen: (BuildContext context) => ItemList(
+              itemRepository: ItemRepository(),
+            )
       },
       initialRoute: Constants.splashScreen,
     );

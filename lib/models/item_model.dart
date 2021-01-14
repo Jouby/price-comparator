@@ -13,7 +13,7 @@ class ItemModel implements ModelInterface {
   Map<String, Map<String, dynamic>> prices = {};
 
   ItemModel(this.name) {
-    ItemRepository.getAll().then((itemList) {
+    ItemRepository().getAll().then((itemList) {
       itemList.forEach((key, value) {
         if (name == value.name) {
           id = value.id;

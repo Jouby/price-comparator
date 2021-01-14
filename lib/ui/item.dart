@@ -115,7 +115,7 @@ class _ItemState extends State<Item> {
       Tools.showError(context, Translate.translate('Fill this field.'));
     } else {
       item.name = name;
-      await ItemRepository.add(item).then((e) async {
+      await ItemRepository().add(item).then((e) async {
         if (e['success'] == true) {
           setState(() {});
           result = true;
