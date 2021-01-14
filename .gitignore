@@ -42,3 +42,5 @@ android/key.properties
 # Security
 ios/GoogleService-Info.plist
 android/app/google-services.json
+
+coverage/
