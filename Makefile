@@ -18,6 +18,7 @@ coverage-generate:
 	flutter test --coverage && genhtml coverage/lcov.info -o coverage 
 coverage-upload: 
 	curl -s https://codecov.io/bash | bash -s -
+run-coverage: coverage-generate coverage-upload
 run-format:
 	flutter format .
 run-analyze:
