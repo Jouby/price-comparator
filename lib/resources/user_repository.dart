@@ -1,19 +1,29 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 
 /// The User repository
-class UserRepository {
+class UserRepository extends CoreRepository {
   static final UserRepository _singleton = UserRepository._internal();
 
-  factory UserRepository() {
+  factory UserRepository({FirebaseFirestore databaseReference}) {
+    _singleton.setDatabaseReference(databaseReference);
     return _singleton;
   }
   UserRepository._internal();
 
-  /// Get User ID from local storage
-  Future<String> getUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('user_id') ?? '';
+  /// Get all datas from database for current user
+  Future<Map<String, dynamic>> getUserDataFromDatabase() async {
+    var userId = await getUserId();
+
+    if (userId.isNotEmpty) {
+      var snapshot = await getDatabaseReference().doc('$userId').get();
+
+      return snapshot.data();
+    }
+
+    return <String, dynamic>{};
   }
 
   /// Get User Name from local storage

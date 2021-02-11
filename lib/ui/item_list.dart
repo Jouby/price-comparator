@@ -4,6 +4,7 @@ import 'package:the_dead_masked_company.price_comparator/models/item_model.dart'
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/settings.dart';
@@ -19,12 +20,14 @@ class ItemList extends StatefulWidget {
   final ItemRepository itemRepository;
   final PriceRepository priceRepository;
   final StoreRepository storeRepository;
+  final UserRepository userRepository;
 
   ItemList(
       {Key key,
       @required this.itemRepository,
       this.priceRepository,
-      this.storeRepository})
+      this.storeRepository,
+      this.userRepository})
       : super(key: key);
   @override
   _ItemListState createState() => _ItemListState();
@@ -57,6 +60,7 @@ class _ItemListState extends State<ItemList> {
                     MaterialPageRoute<void>(
                         builder: (context) => StoreList(
                               storeRepository: widget.storeRepository,
+                              priceRepository: widget.priceRepository,
                             )));
               },
             ),
@@ -68,7 +72,12 @@ class _ItemListState extends State<ItemList> {
                   Navigator.push(
                       context,
                       MaterialPageRoute<void>(
-                          builder: (context) => SettingsList())).then((value) {
+                          builder: (context) => SettingsList(
+                                userRepository: widget.userRepository,
+                                priceRepository: widget.priceRepository,
+                                storeRepository: widget.storeRepository,
+                                itemRepository: widget.itemRepository,
+                              ))).then((value) {
                     setState(() {
                       _initializeItemList();
                     });
@@ -183,6 +192,7 @@ class _ItemListState extends State<ItemList> {
               item: item,
               priceRepository: widget.priceRepository,
               storeRepository: widget.storeRepository,
+              itemRepository: widget.itemRepository,
             )));
 
     if (result != null) {

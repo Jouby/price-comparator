@@ -4,13 +4,25 @@ import 'package:the_dead_masked_company.price_comparator/resources/price_reposit
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
-import 'package:the_dead_masked_company.price_comparator/services/importer.dart';
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
 /// The Settings list widget
 ///
 /// Display settings list (connection parameters)
 class SettingsList extends StatefulWidget {
+  final UserRepository userRepository;
+  final PriceRepository priceRepository;
+  final StoreRepository storeRepository;
+  final ItemRepository itemRepository;
+
+  SettingsList(
+      {Key key,
+      this.userRepository,
+      this.priceRepository,
+      this.storeRepository,
+      this.itemRepository})
+      : super(key: key);
+
   @override
   _SettingsListState createState() => _SettingsListState();
 }
@@ -37,32 +49,32 @@ class _SettingsListState extends State<SettingsList> {
                   children: [
                     RaisedButton(
                       onPressed: () async {
-                        UserRepository().dispose();
-                        PriceRepository().dispose();
-                        ItemRepository().dispose();
-                        StoreRepository().dispose();
-                        Navigator.pop(context);
+                        widget.userRepository.dispose();
+                        widget.priceRepository.dispose();
+                        widget.itemRepository.dispose();
+                        widget.storeRepository.dispose();
+                        // Navigator.pop(context);
                         await Navigator.of(context)
                             .pushReplacementNamed(Constants.loginScreen);
                       },
                       child: Text(Translate.translate('LOGOUT'),
                           style: TextStyle(fontSize: 20)),
                     ),
-                    RaisedButton(
-                      onPressed: () async {
-                        setState(() {
-                          loaderVisible = true;
-                        });
-                        await Importer.run(context).then((e) {
-                          setState(() {
-                            loaderVisible = false;
-                          });
-                          Navigator.pop(context);
-                        });
-                      },
-                      child: Text(Translate.translate('IMPORT PREVIOUS DATA'),
-                          style: TextStyle(fontSize: 20)),
-                    ),
+                    // RaisedButton(
+                    //   onPressed: () async {
+                    //     setState(() {
+                    //       loaderVisible = true;
+                    //     });
+                    //     await Importer.run(context).then((e) {
+                    //       setState(() {
+                    //         loaderVisible = false;
+                    //       });
+                    //       Navigator.pop(context);
+                    //     });
+                    //   },
+                    //   child: Text(Translate.translate('IMPORT PREVIOUS DATA'),
+                    //       style: TextStyle(fontSize: 20)),
+                    // ),
                   ],
                 ),
                 loader

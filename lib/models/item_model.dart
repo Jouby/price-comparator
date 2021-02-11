@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:the_dead_masked_company.price_comparator/models/model_interface.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 
 /// The Item model
 ///
@@ -12,15 +10,23 @@ class ItemModel implements ModelInterface {
   String name;
   Map<String, Map<String, dynamic>> prices = {};
 
-  ItemModel(this.name) {
-    ItemRepository().getAll().then((itemList) {
-      itemList.forEach((key, value) {
-        if (name == value.name) {
-          id = value.id;
-        }
-      });
-    });
+  static List<ItemModel> all = [];
+
+  factory ItemModel(String name) {
+    for (var item in ItemModel.all) {
+      if (name == item.name) {
+        item.name = name;
+        return item;
+      }
+    }
+    ;
+
+    var itemModel = ItemModel._internal(name);
+    all.add(itemModel);
+
+    return itemModel;
   }
+  ItemModel._internal(this.name);
 
   @override
   String toString() {

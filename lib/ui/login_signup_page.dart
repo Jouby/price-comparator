@@ -4,17 +4,20 @@ import 'package:the_dead_masked_company.price_comparator/services/authentificati
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 
 class LoginSignupPage extends StatefulWidget {
-  LoginSignupPage({this.auth, this.loginCallback});
+  LoginSignupPage(
+      {this.auth, this.globalKey, this.userRepository, this.loginCallback});
 
   final BaseAuth auth;
   final VoidCallback loginCallback;
+  final GlobalKey<FormState> globalKey;
+  final UserRepository userRepository;
 
   @override
-  State<StatefulWidget> createState() => _LoginSignupPageState();
+  State<LoginSignupPage> createState() => _LoginSignupPageState();
 }
 
 class _LoginSignupPageState extends State<LoginSignupPage> {
-  final _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey;
 
   String _email;
   String _password;
@@ -25,6 +28,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   @override
   void initState() {
+    _formKey = widget.globalKey;
     _errorMessage = '';
     _isLoading = false;
     _isLoginForm = true;
@@ -56,33 +60,17 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       try {
         if (_isLoginForm) {
           userId = await widget.auth.signIn(_email, _password);
-          print('Signed in: $userId');
-
-          //TODO chez Wunderlist on se base sur l'adresse email pour faire le match,
-          // du coup il faudrait que je save {email, name, rights} pour chaque personne a qui je partage
-          // pour ca il faut un formulaire ou on peut renseigner l'adresse email de la personne avec qui on veut partager
-          // et une liste des personnes à qui on a partagé
-
-          // _userRef.child("users/$userId").push().set(<String, String>{
-          //   "email": _email,
-          //   "password": _password,
-          // }).then((_) {
-          //   print('Transaction  committed.');
-          // });
-
         } else {
           userId = await widget.auth.signUp(_email, _password);
-          print('Signed up user: $userId');
         }
 
-        await UserRepository().setUserId(userId);
-        await UserRepository().setUserName(_email);
+        await widget.userRepository.setUserId(userId);
+        await widget.userRepository.setUserName(_email);
         setState(() {
           _isLoading = false;
         });
         await Navigator.of(context).pushReplacementNamed(Constants.homeScreen);
       } catch (e) {
-        print('Error: $e');
         setState(() {
           _isLoading = false;
           _errorMessage = e.toString();

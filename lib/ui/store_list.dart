@@ -10,8 +10,10 @@ import 'package:the_dead_masked_company.price_comparator/services/translate.dart
 /// Display store list and functionnality to manage stores
 class StoreList extends StatefulWidget {
   final StoreRepository storeRepository;
+  final PriceRepository priceRepository;
 
-  StoreList({Key key, @required this.storeRepository}) : super(key: key);
+  StoreList({Key key, @required this.storeRepository, this.priceRepository})
+      : super(key: key);
 
   @override
   _StoreListState createState() => _StoreListState();
@@ -75,7 +77,7 @@ class _StoreListState extends State<StoreList> {
   /// Delete [store] from store list
   void _removeStore(StoreModel store) async {
     await widget.storeRepository.remove(store);
-    await PriceRepository().removeByStore(store);
+    await widget.priceRepository.removeByStore(store);
     setState(() {
       _storeList.remove(store);
     });

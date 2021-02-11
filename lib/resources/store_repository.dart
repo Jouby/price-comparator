@@ -2,11 +2,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
 /// The Store repository
-class StoreRepository {
+class StoreRepository extends CoreRepository {
   /// Store list key index
   static const key = 'stores';
 
@@ -15,7 +14,8 @@ class StoreRepository {
 
   static final StoreRepository _singleton = StoreRepository._internal();
 
-  factory StoreRepository() {
+  factory StoreRepository({FirebaseFirestore databaseReference}) {
+    _singleton.setDatabaseReference(databaseReference);
     return _singleton;
   }
   StoreRepository._internal();
@@ -23,15 +23,13 @@ class StoreRepository {
   /// Get stores
   Future<Map<String, StoreModel>> getAll() async {
     if (_storeList == null) {
-      var userId = await UserRepository().getUserId();
+      var userId = await getUserId();
       _storeList = {};
 
       if (userId.isNotEmpty) {
         var key = StoreRepository.key;
-        var query = await CoreRepository.getDatabaseReference()
-            .doc(userId)
-            .collection(key)
-            .get();
+        var query =
+            await getDatabaseReference().doc(userId).collection(key).get();
 
         query.docs.forEach((QueryDocumentSnapshot qds) {
           var store = StoreModel.fromJson(qds.data());
@@ -52,10 +50,10 @@ class StoreRepository {
       return _storeList[id];
     }
 
-    var userId = await UserRepository().getUserId();
+    var userId = await getUserId();
 
     if (userId.isNotEmpty) {
-      await CoreRepository.getDatabaseReference()
+      await getDatabaseReference()
           .doc(userId)
           .collection(StoreRepository.key)
           .doc(id)
@@ -100,10 +98,10 @@ class StoreRepository {
     var check = _canAdd(store);
 
     if (check == '') {
-      var userId = await UserRepository().getUserId();
+      var userId = await getUserId();
 
       if (userId.isNotEmpty) {
-        await CoreRepository.getDatabaseReference()
+        await getDatabaseReference()
             .doc(userId)
             .collection(StoreRepository.key)
             .add(store.toMap())
@@ -149,10 +147,10 @@ class StoreRepository {
     var check = _canUpdate(store);
 
     if (check == '') {
-      var userId = await UserRepository().getUserId();
+      var userId = await getUserId();
 
       if (userId.isNotEmpty) {
-        await CoreRepository.getDatabaseReference()
+        await getDatabaseReference()
             .doc(userId)
             .collection(StoreRepository.key)
             .doc(store.id)
@@ -177,12 +175,12 @@ class StoreRepository {
   Future<bool> remove(StoreModel store) async {
     await getAll();
 
-    var userId = await UserRepository().getUserId();
+    var userId = await getUserId();
 
     if (userId.isNotEmpty) {
       var key = StoreRepository.key;
       var id = store.id;
-      await CoreRepository.getDatabaseReference()
+      await getDatabaseReference()
           .doc('$userId/$key/$id')
           .delete()
           .then((docRef) {

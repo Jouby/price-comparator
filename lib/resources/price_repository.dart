@@ -3,24 +3,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
 
 // The Price repository
-class PriceRepository {
+class PriceRepository extends CoreRepository {
   /// Price key index
   static const key = 'prices';
+
+  ItemRepository itemRepository;
+  StoreRepository storeRepository;
 
   /// Price list
   static Map<String, List<PriceModel>> _priceList = {};
 
   static final PriceRepository _singleton = PriceRepository._internal();
 
-  factory PriceRepository() {
+  factory PriceRepository(
+      {ItemRepository itemRepository,
+      StoreRepository storeRepository,
+      FirebaseFirestore databaseReference}) {
+    _singleton.itemRepository = itemRepository;
+    _singleton.storeRepository = storeRepository;
+    _singleton.setDatabaseReference(databaseReference);
     return _singleton;
   }
+
   PriceRepository._internal();
 
   /// Get prices by [item]
@@ -28,12 +37,12 @@ class PriceRepository {
     if (_priceList[item.id] == null) {
       /// Get all datas from database for current user
 
-      var userId = await UserRepository().getUserId();
+      var userId = await getUserId();
       _priceList[item.id] = [];
 
       if (userId.isNotEmpty) {
         var priceKey = PriceRepository.key;
-        var query = await CoreRepository.getDatabaseReference()
+        var query = await getDatabaseReference()
             .doc(userId)
             .collection(priceKey)
             .where('item', isEqualTo: item.id)
@@ -43,9 +52,9 @@ class PriceRepository {
           var priceData = qds.data();
 
           priceData['item'] =
-              await ItemRepository().get(priceData['item'].toString());
+              await itemRepository.get(priceData['item'].toString());
           priceData['store'] =
-              await StoreRepository().get(priceData['store'].toString());
+              await storeRepository.get(priceData['store'].toString());
 
           var price = PriceModel.fromJson(priceData);
           price.id = qds.id;
@@ -66,12 +75,12 @@ class PriceRepository {
 
     await getAllByItem(price.item);
 
-    var userId = await UserRepository().getUserId();
+    var userId = await getUserId();
 
     if (userId.isNotEmpty) {
       var priceKey = PriceRepository.key;
 
-      await CoreRepository.getDatabaseReference()
+      await getDatabaseReference()
           .doc(userId)
           .collection(priceKey)
           .add(price.toMap())
@@ -91,12 +100,12 @@ class PriceRepository {
   Future<List<PriceModel>> _update(PriceModel price) async {
     await getAllByItem(price.item);
 
-    var userId = await UserRepository().getUserId();
+    var userId = await getUserId();
 
     if (userId.isNotEmpty) {
       var priceKey = PriceRepository.key;
 
-      await CoreRepository.getDatabaseReference()
+      await getDatabaseReference()
           .doc(userId)
           .collection(priceKey)
           .doc(price.id)
@@ -113,11 +122,11 @@ class PriceRepository {
   Future<List<PriceModel>> remove(PriceModel price) async {
     await getAllByItem(price.item);
 
-    var userId = await UserRepository().getUserId();
+    var userId = await getUserId();
 
     if (userId.isNotEmpty) {
       var priceKey = PriceRepository.key;
-      await CoreRepository.getDatabaseReference()
+      await getDatabaseReference()
           .doc(userId)
           .collection(priceKey)
           .doc(price.id)
@@ -134,18 +143,18 @@ class PriceRepository {
   }
 
   Future<void> removeByStore(StoreModel store) async {
-    var userId = await UserRepository().getUserId();
+    var userId = await getUserId();
 
     if (userId.isNotEmpty) {
       var priceKey = PriceRepository.key;
 
-      await CoreRepository.getDatabaseReference()
+      await getDatabaseReference()
           .doc(userId)
           .collection(priceKey)
           .where('store', isEqualTo: store.id)
           .get()
           .then((QuerySnapshot querySnapshot) {
-        var batch = CoreRepository.getRootDatabaseReference().batch();
+        var batch = getRootDatabaseReference().batch();
         querySnapshot.docs.forEach((DocumentSnapshot doc) {
           batch.delete(doc.reference);
           _priceList[doc.get('item')]

@@ -2,11 +2,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
 
 /// The Item repository
-class ItemRepository {
+class ItemRepository extends CoreRepository {
   /// Item list key index
   static const key = 'items';
 
@@ -15,9 +14,11 @@ class ItemRepository {
 
   static final ItemRepository _singleton = ItemRepository._internal();
 
-  factory ItemRepository() {
+  factory ItemRepository({FirebaseFirestore databaseReference}) {
+    _singleton.setDatabaseReference(databaseReference);
     return _singleton;
   }
+
   ItemRepository._internal();
 
   /// Get items
@@ -25,15 +26,13 @@ class ItemRepository {
     if (_itemList == null) {
       /// Get all datas from database for current user
 
-      var userId = await UserRepository().getUserId();
+      var userId = await getUserId();
       _itemList = {};
 
       if (userId.isNotEmpty) {
         var key = ItemRepository.key;
-        var query = await CoreRepository.getDatabaseReference()
-            .doc(userId)
-            .collection(key)
-            .get();
+        var query =
+            await getDatabaseReference().doc(userId).collection(key).get();
 
         query.docs.forEach((QueryDocumentSnapshot qds) {
           var item = ItemModel.fromJson(qds.data());
@@ -54,10 +53,10 @@ class ItemRepository {
       return _itemList[id];
     }
 
-    var userId = await UserRepository().getUserId();
+    var userId = await getUserId();
 
     if (userId.isNotEmpty) {
-      await CoreRepository.getDatabaseReference()
+      await getDatabaseReference()
           .doc(userId)
           .collection(ItemRepository.key)
           .doc(id)
@@ -102,10 +101,10 @@ class ItemRepository {
     var check = _canAdd(item);
 
     if (check == '') {
-      var userId = await UserRepository().getUserId();
+      var userId = await getUserId();
 
       if (userId.isNotEmpty) {
-        await CoreRepository.getDatabaseReference()
+        await getDatabaseReference()
             .doc(userId)
             .collection(ItemRepository.key)
             .add(item.toMap())
@@ -151,10 +150,10 @@ class ItemRepository {
     var check = _canUpdate(item);
 
     if (check == '') {
-      var userId = await UserRepository().getUserId();
+      var userId = await getUserId();
 
       if (userId.isNotEmpty) {
-        await CoreRepository.getDatabaseReference()
+        await getDatabaseReference()
             .doc(userId)
             .collection(ItemRepository.key)
             .doc(item.id)
@@ -179,14 +178,12 @@ class ItemRepository {
   Future<Map<String, ItemModel>> remove(ItemModel item) async {
     await getAll();
 
-    var userId = await UserRepository().getUserId();
+    var userId = await getUserId();
 
     if (userId.isNotEmpty) {
       var key = ItemRepository.key;
-      var name = item.name;
-      await CoreRepository.getDatabaseReference()
-          .doc('$userId/$key/$name')
-          .delete();
+      var itemId = item.id;
+      await getDatabaseReference().doc('$userId/$key/$itemId').delete();
       _itemList.remove(item.id);
     }
 

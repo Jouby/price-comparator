@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 import 'package:the_dead_masked_company.price_comparator/services/splashscreen.dart';
@@ -28,7 +29,6 @@ class StartApp extends StatelessWidget {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          print('ERRRRRRRROR');
           print(snapshot.error);
           // TODO : handle when error to connect to DB
           return App();
@@ -63,12 +63,19 @@ class App extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
       routes: <String, WidgetBuilder>{
         Constants.splashScreen: (BuildContext context) => ImageSplashScreen(),
-        Constants.loginScreen: (BuildContext context) =>
-            LoginSignupPage(auth: Auth()),
+        Constants.loginScreen: (BuildContext context) => LoginSignupPage(
+              auth: Auth(),
+              globalKey: GlobalKey<FormState>(),
+              userRepository: UserRepository(),
+            ),
         Constants.homeScreen: (BuildContext context) => ItemList(
               itemRepository: ItemRepository(),
-              priceRepository: PriceRepository(),
+              priceRepository: PriceRepository(
+                itemRepository: ItemRepository(),
+                storeRepository: StoreRepository(),
+              ),
               storeRepository: StoreRepository(),
+              userRepository: UserRepository(),
             )
       },
       initialRoute: Constants.splashScreen,

@@ -1,4 +1,4 @@
-import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/data_version/data_version_1.dart';
 import 'package:the_dead_masked_company.price_comparator/services/data_version/data_version_2.dart';
 import 'package:the_dead_masked_company.price_comparator/services/data_version/data_version_interface.dart';
@@ -13,14 +13,26 @@ class DataManager {
   static const pubspecFilePath = 'pubspec.yaml';
   static const dataVersionNumber = 'data_version';
 
+  UserRepository userRepository;
+
+  static final DataManager _singleton = DataManager._internal();
+
+  factory DataManager({UserRepository userRepository}) {
+    _singleton.userRepository = userRepository;
+
+    return _singleton;
+  }
+
+  DataManager._internal();
+
   /// Upgrade data
   ///
   /// 1. Load data from databse
   /// 2. Change data if we have new data_version in application
   /// 3. Update and send data to database
-  static Future<void> upgradeData() async {
-    await DataManager._loadData().then((currentDataVersion) {
-      DataManager._getAppDataVersion().then((appDataVersion) async {
+  Future<void> upgradeData() async {
+    await _loadData().then((currentDataVersion) {
+      _getAppDataVersion().then((appDataVersion) async {
         var update = false;
 
         // TODO : Apply Data Update
@@ -41,15 +53,15 @@ class DataManager {
         }
 
         if (update) {
-          await DataManager._sendData(currentDataVersion);
+          await _sendData(currentDataVersion);
         }
       });
     });
   }
 
   /// Load data from database
-  static Future<int> _loadData() async {
-    var dataFromDB = await CoreRepository.getUserDataFromDatabase();
+  Future<int> _loadData() async {
+    var dataFromDB = await userRepository.getUserDataFromDatabase();
     var dataVersionNumber =
         dataFromDB[DataManager.dataVersionNumber] as int ?? 1;
     DataVersionInterface dataVersionPatch;
@@ -73,7 +85,7 @@ class DataManager {
   }
 
   /// Send new data version to database
-  static Future<void> _sendData(int currentDataVersion) async {
+  Future<void> _sendData(int currentDataVersion) async {
     DataVersionInterface dataVersionPatch;
 
     switch (currentDataVersion) {
@@ -96,7 +108,7 @@ class DataManager {
   }
 
   /// Get Application data version from pubspec.yaml
-  static Future<int> _getAppDataVersion() async {
+  Future<int> _getAppDataVersion() async {
     var pubspecContent =
         await rootBundle.loadString(DataManager.pubspecFilePath);
     var yaml = loadYaml(pubspecContent) as Map;

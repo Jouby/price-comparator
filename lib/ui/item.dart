@@ -16,12 +16,14 @@ class Item extends StatefulWidget {
   final ItemModel item;
   final PriceRepository priceRepository;
   final StoreRepository storeRepository;
+  final ItemRepository itemRepository;
 
   Item(
       {Key key,
       @required this.item,
       this.priceRepository,
-      this.storeRepository})
+      this.storeRepository,
+      this.itemRepository})
       : super(key: key);
 
   @override
@@ -116,7 +118,7 @@ class _ItemState extends State<Item> {
       Tools.showError(context, Translate.translate('Fill this field.'));
     } else {
       item.name = name;
-      await ItemRepository().add(item).then((e) async {
+      await widget.itemRepository.add(item).then((e) async {
         if (e['success'] == true) {
           setState(() {});
           result = true;
@@ -355,7 +357,10 @@ class _ItemState extends State<Item> {
     await Navigator.push(
       context,
       MaterialPageRoute<Map<String, dynamic>>(
-          builder: (context) => Price(price: price)),
+          builder: (context) => Price(
+                price: price,
+                priceRepository: widget.priceRepository,
+              )),
     );
 
     if (price != null) {

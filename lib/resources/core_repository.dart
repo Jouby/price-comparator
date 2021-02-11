@@ -1,34 +1,31 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// The Core repository
-///
-/// Used to send and get data from database
 abstract class CoreRepository {
   /// Database reference
-  static final FirebaseFirestore databaseReference = FirebaseFirestore.instance;
+  FirebaseFirestore databaseReference;
 
   /// Get the root database reference
-  static FirebaseFirestore getRootDatabaseReference() {
+  FirebaseFirestore getRootDatabaseReference() {
     return databaseReference;
   }
 
   /// Get the database reference
-  static CollectionReference getDatabaseReference() {
+  CollectionReference getDatabaseReference() {
     return databaseReference.collection('users');
   }
 
-  /// Get all datas from database for current user
-  static Future<Map<String, dynamic>> getUserDataFromDatabase() async {
-    var userId = await UserRepository().getUserId();
+  void setDatabaseReference(FirebaseFirestore databaseReference) {
+    this.databaseReference = (databaseReference != null)
+        ? databaseReference
+        : FirebaseFirestore.instance;
+  }
 
-    if (userId.isNotEmpty) {
-      var snapshot =
-          await CoreRepository.getDatabaseReference().doc('$userId').get();
-
-      return snapshot.data();
-    }
-
-    return <String, dynamic>{};
+  /// Get User ID from local storage
+  Future<String> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_id') ?? '';
   }
 }
