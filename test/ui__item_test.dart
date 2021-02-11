@@ -6,22 +6,22 @@ import 'package:the_dead_masked_company.price_comparator/models/price_model.dart
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item.dart';
-
 import 'mock.dart';
 
 void main() {
   MockPriceRepository mockPriceRepository;
   MockStoreRepository mockStoreRepository;
+  MockItemRepository mockItemRepository;
   ItemModel item;
   MockNavigatorObserver mockObserver;
 
   setUp(() {
     mockPriceRepository = MockPriceRepository();
     mockStoreRepository = MockStoreRepository();
+    mockItemRepository = MockItemRepository();
+    item = ItemModel('test');
   });
   testWidgets('Item : empty', (WidgetTester tester) async {
-    item = ItemModel('test');
-
     when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
 
     Widget testWidget = MediaQuery(
@@ -40,7 +40,6 @@ void main() {
   });
 
   testWidgets('Item : display store', (WidgetTester tester) async {
-    item = ItemModel('test');
     var store1 = StoreModel('Store 1');
     var store2 = StoreModel('Store 2');
     var store3 = StoreModel('Store 3');
@@ -71,7 +70,6 @@ void main() {
   });
 
   testWidgets('Item : minimum price', (WidgetTester tester) async {
-    item = ItemModel('test');
     var store1 = StoreModel('Store 1');
     var store2 = StoreModel('Store 2');
     var store3 = StoreModel('Store 3');
@@ -118,7 +116,6 @@ void main() {
   });
 
   testWidgets('Item : pop to ItemList', (WidgetTester tester) async {
-    item = ItemModel('test');
     mockObserver = MockNavigatorObserver();
 
     when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
@@ -145,20 +142,21 @@ void main() {
   });
 
   testWidgets('Item : edit', (WidgetTester tester) async {
-    item = ItemModel('test');
     mockObserver = MockNavigatorObserver();
 
     when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
+    when(mockItemRepository.add(any)).thenAnswer(
+        (realInvocation) async => <String, dynamic>{'success': true});
 
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
         child: MaterialApp(
             navigatorObservers: [mockObserver],
             home: Item(
-              item: item,
-              priceRepository: mockPriceRepository,
-              storeRepository: mockStoreRepository,
-            )));
+                item: item,
+                priceRepository: mockPriceRepository,
+                storeRepository: mockStoreRepository,
+                itemRepository: mockItemRepository)));
 
     await tester.pumpWidget(testWidget);
 
@@ -186,7 +184,6 @@ void main() {
   });
 
   testWidgets('Item : remove', (WidgetTester tester) async {
-    item = ItemModel('test');
     mockObserver = MockNavigatorObserver();
 
     when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
@@ -229,7 +226,6 @@ void main() {
   });
 
   testWidgets('Item : display options', (WidgetTester tester) async {
-    item = ItemModel('test');
     var store1 = StoreModel('Store 1');
     var store2 = StoreModel('Store 2');
     var store3 = StoreModel('Store 3');
@@ -311,7 +307,6 @@ void main() {
   });
 
   testWidgets('Item : add price', (WidgetTester tester) async {
-    item = ItemModel('test');
     mockObserver = MockNavigatorObserver();
 
     var store1 = StoreModel('Store 1');

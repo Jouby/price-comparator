@@ -37,17 +37,17 @@ void main() {
   });
 
   testWidgets('ItemList: display item', (WidgetTester tester) async {
+    when(mockItemRepository.getAll()).thenAnswer((realInvocation) async => {
+          '1': ItemModel('1'),
+          '2': ItemModel('2'),
+        });
+
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
         child: MaterialApp(
             home: ItemList(
           itemRepository: mockItemRepository,
         )));
-
-    when(mockItemRepository.getAll()).thenAnswer((realInvocation) async => {
-          '1': ItemModel('1'),
-          '2': ItemModel('2'),
-        });
 
     await tester.pumpWidget(testWidget);
 
@@ -174,14 +174,11 @@ void main() {
   testWidgets('ItemList: add item', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
-    var item1 = ItemModel('1');
-    var item2 = ItemModel('2');
-    var item3 = ItemModel('3');
-
     when(mockItemRepository.getAll()).thenAnswer((realInvocation) async => {
-          '1': item1,
-          '2': item2,
+          '1': ItemModel('1'),
+          '2': ItemModel('2'),
         });
+    var item3 = ItemModel('3');
 
     when(mockPriceRepository.getAllByItem(item3))
         .thenAnswer((realInvocation) async => []);
