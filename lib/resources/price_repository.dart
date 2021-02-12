@@ -87,7 +87,8 @@ class PriceRepository extends CoreRepository {
           .then((docRef) {
         price.id = docRef.id;
         price.item.prices[price.id] = price.toMap();
-        var index = _priceList[price.item.id].indexWhere((_price) => _price.store.id == price.store.id);
+        var index = _priceList[price.item.id]
+            .indexWhere((_price) => _price.store.id == price.store.id);
         if (index == -1) {
           _priceList[price.item.id].add(price);
         } else {
