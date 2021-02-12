@@ -1,0 +1,34 @@
+# file updated using i18n_omatic
+
+format_version : 1
+
+strings : 
+  "Price Comparator" : "Comparateur de prix"
+  "Stores" : "Magasins"
+  "Settings" : "Options"
+  "Search" : "Recherche"
+  "Add a new item" : "Ajouter un article"
+  "Fill this field." : "Remplisser le champ"
+  "An item with same name already exists." : "Un object avec le même nom a déjà été créé."
+  "Enter item name" : "Taper le nom de l'objet"
+  "Edit" : "Modifier"
+  "Remove" : "Supprimer"
+  "Edit an item" : "Modifier un objet"
+  "The minimum price is " : "Le prix minimum est de "
+  " in " : " à "
+  "No data" : "Aucune donnée"
+  "Remove \"%name\" ?" : "Supprimer '%name' ?"
+  "Cancel" : "Annuler"
+  "Bio" : "Bio"
+  "Can" : "Conserve"
+  "Freeze" : "Surgelé"
+  "Wrap" : "Avec emballage"
+  "Add a new price" : "Ajouter un prix"
+  "Enter your price" : "Taper votre prix"
+  "Unavailable" : "Non Disponible"
+  "Save" : "Enregistrer"
+  "Add a new store" : "Ajouter un nouveau magasin"
+  "Enter store name" : "Taper le nom du magasin"
+  "Logout" : "Déconnexion"
+  "A store with same name already exists." : "Un magasin avec le même nom a déjà été créé."
+

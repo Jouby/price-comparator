@@ -7,7 +7,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/store_reposit
 import 'package:the_dead_masked_company.price_comparator/ui/price.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
-import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
 
 /// The Item widget
 ///
@@ -58,7 +58,7 @@ class _ItemState extends State<Item> {
           IconButton(
             icon: Icon(CustomIcons.pencil),
             color: Colors.white,
-            tooltip: Translate.translate('Edit'),
+            tooltip: 'Edit'.tr(),
             onPressed: () {
               showEditItemScreen(_item);
             },
@@ -66,7 +66,7 @@ class _ItemState extends State<Item> {
           IconButton(
             icon: Icon(CustomIcons.trash),
             color: Colors.white,
-            tooltip: Translate.translate('Remove'),
+            tooltip: 'Remove'.tr(),
             onPressed: () {
               _showRemoveItemDialog();
             },
@@ -115,7 +115,7 @@ class _ItemState extends State<Item> {
     var result = false;
 
     if (name.isEmpty) {
-      Tools.showError(context, Translate.translate('Fill this field.'));
+      Tools.showError(context, 'Fill this field.'.tr());
     } else {
       item.name = name;
       await widget.itemRepository.add(item).then((e) async {
@@ -135,7 +135,7 @@ class _ItemState extends State<Item> {
   void showEditItemScreen(ItemModel item) {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return Scaffold(
-          appBar: AppBar(title: Text(Translate.translate('Edit an item'))),
+          appBar: AppBar(title: Text('Edit an item'.tr())),
           body: TextField(
             autofocus: true,
             controller: TextEditingController(text: item.name),
@@ -149,7 +149,7 @@ class _ItemState extends State<Item> {
               });
             },
             decoration: InputDecoration(
-                hintText: Translate.translate('Enter item name'),
+                hintText: 'Enter item name'.tr(),
                 contentPadding: const EdgeInsets.all(16.0)),
           ));
     })).then((value) {
@@ -161,7 +161,7 @@ class _ItemState extends State<Item> {
   void _buildMinimumPriceText() {
     if (_minimumPrice != null) {
       _minPriceTextWidget = [
-        Text(Translate.translate('The minimum price is '),
+        Text('The minimum price is '.tr(),
             style: TextStyle(
                 fontFamily: 'Nunito', color: Colors.black, fontSize: 25)),
         RichText(
@@ -179,7 +179,7 @@ class _ItemState extends State<Item> {
                       fontFamily: 'Nunito',
                       color: Colors.red[700],
                       fontSize: 30)),
-              TextSpan(text: Translate.translate(' in ')),
+              TextSpan(text: ' in '.tr()),
               TextSpan(
                   text: _minimumPrice != null ? _minimumPrice.store.name : '',
                   style: TextStyle(
@@ -192,7 +192,7 @@ class _ItemState extends State<Item> {
       ];
     } else {
       _minPriceTextWidget = [
-        Text(Translate.translate('No data'),
+        Text('No data'.tr(),
             style: TextStyle(
                 fontFamily: 'Nunito', color: Colors.black, fontSize: 25))
       ];
@@ -207,13 +207,14 @@ class _ItemState extends State<Item> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              title: Text(Translate.translate('Remove "%1" ?', [_item.name])),
+              title: Text(
+                  'Remove "%name" ?'.tr(<String, String>{'name': _item.name})),
               actions: <Widget>[
                 FlatButton(
-                    child: Text(Translate.translate('CANCEL')),
+                    child: Text('Cancel'.tr().toUpperCase()),
                     onPressed: () => Navigator.of(context).pop()),
                 FlatButton(
-                    child: Text(Translate.translate('REMOVE')),
+                    child: Text('Remove'.tr().toUpperCase()),
                     onPressed: () {
                       remove = true;
                       Navigator.pop(context);
@@ -293,7 +294,7 @@ class _ItemState extends State<Item> {
           child: IconButton(
             icon: Icon(CustomIcons.leaf),
             color: Colors.green,
-            tooltip: Translate.translate('Bio'),
+            tooltip: 'Bio'.tr(),
             onPressed: () {},
           ),
         ));
@@ -304,7 +305,7 @@ class _ItemState extends State<Item> {
           child: IconButton(
             icon: Icon(CustomIcons.boxes),
             color: Colors.grey,
-            tooltip: Translate.translate('Can'),
+            tooltip: 'Can'.tr(),
             onPressed: () {},
           ),
         ));
@@ -315,7 +316,7 @@ class _ItemState extends State<Item> {
           child: IconButton(
             icon: Icon(CustomIcons.snowflake),
             color: Colors.blue[200],
-            tooltip: Translate.translate('Freeze'),
+            tooltip: 'Freeze'.tr(),
             onPressed: () {},
           ),
         ));
@@ -326,7 +327,7 @@ class _ItemState extends State<Item> {
           child: IconButton(
             icon: Icon(CustomIcons.prescription_bottle_alt),
             color: Colors.black,
-            tooltip: Translate.translate('Wrap'),
+            tooltip: 'Wrap'.tr(),
             onPressed: () {},
           ),
         ));

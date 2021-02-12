@@ -1,0 +1,34 @@
+# file updated using i18n_omatic
+
+format_version : 1
+
+strings : 
+  "Price Comparator" : null
+  "Stores" : null
+  "Settings" : null
+  "Search" : null
+  "Add a new item" : null
+  "Fill this field." : null
+  "An item with same name already exists." : null
+  "Enter item name" : null
+  "Edit" : null
+  "Remove" : null
+  "Edit an item" : null
+  "The minimum price is " : null
+  " in " : null
+  "No data" : null
+  "Remove \"%name\" ?" : null
+  "Bio" : null
+  "Can" : null
+  "Freeze" : null
+  "Wrap" : null
+  "Cancel" : null
+  "Add a new price" : null
+  "Enter your price" : null
+  "Unavailable" : null
+  "Save" : null
+  "Add a new store" : null
+  "Enter store name" : null
+  "Logout" : null
+  "A store with same name already exists." : null
+

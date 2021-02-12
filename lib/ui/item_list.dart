@@ -10,7 +10,7 @@ import 'package:the_dead_masked_company.price_comparator/services/custom_icons_i
 import 'package:the_dead_masked_company.price_comparator/ui/settings.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/store_list.dart';
 import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
-import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
 
 /// The Item list widget
 ///
@@ -47,43 +47,41 @@ class _ItemListState extends State<ItemList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(Translate.translate('Price Comparator')),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(CustomIcons.shop),
-              color: Colors.white,
-              tooltip: Translate.translate('Stores'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                        builder: (context) => StoreList(
-                              storeRepository: widget.storeRepository,
-                              priceRepository: widget.priceRepository,
-                            )));
-              },
-            ),
-            IconButton(
-                icon: Icon(CustomIcons.params),
-                color: Colors.white,
-                tooltip: Translate.translate('Settings'),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (context) => SettingsList(
-                                userRepository: widget.userRepository,
-                                priceRepository: widget.priceRepository,
-                                storeRepository: widget.storeRepository,
-                                itemRepository: widget.itemRepository,
-                              ))).then((value) {
-                    setState(() {
-                      _initializeItemList();
-                    });
-                  });
-                }),
-          ]),
+      appBar: AppBar(title: Text('Price Comparator'.tr()), actions: <Widget>[
+        IconButton(
+          icon: Icon(CustomIcons.shop),
+          color: Colors.white,
+          tooltip: 'Stores'.tr(),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                    builder: (context) => StoreList(
+                          storeRepository: widget.storeRepository,
+                          priceRepository: widget.priceRepository,
+                        )));
+          },
+        ),
+        IconButton(
+            icon: Icon(CustomIcons.params),
+            color: Colors.white,
+            tooltip: 'Settings'.tr(),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                      builder: (context) => SettingsList(
+                            userRepository: widget.userRepository,
+                            priceRepository: widget.priceRepository,
+                            storeRepository: widget.storeRepository,
+                            itemRepository: widget.itemRepository,
+                          ))).then((value) {
+                setState(() {
+                  _initializeItemList();
+                });
+              });
+            }),
+      ]),
       body: Container(
         child: Column(
           children: <Widget>[
@@ -95,8 +93,8 @@ class _ItemListState extends State<ItemList> {
                 },
                 controller: editingController,
                 decoration: InputDecoration(
-                    labelText: Translate.translate('Search'),
-                    hintText: Translate.translate('Search'),
+                    labelText: 'Search'.tr(),
+                    hintText: 'Search'.tr(),
                     prefixIcon: Icon(Icons.search),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)))),
@@ -113,7 +111,7 @@ class _ItemListState extends State<ItemList> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: _showAddItemScreen,
-          tooltip: Translate.translate('Add a new item'),
+          tooltip: 'Add a new item'.tr(),
           child: Icon(Icons.add)),
     );
   }
@@ -235,7 +233,7 @@ class _ItemListState extends State<ItemList> {
     Navigator.of(context).push(PageTransition<Map<String, dynamic>>(
         type: PageTransitionType.bottomToTop,
         child: Scaffold(
-            appBar: AppBar(title: Text(Translate.translate('Add a new item'))),
+            appBar: AppBar(title: Text('Add a new item'.tr())),
             body: TextField(
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,
@@ -246,15 +244,15 @@ class _ItemListState extends State<ItemList> {
                     Navigator.pop(context);
                     _goToItemScreen(context, item);
                   } else {
-                    var error = Translate.translate((name.isEmpty)
-                        ? 'Fill this field.'
-                        : 'An item with same name already exists.');
+                    var error = (name.isEmpty)
+                        ? 'Fill this field.'.tr()
+                        : 'An item with same name already exists.'.tr();
                     Tools.showError(context, error);
                   }
                 });
               },
               decoration: InputDecoration(
-                  hintText: Translate.translate('Enter item name'),
+                  hintText: 'Enter item name'.tr(),
                   contentPadding: const EdgeInsets.all(16.0)),
             ))));
   }

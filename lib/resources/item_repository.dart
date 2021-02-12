@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/item_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
 
 /// The Item repository
 class ItemRepository extends CoreRepository {
@@ -81,7 +81,7 @@ class ItemRepository extends CoreRepository {
     for (var itemFromList in _itemList.values) {
       if (itemFromList.name == item.name) {
         print('Error adding item document: duplicate ' + item.name);
-        canAdd = Translate.translate('An item with same name already exists.');
+        canAdd = 'An item with same name already exists.'.tr();
       }
     }
 
@@ -133,8 +133,7 @@ class ItemRepository extends CoreRepository {
     for (var itemFromList in _itemList.values) {
       if (itemFromList.id != item.id && itemFromList.name == item.name) {
         print('Error updating item document: duplicate ' + item.name);
-        canUpdate =
-            Translate.translate('An item with same name already exists.');
+        canUpdate = 'An item with same name already exists.'.tr();
       }
     }
 

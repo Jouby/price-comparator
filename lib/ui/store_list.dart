@@ -3,7 +3,7 @@ import 'package:the_dead_masked_company.price_comparator/models/store_model.dart
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
-import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
 
 /// The Store list widget
 ///
@@ -33,11 +33,11 @@ class _StoreListState extends State<StoreList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(Translate.translate('Stores'))),
+      appBar: AppBar(title: Text('Stores'.tr())),
       body: _buildStoreList(),
       floatingActionButton: FloatingActionButton(
           onPressed: _showAddStoreScreen,
-          tooltip: Translate.translate('Add a new store'),
+          tooltip: 'Add a new store'.tr(),
           child: Icon(Icons.add)),
     );
   }
@@ -54,7 +54,7 @@ class _StoreListState extends State<StoreList> {
     var result = false;
 
     if (name.isEmpty) {
-      Tools.showError(context, Translate.translate('Fill this field.'));
+      Tools.showError(context, 'Fill this field.'.tr());
     } else {
       var store = StoreModel(name);
       if (store.name.isNotEmpty && !_storeList.contains(store)) {
@@ -110,7 +110,7 @@ class _StoreListState extends State<StoreList> {
   void _showAddStoreScreen() {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return Scaffold(
-          appBar: AppBar(title: Text(Translate.translate('Add a new store'))),
+          appBar: AppBar(title: Text('Add a new store'.tr())),
           body: TextField(
             textCapitalization: TextCapitalization.sentences,
             autofocus: true,
@@ -123,7 +123,7 @@ class _StoreListState extends State<StoreList> {
               });
             },
             decoration: InputDecoration(
-                hintText: Translate.translate('Enter store name'),
+                hintText: 'Enter store name'.tr(),
                 contentPadding: const EdgeInsets.all(16.0)),
           ));
     }));
@@ -135,14 +135,14 @@ class _StoreListState extends State<StoreList> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              title:
-                  Text(Translate.translate('Remove "%1" ?', ['${store.name}'])),
+              title: Text(
+                  'Remove "%name" ?'.tr(<String, String>{'name': store.name})),
               actions: <Widget>[
                 FlatButton(
-                    child: Text(Translate.translate('CANCEL')),
+                    child: Text('Cancel'.tr().toUpperCase()),
                     onPressed: () => Navigator.of(context).pop()),
                 FlatButton(
-                    child: Text(Translate.translate('REMOVE')),
+                    child: Text('Remove'.tr().toUpperCase()),
                     onPressed: () {
                       _removeStore(store);
                       Navigator.of(context).pop();

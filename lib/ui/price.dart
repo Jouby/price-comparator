@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:the_dead_masked_company.price_comparator/models/price_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
-import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
 
 /// The Price widget
 ///
@@ -36,7 +36,7 @@ class _PriceState extends State<Price> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Translate.translate('Add a new price')),
+        title: Text('Add a new price'.tr()),
         leading: IconButton(
           icon: Icon(Icons.chevron_left),
           onPressed: () => Navigator.pop(context, returnData),
@@ -52,7 +52,7 @@ class _PriceState extends State<Price> {
                 allow: true)
           ],
           decoration: InputDecoration(
-            hintText: Translate.translate('Enter your price'),
+            hintText: 'Enter your price'.tr(),
             contentPadding: const EdgeInsets.all(16.0),
           ),
         ),
@@ -60,7 +60,7 @@ class _PriceState extends State<Price> {
             child: ListView(
           children: <Widget>[
             CheckboxListTile(
-              title: Text(Translate.translate('Bio')),
+              title: Text('Bio'.tr()),
               value: price.options['isBio'],
               onChanged: (val) {
                 setState(() {
@@ -70,7 +70,7 @@ class _PriceState extends State<Price> {
               secondary: const Icon(CustomIcons.leaf, color: Colors.green),
             ),
             CheckboxListTile(
-              title: Text(Translate.translate('Can')),
+              title: Text('Can'.tr()),
               value: price.options['isCan'],
               onChanged: (val) {
                 setState(() {
@@ -80,7 +80,7 @@ class _PriceState extends State<Price> {
               secondary: const Icon(CustomIcons.boxes, color: Colors.grey),
             ),
             CheckboxListTile(
-              title: Text(Translate.translate('Freeze')),
+              title: Text('Freeze'.tr()),
               value: price.options['isFreeze'],
               onChanged: (val) {
                 setState(() {
@@ -91,7 +91,7 @@ class _PriceState extends State<Price> {
                   const Icon(CustomIcons.snowflake, color: Color(0xFF90CAF9)),
             ),
             CheckboxListTile(
-              title: Text(Translate.translate('Wrap')),
+              title: Text('Wrap'.tr()),
               value: price.options['isWrap'],
               onChanged: (val) {
                 setState(() {
@@ -102,7 +102,7 @@ class _PriceState extends State<Price> {
                   color: Colors.black),
             ),
             CheckboxListTile(
-              title: Text(Translate.translate('Unavailable')),
+              title: Text('Unavailable'.tr()),
               value: price.options['isUnavailable'],
               onChanged: (val) {
                 setState(() {
@@ -117,7 +117,7 @@ class _PriceState extends State<Price> {
       ]),
       floatingActionButton: FloatingActionButton(
           onPressed: _submitPrice,
-          tooltip: Translate.translate('SAVE'),
+          tooltip: 'Save'.tr().toUpperCase(),
           child: Icon(Icons.save)),
     );
   }

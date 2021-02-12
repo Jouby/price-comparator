@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
@@ -61,6 +63,16 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Price Comparator',
       theme: ThemeData(primarySwatch: Colors.blue),
+      localizationsDelegates: [
+        I18nOMatic.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', 'US'),
+        const Locale('fr', 'FR'),
+      ],
       routes: <String, WidgetBuilder>{
         Constants.splashScreen: (BuildContext context) => ImageSplashScreen(),
         Constants.loginScreen: (BuildContext context) => LoginSignupPage(

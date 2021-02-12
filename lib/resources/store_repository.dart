@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/core_repository.dart';
-import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
 
 /// The Store repository
 class StoreRepository extends CoreRepository {
@@ -78,7 +78,7 @@ class StoreRepository extends CoreRepository {
     for (var storeFromList in _storeList.values) {
       if (storeFromList.name == store.name) {
         print('Error adding store document: duplicate ' + store.name);
-        canAdd = Translate.translate('A store with same name already exists.');
+        canAdd = 'A store with same name already exists.'.tr();
       }
     }
 
@@ -130,8 +130,7 @@ class StoreRepository extends CoreRepository {
     for (var storeFromList in _storeList.values) {
       if (storeFromList.id != store.id && storeFromList.name == store.name) {
         print('Error updating store document: duplicate ' + store.name);
-        canUpdate =
-            Translate.translate('A store with same name already exists.');
+        canUpdate = 'A store with same name already exists.'.tr();
       }
     }
 

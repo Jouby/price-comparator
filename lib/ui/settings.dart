@@ -4,7 +4,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/price_reposit
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
-import 'package:the_dead_masked_company.price_comparator/services/translate.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
 
 /// The Settings list widget
 ///
@@ -39,7 +39,7 @@ class _SettingsListState extends State<SettingsList> {
         : Container();
 
     return Scaffold(
-        appBar: AppBar(title: Text(Translate.translate('Paramètres'))),
+        appBar: AppBar(title: Text('Settings'.tr())),
         body: Container(
             margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
             child: Column(
@@ -57,7 +57,7 @@ class _SettingsListState extends State<SettingsList> {
                         await Navigator.of(context)
                             .pushReplacementNamed(Constants.loginScreen);
                       },
-                      child: Text(Translate.translate('LOGOUT'),
+                      child: Text('Logout'.tr().toUpperCase(),
                           style: TextStyle(fontSize: 20)),
                     ),
                   ],
