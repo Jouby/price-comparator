@@ -27,7 +27,7 @@ class _PriceState extends State<Price> {
   @override
   void initState() {
     price = widget.price;
-    priceController.text = price.value.toString();
+    priceController.text = (price.value == 0) ? '' : price.value.toString();
 
     super.initState();
   }
