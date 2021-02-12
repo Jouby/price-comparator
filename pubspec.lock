@@ -251,6 +251,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.5"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_riverpod:
     dependency: transitive
     description:
@@ -317,6 +322,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.4"
+  i18n_omatic:
+    dependency: "direct main"
+    description:
+      name: i18n_omatic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   image:
     dependency: transitive
     description:

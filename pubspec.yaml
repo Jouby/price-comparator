@@ -29,6 +29,7 @@ dependencies:
   hooks_riverpod: ^0.12.1
   flutter_hooks: ^0.15.0
   page_transition: "^1.1.7+3"
+  i18n_omatic: ^0.2.2
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +64,7 @@ flutter:
   assets:
     - pubspec.yaml
     - assets/
+    - assets/i18nomatic/fr_FR.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
