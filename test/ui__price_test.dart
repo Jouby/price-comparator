@@ -65,7 +65,8 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('Price : options', (WidgetTester tester) async {
+  testWidgets('Price : save', (WidgetTester tester) async {
+    price.value = 3.2;
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
         child: MaterialApp(
