@@ -60,21 +60,6 @@ class _SettingsListState extends State<SettingsList> {
                       child: Text(Translate.translate('LOGOUT'),
                           style: TextStyle(fontSize: 20)),
                     ),
-                    // RaisedButton(
-                    //   onPressed: () async {
-                    //     setState(() {
-                    //       loaderVisible = true;
-                    //     });
-                    //     await Importer.run(context).then((e) {
-                    //       setState(() {
-                    //         loaderVisible = false;
-                    //       });
-                    //       Navigator.pop(context);
-                    //     });
-                    //   },
-                    //   child: Text(Translate.translate('IMPORT PREVIOUS DATA'),
-                    //       style: TextStyle(fontSize: 20)),
-                    // ),
                   ],
                 ),
                 loader
