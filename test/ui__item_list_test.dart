@@ -17,6 +17,8 @@ void main() {
     mockItemRepository = MockItemRepository();
     mockStoreRepository = MockStoreRepository();
     mockPriceRepository = MockPriceRepository();
+    
+    MockSetUp.mockI18nOMatic();
   });
 
   testWidgets('ItemList: empty', (WidgetTester tester) async {

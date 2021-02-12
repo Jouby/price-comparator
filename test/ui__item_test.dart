@@ -20,6 +20,8 @@ void main() {
     mockStoreRepository = MockStoreRepository();
     mockItemRepository = MockItemRepository();
     item = ItemModel('test');
+
+    MockSetUp.mockI18nOMatic();
   });
   testWidgets('Item : empty', (WidgetTester tester) async {
     when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
@@ -106,12 +108,12 @@ void main() {
     expect(
         find.byWidgetPredicate((Widget widget) =>
             widget is RichText &&
-            widget.text.toPlainText() == '1,30€ à Store 2'),
+            widget.text.toPlainText() == '1,30€ in Store 2'),
         findsOneWidget);
     expect(
         find.byWidgetPredicate((Widget widget) =>
             widget is RichText &&
-            widget.text.toPlainText() == '2,00€ à Store 1'),
+            widget.text.toPlainText() == '2,00€ in Store 1'),
         findsNothing);
   });
 
@@ -206,10 +208,10 @@ void main() {
     await tester.tap(removeFinder);
     await tester.pumpAndSettle();
 
-    expect(find.text('Supprimer "test" ?'), findsOneWidget);
-    expect(find.text('ANNULER'), findsOneWidget);
+    expect(find.text('Remove "test" ?'), findsOneWidget);
+    expect(find.text('CANCEL'), findsOneWidget);
 
-    await tester.tap(find.text('ANNULER'));
+    await tester.tap(find.text('CANCEL'));
     await tester.pumpAndSettle();
 
     verify(mockObserver.didPop(any, any));
@@ -217,9 +219,9 @@ void main() {
     await tester.tap(removeFinder);
     await tester.pumpAndSettle();
 
-    expect(find.text('SUPPRIMER'), findsOneWidget);
+    expect(find.text('REMOVE'), findsOneWidget);
 
-    await tester.tap(find.text('SUPPRIMER'));
+    await tester.tap(find.text('REMOVE'));
     await tester.pumpAndSettle();
 
     verify(mockObserver.didPop(any, any));

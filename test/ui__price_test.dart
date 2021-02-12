@@ -15,6 +15,8 @@ void main() {
     mockPriceRepository = MockPriceRepository();
     var item = ItemModel('test');
     price = PriceModel(item, StoreModel('test store'));
+
+    MockSetUp.mockI18nOMatic();
   });
   testWidgets('Price : empty', (WidgetTester tester) async {
     Widget testWidget = MediaQuery(

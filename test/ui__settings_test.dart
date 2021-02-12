@@ -20,6 +20,8 @@ void main() {
     mockStoreRepository = MockStoreRepository();
     mockPriceRepository = MockPriceRepository();
     mockAuth = MockAuth();
+
+    MockSetUp.mockI18nOMatic();
   });
   testWidgets('Settings : empty', (WidgetTester tester) async {
     Widget testWidget = MediaQuery(

@@ -13,6 +13,8 @@ void main() {
   setUp(() {
     mockStoreRepository = MockStoreRepository();
     mockPriceRepository = MockPriceRepository();
+
+    MockSetUp.mockI18nOMatic();
   });
   testWidgets('StoreList: display store', (WidgetTester tester) async {
     var store1 = StoreModel('Store 1');
@@ -121,7 +123,7 @@ void main() {
 
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    var cancelFinder = find.text('ANNULER');
+    var cancelFinder = find.text('CANCEL');
     await tester.tap(cancelFinder);
     await tester.pumpAndSettle();
 
@@ -130,7 +132,7 @@ void main() {
     await tester.tap(storeFinder.first);
     await tester.pumpAndSettle();
 
-    var removeFinder = find.text('SUPPRIMER');
+    var removeFinder = find.text('REMOVE');
     await tester.tap(removeFinder);
     await tester.pumpAndSettle();
   });
