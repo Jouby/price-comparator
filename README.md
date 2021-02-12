@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gl/Jouby/price-comparator/branch/master/graph/badge.svg?token=8TTLMQ5BZS)](https://codecov.io/gl/Jouby/price-comparator) [![build status](https://gitlab.com/Jouby/price-comparator/badges/master/pipeline.svg)](https://gitlab.com/Jouby/price-comparator/-/pipelines)
+[![codecov](https://codecov.io/gl/Jouby/price-comparator/branch/master/graph/badge.svg?token=8TTLMQ5BZS)](https://codecov.io/gl/Jouby/price-comparator) [![build status](https://gitlab.com/Jouby/price-comparator/badges/master/pipeline.svg)](https://gitlab.com/Jouby/price-comparator/-/pipelines/latest)
 
 # Price Comparator
 
