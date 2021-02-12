@@ -11,3 +11,5 @@ analyze-and-test:
   script:
     - flutter analyze
     - flutter test
+    - bash <(curl -s https://codecov.io/bash)
+    
