@@ -10,7 +10,7 @@ class ItemRepository extends CoreRepository {
   static const key = 'items';
 
   /// Item list
-  static Map<String, ItemModel> _itemList;
+  Map<String, ItemModel> _itemList;
 
   static final ItemRepository _singleton = ItemRepository._internal();
 
@@ -174,7 +174,7 @@ class ItemRepository extends CoreRepository {
   }
 
   /// Remove [item]
-  Future<Map<String, ItemModel>> remove(ItemModel item) async {
+  Future<bool> remove(ItemModel item) async {
     await getAll();
 
     var userId = await getUserId();
@@ -182,15 +182,26 @@ class ItemRepository extends CoreRepository {
     if (userId.isNotEmpty) {
       var key = ItemRepository.key;
       var itemId = item.id;
-      await getDatabaseReference().doc('$userId/$key/$itemId').delete();
+      await getDatabaseReference()
+          .doc('$userId/$key/$itemId')
+          .delete()
+          .catchError((dynamic error) {
+        print('Error removing item document: $error');
+        return false;
+      });
+      ;
       _itemList.remove(item.id);
     }
 
-    return _itemList;
+    return true;
   }
 
   /// Dispose item data
   void dispose() {
     if (_itemList != null) _itemList = null;
+  }
+
+  Map<String, ItemModel> getInternalStoreList() {
+    return _itemList;
   }
 }
