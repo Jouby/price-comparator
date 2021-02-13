@@ -10,7 +10,7 @@ class StoreRepository extends CoreRepository {
   static const key = 'stores';
 
   /// Store list
-  static Map<String, StoreModel> _storeList;
+  Map<String, StoreModel> _storeList;
 
   static final StoreRepository _singleton = StoreRepository._internal();
 
@@ -42,8 +42,8 @@ class StoreRepository extends CoreRepository {
     return _storeList;
   }
 
-  /// Get item by [id]
-  FutureOr<StoreModel> get(String id) async {
+  /// Get store by [id]
+  Future<StoreModel> get(String id) async {
     await getAll();
 
     if (_storeList[id] != null) {
@@ -53,20 +53,20 @@ class StoreRepository extends CoreRepository {
     var userId = await getUserId();
 
     if (userId.isNotEmpty) {
-      await getDatabaseReference()
+      var doc = await getDatabaseReference()
           .doc(userId)
           .collection(StoreRepository.key)
           .doc(id)
           .get()
-          .then((doc) {
-        if (doc.exists) {
-          return StoreModel.fromJson(doc.data());
-        } else {
-          print('Error getting item document: $id');
-        }
-      }).catchError((dynamic error) {
+          .catchError((dynamic error) {
         print('Error updating price document: $error');
       });
+
+      if (doc.exists) {
+        return StoreModel.fromJson(doc.data());
+      } else {
+        print('Error getting item document: $id');
+      }
     }
 
     return null;
@@ -196,5 +196,9 @@ class StoreRepository extends CoreRepository {
   /// Dispose store data
   void dispose() {
     if (_storeList != null) _storeList = null;
+  }
+
+  Map<String, StoreModel> getInternalStoreList() {
+    return _storeList;
   }
 }

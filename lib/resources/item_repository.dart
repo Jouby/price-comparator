@@ -56,20 +56,20 @@ class ItemRepository extends CoreRepository {
     var userId = await getUserId();
 
     if (userId.isNotEmpty) {
-      await getDatabaseReference()
+      var doc = await getDatabaseReference()
           .doc(userId)
           .collection(ItemRepository.key)
           .doc(id)
           .get()
-          .then((doc) {
-        if (doc.exists) {
-          return ItemModel.fromJson(doc.data());
-        } else {
-          print('Error getting item document: $id');
-        }
-      }).catchError((dynamic error) {
+          .catchError((dynamic error) {
         print('Error updating price document: $error');
       });
+
+      if (doc.exists) {
+        return ItemModel.fromJson(doc.data());
+      } else {
+        print('Error getting item document: $id');
+      }
     }
 
     return null;
