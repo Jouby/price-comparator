@@ -17,7 +17,7 @@ void main() {
     mockItemRepository = MockItemRepository();
     mockStoreRepository = MockStoreRepository();
     mockPriceRepository = MockPriceRepository();
-    
+
     MockSetUp.mockI18nOMatic();
   });
 

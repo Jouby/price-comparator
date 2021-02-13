@@ -130,7 +130,7 @@ void main() {
     expect(storeList.containsValue(store), true);
 
     storeRepository.dispose();
-    
+
     storeList = await storeRepository.getInternalStoreList();
 
     expect(storeList, null);
