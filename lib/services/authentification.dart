@@ -14,11 +14,13 @@ abstract class BaseAuth {
 }
 
 class Auth implements BaseAuth {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  FirebaseAuth firebaseAuth;
+
+  Auth({this.firebaseAuth});
 
   @override
   Future<String> signIn(String email, String password) async {
-    var result = await _firebaseAuth.signInWithEmailAndPassword(
+    var result = await firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
     var user = result.user;
 
@@ -27,7 +29,7 @@ class Auth implements BaseAuth {
 
   @override
   Future<String> signUp(String email, String password) async {
-    var result = await _firebaseAuth.createUserWithEmailAndPassword(
+    var result = await firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
     var user = result.user;
 
@@ -36,17 +38,17 @@ class Auth implements BaseAuth {
 
   @override
   User getCurrentUser() {
-    return _firebaseAuth.currentUser;
+    return firebaseAuth.currentUser;
   }
 
   @override
   Future<void> signOut() async {
-    return _firebaseAuth.signOut();
+    return firebaseAuth.signOut();
   }
 
   @override
   Future<void> sendEmailVerification() async {
-    var user = _firebaseAuth.currentUser;
+    var user = firebaseAuth.currentUser;
     await user.sendEmailVerification();
   }
 }

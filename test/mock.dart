@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:i18n_omatic/i18n_omatic.dart';
 import 'package:mockito/mockito.dart';
@@ -35,6 +36,12 @@ class MockFormState extends MockWithExpandedToString implements FormState {}
 class MockI18nOMatic extends Mock implements I18nOMatic {}
 
 class MockFirestoreNotifier extends Mock implements FirestoreNotifier {}
+
+class MockFirebaseAuth extends Mock implements FirebaseAuth {}
+
+class MockUserCredential extends Mock implements UserCredential {}
+
+class MockUser extends Mock implements User {}
 
 class MockSetUp {
   static void mockI18nOMatic() {
