@@ -12,7 +12,6 @@ class StoreModel implements ModelInterface {
   factory StoreModel(String name) {
     for (var store in StoreModel.all) {
       if (name == store.name) {
-        store.name = name;
         return store;
       }
     }

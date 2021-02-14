@@ -15,7 +15,6 @@ class ItemModel implements ModelInterface {
   factory ItemModel(String name) {
     for (var item in ItemModel.all) {
       if (name == item.name) {
-        item.name = name;
         return item;
       }
     }
