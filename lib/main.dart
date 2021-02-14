@@ -74,7 +74,9 @@ class App extends StatelessWidget {
         const Locale('fr', 'FR'),
       ],
       routes: <String, WidgetBuilder>{
-        Constants.splashScreen: (BuildContext context) => ImageSplashScreen(),
+        Constants.splashScreen: (BuildContext context) => ImageSplashScreen(
+          userRepository: UserRepository(),
+        ),
         Constants.loginScreen: (BuildContext context) => LoginSignupPage(
               auth: Auth(),
               globalKey: GlobalKey<FormState>(),

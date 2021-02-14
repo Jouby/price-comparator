@@ -6,6 +6,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/price_reposit
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
+import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 
 abstract class MockWithExpandedToString extends Mock {
   @override
@@ -32,6 +33,8 @@ class MockGlobalKeyFormState extends Mock implements GlobalKey<FormState> {}
 class MockFormState extends MockWithExpandedToString implements FormState {}
 
 class MockI18nOMatic extends Mock implements I18nOMatic {}
+
+class MockFirestoreNotifier extends Mock implements FirestoreNotifier {}
 
 class MockSetUp {
   static void mockI18nOMatic() {

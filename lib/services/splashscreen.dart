@@ -10,6 +10,10 @@ import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 ///
 /// Display during 2 second an image before display the main UI screen
 class ImageSplashScreen extends StatefulHookWidget {
+  final UserRepository userRepository;
+
+  ImageSplashScreen({Key key, @required this.userRepository})
+      : super(key: key);
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -35,7 +39,7 @@ class _SplashScreenState extends State<ImageSplashScreen> {
   /// Navigate to Home screen
   void navigationPage() async {
     if (firestoreNotifier.isLoaded) {
-      var username = await UserRepository().getUserName();
+      var username = await widget.userRepository.getUserName();
       var route =
           username != null ? Constants.homeScreen : Constants.loginScreen;
       await Navigator.of(context).pushReplacementNamed(route);
