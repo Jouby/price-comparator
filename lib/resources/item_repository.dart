@@ -60,15 +60,10 @@ class ItemRepository extends CoreRepository {
           .doc(userId)
           .collection(ItemRepository.key)
           .doc(id)
-          .get()
-          .catchError((dynamic error) {
-        print('Error updating price document: $error');
-      });
+          .get();
 
       if (doc.exists) {
         return ItemModel.fromJson(doc.data());
-      } else {
-        print('Error getting item document: $id');
       }
     }
 
@@ -80,7 +75,6 @@ class ItemRepository extends CoreRepository {
     var canAdd = '';
     for (var itemFromList in _itemList.values) {
       if (itemFromList.name == item.name) {
-        print('Error adding item document: duplicate ' + item.name);
         canAdd = 'An item with same name already exists.'.tr();
       }
     }
@@ -113,7 +107,6 @@ class ItemRepository extends CoreRepository {
           _itemList[item.id] = item;
           result['success'] = true;
         }).catchError((dynamic error) {
-          print('Error addind item document: $error');
           result = <String, String>{
             'error': 'Error adding item document: $error'
           };
@@ -132,7 +125,6 @@ class ItemRepository extends CoreRepository {
 
     for (var itemFromList in _itemList.values) {
       if (itemFromList.id != item.id && itemFromList.name == item.name) {
-        print('Error updating item document: duplicate ' + item.name);
         canUpdate = 'An item with same name already exists.'.tr();
       }
     }
@@ -160,7 +152,6 @@ class ItemRepository extends CoreRepository {
             .then((docRef) {
           result = <String, bool>{'success': true};
         }).catchError((dynamic error) {
-          print('Error updating item document: $error');
           result = <String, String>{
             'error': 'Error updating item document: $error'
           };
