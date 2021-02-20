@@ -24,13 +24,6 @@ class _StoreListState extends State<StoreList> {
   List<StoreModel> _storeList;
 
   @override
-  void initState() {
-    _storeList = [];
-    _initializeStoreList();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Stores'.tr())),
@@ -42,11 +35,38 @@ class _StoreListState extends State<StoreList> {
     );
   }
 
+  /// Build store list widget
+  Widget _buildStoreList() {
+    return FutureBuilder<List<StoreModel>>(
+      builder: (context, projectSnap) {
+        if (projectSnap.connectionState == ConnectionState.none ||
+            projectSnap.data == null) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [CircularProgressIndicator()]
+          );
+        }
+        _storeList.sort((a, b) {
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        });
+
+        return ListView.builder(
+            itemCount: _storeList.length,
+            itemBuilder: (context, index) {
+              return _buildStore(_storeList[index]);
+            },
+          );
+      },
+      future: _getStoreList(),
+    );
+  }
+
   /// Initialize store list
-  void _initializeStoreList() async {
+  Future<List<StoreModel>> _getStoreList() async {
     var list = await widget.storeRepository.getAll() ?? {};
     _storeList = list.entries.map((e) => e.value).toList();
-    setState(() {});
+
+    return _storeList;
   }
 
   /// Add a store with [name]
@@ -81,21 +101,6 @@ class _StoreListState extends State<StoreList> {
     setState(() {
       _storeList.remove(store);
     });
-  }
-
-  /// Build store list widget
-  Widget _buildStoreList() {
-    _storeList.sort((a, b) {
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-    });
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        if (index < _storeList.length) {
-          return _buildStore(_storeList[index]);
-        }
-        return null;
-      },
-    );
   }
 
   /// Build [store] widget
