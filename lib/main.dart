@@ -76,12 +76,10 @@ class App extends StatelessWidget {
       ],
       routes: <String, WidgetBuilder>{
         Constants.splashScreen: (BuildContext context) => ImageSplashScreen(
-          userRepository: UserRepository(),
-        ),
+              userRepository: UserRepository(),
+            ),
         Constants.loginScreen: (BuildContext context) => LoginSignupPage(
-              auth: Auth(
-                firebaseAuth: FirebaseAuth.instance
-              ),
+              auth: Auth(firebaseAuth: FirebaseAuth.instance),
               globalKey: GlobalKey<FormState>(),
               userRepository: UserRepository(),
             ),

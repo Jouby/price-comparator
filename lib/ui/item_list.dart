@@ -39,12 +39,6 @@ class _ItemListState extends State<ItemList> {
   TextEditingController editingController = TextEditingController();
 
   @override
-  void initState() {
-    _initializeItemList();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Price Comparator'.tr()), actions: <Widget>[
@@ -76,9 +70,7 @@ class _ItemListState extends State<ItemList> {
                             storeRepository: widget.storeRepository,
                             itemRepository: widget.itemRepository,
                           ))).then((value) {
-                setState(() {
-                  _initializeItemList();
-                });
+                setState(() {});
               });
             }),
       ]),
@@ -89,7 +81,7 @@ class _ItemListState extends State<ItemList> {
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 onChanged: (value) {
-                  filterSearchResults(value);
+                  setState(() {});
                 },
                 controller: editingController,
                 decoration: InputDecoration(
@@ -100,12 +92,7 @@ class _ItemListState extends State<ItemList> {
                         borderRadius: BorderRadius.all(Radius.circular(25.0)))),
               ),
             ),
-            Expanded(
-              child: _buildItemList(),
-              // child: RefreshIndicator(
-              //     child: _buildItemList(),
-              //     onRefresh: DataUpdateRepository.resendData),
-            ),
+            _buildItemList(),
           ],
         ),
       ),
@@ -113,6 +100,30 @@ class _ItemListState extends State<ItemList> {
           onPressed: _showAddItemScreen,
           tooltip: 'Add a new item'.tr(),
           child: Icon(Icons.add)),
+    );
+  }
+
+  /// Build item list
+  Widget _buildItemList() {
+    return FutureBuilder<List<ItemModel>>(
+      builder: (context, projectSnap) {
+        if (projectSnap.connectionState == ConnectionState.none ||
+            projectSnap.data == null) {
+          return CircularProgressIndicator();
+        }
+
+        _displayedItemList.sort((a, b) {
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        });
+        return Expanded(
+            child: ListView.builder(
+          itemCount: _displayedItemList.length,
+          itemBuilder: (context, index) {
+            return _buildItem(_displayedItemList[index]);
+          },
+        ));
+      },
+      future: _getDisplayItemList(),
     );
   }
 
@@ -124,7 +135,7 @@ class _ItemListState extends State<ItemList> {
       await widget.itemRepository.add(item);
       _itemList.add(item);
       _displayedItemList.add(item);
-      filterSearchResults(editingController.text);
+      setState(() {});
       return true;
     }
 
@@ -132,38 +143,22 @@ class _ItemListState extends State<ItemList> {
   }
 
   /// Initialize item list
-  void _initializeItemList() async {
+  Future<List<ItemModel>> _getDisplayItemList() async {
     await widget.itemRepository.getAll().then((list) {
-      setState(() {
-        _itemList = list.entries.map((e) => e.value).toList();
-        _displayedItemList = List.from(_itemList);
-      });
+      _itemList = list.entries.map((e) => e.value).toList();
+      _displayedItemList = List.from(_itemList);
     });
 
-    _itemList ??= [];
-    _displayedItemList ??= [];
+    filterSearchResults(editingController.text);
+
+    return _displayedItemList;
   }
 
   /// Remove [item] from item list
   void _removeItem(ItemModel item) async {
     _itemList.remove(item);
     await widget.itemRepository.remove(item);
-    filterSearchResults(editingController.text);
-  }
-
-  /// Build item list
-  Widget _buildItemList() {
-    _displayedItemList.sort((a, b) {
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-    });
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        if (index < _displayedItemList.length) {
-          return _buildItem(_displayedItemList[index]);
-        }
-        return null;
-      },
-    );
+    setState(() {});
   }
 
   /// Build [item] card for item list
@@ -185,7 +180,7 @@ class _ItemListState extends State<ItemList> {
     final result = await Navigator.push(
         context,
         PageTransition<Map<String, dynamic>>(
-            type: PageTransitionType.rightToLeft,
+            type: PageTransitionType.rightToLeftWithFade,
             child: Item(
               item: item,
               priceRepository: widget.priceRepository,
@@ -217,15 +212,11 @@ class _ItemListState extends State<ItemList> {
           dummyListData.add(item);
         }
       });
-      setState(() {
-        _displayedItemList.addAll(dummyListData);
-      });
+      _displayedItemList.addAll(dummyListData);
       return;
     }
 
-    setState(() {
-      _displayedItemList.addAll(_itemList);
-    });
+    _displayedItemList.addAll(_itemList);
   }
 
   /// Show a screen to add a new item

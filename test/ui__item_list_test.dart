@@ -23,12 +23,14 @@ void main() {
 
   testWidgets('ItemList: empty', (WidgetTester tester) async {
     when(mockItemRepository.getAll()).thenAnswer((realInvocation) async => {});
+    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
 
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
         child: MaterialApp(
             home: ItemList(
           itemRepository: mockItemRepository,
+          storeRepository: mockStoreRepository,
         )));
 
     await tester.pumpWidget(testWidget);

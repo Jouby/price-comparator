@@ -32,7 +32,7 @@ class Item extends StatefulWidget {
 
 class _ItemState extends State<Item> {
   ItemModel _item;
-  List<PriceModel> _priceList = [];
+  List<PriceModel> _priceList;
   List<Widget> _minPriceTextWidget;
   PriceModel _minimumPrice;
   Map<String, dynamic> returnData = <String, dynamic>{};
@@ -40,7 +40,6 @@ class _ItemState extends State<Item> {
   @override
   void initState() {
     _item = widget.item;
-    _initializePriceList();
     super.initState();
   }
 
@@ -78,35 +77,72 @@ class _ItemState extends State<Item> {
           SizedBox(height: 10),
           ..._minPriceTextWidget,
           SizedBox(height: 10),
-          ...<Widget>[Expanded(child: _buildPriceItemList())]
+          ...<Widget>[_buildPriceItemList()]
         ],
       ),
+    );
+  }
+
+  Widget _buildPriceItemList() {
+    return FutureBuilder<List<PriceModel>>(
+      builder: (context, projectSnap) {
+        if (projectSnap.connectionState == ConnectionState.none ||
+            projectSnap.data == null) {
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CircularProgressIndicator()]);
+        }
+
+        projectSnap.data.sort((a, b) {
+          if (a.value == 0 || a.value == null) {
+            return 1;
+          }
+          if (b.value == 0 || b.value == null) {
+            return -1;
+          }
+          return a.value.compareTo(b.value);
+        });
+
+        return Expanded(
+            child: ListView.builder(
+          itemCount: projectSnap.data.length,
+          itemBuilder: (context, index) {
+            return _buildPriceItem(projectSnap.data[index]);
+          },
+        ));
+      },
+      future: _initializePriceList(),
     );
   }
 
   /// Initialize price list
   ///
   /// For current item, we display one price by store
-  Future<void> _initializePriceList() async {
-    _priceList = await widget.priceRepository.getAllByItem(_item) ?? [];
-    var storesList = await widget.storeRepository.getAll() ?? {};
+  Future<List<PriceModel>> _initializePriceList() async {
+    return await widget.priceRepository
+        .getAllByItem(_item)
+        .then((_priceList) async {
+      await widget.storeRepository.getAll().then((storesList) {
+        checkListToGetMinimumPrice(_priceList);
 
-    setState(() {
-      checkListToGetMinimumPrice();
-
-      storesList.forEach((key, store) {
-        var found = false;
-        for (var priceIndex = 0; priceIndex < _priceList.length; priceIndex++) {
-          if (_priceList[priceIndex].store.id == store.id) {
-            found = true;
-            break;
+        storesList.forEach((key, store) {
+          var found = false;
+          for (var priceIndex = 0;
+              priceIndex < _priceList.length;
+              priceIndex++) {
+            if (_priceList[priceIndex].store.id == store.id) {
+              found = true;
+              break;
+            }
           }
-        }
 
-        if (!found) {
-          _priceList.add(PriceModel(_item, store));
-        }
+          if (!found) {
+            _priceList.add(PriceModel(_item, store));
+          }
+        });
       });
+
+      return _priceList;
     });
   }
 
@@ -266,7 +302,7 @@ class _ItemState extends State<Item> {
   }
 
   /// Check price list to get minimum price to display
-  bool checkListToGetMinimumPrice() {
+  bool checkListToGetMinimumPrice(List<PriceModel> _priceList) {
     var result = false;
 
     for (var i = 0; i < _priceList.length; i++) {
@@ -367,25 +403,5 @@ class _ItemState extends State<Item> {
     if (price != null) {
       await _editPrice(price);
     }
-  }
-
-  /// Build _priceList used to display price list
-  Widget _buildPriceItemList() {
-    _priceList.sort((a, b) {
-      if (a.value == 0 || a.value == null) {
-        return 1;
-      }
-      if (b.value == 0 || b.value == null) {
-        return -1;
-      }
-      return a.value.compareTo(b.value);
-    });
-
-    return ListView.builder(
-      itemCount: _priceList.length,
-      itemBuilder: (context, index) {
-        return _buildPriceItem(_priceList[index]);
-      },
-    );
   }
 }

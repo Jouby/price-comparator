@@ -49,6 +49,8 @@ void main() {
     store2.id = '2';
     store3.id = '3';
 
+    when(mockPriceRepository.getAllByItem(any))
+        .thenAnswer((realInvocation) async => []);
     when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {
           '1': store1,
           '2': store2,
@@ -188,6 +190,8 @@ void main() {
   testWidgets('Item : remove', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
+    when(mockPriceRepository.getAllByItem(any))
+        .thenAnswer((realInvocation) async => []);
     when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
 
     Widget testWidget = MediaQuery(

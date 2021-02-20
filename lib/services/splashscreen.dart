@@ -12,8 +12,7 @@ import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 class ImageSplashScreen extends StatefulHookWidget {
   final UserRepository userRepository;
 
-  ImageSplashScreen({Key key, @required this.userRepository})
-      : super(key: key);
+  ImageSplashScreen({Key key, @required this.userRepository}) : super(key: key);
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }

@@ -18,7 +18,8 @@ void main() {
     mockUserRepository = MockUserRepository();
   });
 
-  testWidgets('Services - splashscreen : database loaded', (WidgetTester tester) async {
+  testWidgets('Services - splashscreen : database loaded',
+      (WidgetTester tester) async {
     when(mockUserRepository.getUserName())
         .thenAnswer((realInvocation) async => null);
 
@@ -47,7 +48,8 @@ void main() {
     expect(find.text('login screen'), findsOneWidget);
   });
 
-    testWidgets('Services - splashscreen : database unloaded', (WidgetTester tester) async {
+  testWidgets('Services - splashscreen : database unloaded',
+      (WidgetTester tester) async {
     await tester.pumpWidget(ProviderScope(
         child: MediaQuery(
             data: MediaQueryData(),
