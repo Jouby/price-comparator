@@ -20,5 +20,6 @@ class FirestoreNotifier extends ChangeNotifier {
 
 final firestoreProvider =
     ChangeNotifierProvider.autoDispose<FirestoreNotifier>((ref) {
+  ref.maintainState = true;
   return FirestoreNotifier();
 });
