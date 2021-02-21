@@ -173,6 +173,6 @@ class PriceRepository extends CoreRepository {
 
   /// Dispose price data
   void dispose() {
-    if (_priceList != null) _priceList = null;
+    if (_priceList != null) _priceList = {};
   }
 }
