@@ -32,7 +32,6 @@ class Item extends StatefulWidget {
 
 class _ItemState extends State<Item> {
   ItemModel _item;
-  List<PriceModel> _priceList;
   List<Widget> _minPriceTextWidget;
   PriceModel _minimumPrice;
   Map<String, dynamic> returnData = <String, dynamic>{};
@@ -275,26 +274,23 @@ class _ItemState extends State<Item> {
     }
   }
 
-  /// Reset variables used to display minimum price and store
-  void resetMinimumVariables() {
-    _minimumPrice = null;
-  }
-
   /// Edit [price]
   Future<bool> _editPrice(PriceModel price) async {
-    resetMinimumVariables();
+    _minimumPrice = null;
 
-    for (var i = 0; i < _priceList.length; i++) {
-      if (_priceList[i].store == price.store) {
-        setState(() {
-          _priceList[i] = price;
-        });
-      }
+    await widget.priceRepository.getAllByItem(_item).then((_priceList) async {
+      for (var i = 0; i < _priceList.length; i++) {
+        if (_priceList[i].store == price.store) {
+          setState(() {
+            _priceList[i] = price;
+          });
+        }
 
-      if (_priceList[i].value != 0) {
-        updateMinimumVariables(_priceList[i]);
+        if (_priceList[i].value != 0) {
+          updateMinimumVariables(_priceList[i]);
+        }
       }
-    }
+    });
 
     updateMinimumVariables(price);
 
@@ -315,7 +311,7 @@ class _ItemState extends State<Item> {
     return result;
   }
 
-  /// Build a [price] card for _priceList
+  /// Build a [price] card
   Widget _buildPriceItem(PriceModel price) {
     var text = '';
     var options = <Widget>[];
