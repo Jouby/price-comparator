@@ -71,7 +71,7 @@ class App extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('en', 'US'),
+        const Locale('en', ''),
         const Locale('fr', 'FR'),
       ],
       routes: <String, WidgetBuilder>{
