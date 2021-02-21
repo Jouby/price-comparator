@@ -53,9 +53,7 @@ class _SettingsListState extends State<SettingsList> {
                         widget.priceRepository.dispose();
                         widget.itemRepository.dispose();
                         widget.storeRepository.dispose();
-                        // Navigator.pop(context);
-                        await Navigator.of(context)
-                            .pushReplacementNamed(Constants.loginScreen);
+                        await Navigator.of(context).pushNamedAndRemoveUntil(Constants.loginScreen, (Route<dynamic> route) => false);
                       },
                       child: Text('Logout'.tr().toUpperCase(),
                           style: TextStyle(fontSize: 20)),
