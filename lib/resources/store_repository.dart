@@ -57,15 +57,10 @@ class StoreRepository extends CoreRepository {
           .doc(userId)
           .collection(StoreRepository.key)
           .doc(id)
-          .get()
-          .catchError((dynamic error) {
-        print('Error updating price document: $error');
-      });
+          .get();
 
       if (doc.exists) {
         return StoreModel.fromJson(doc.data());
-      } else {
-        print('Error getting item document: $id');
       }
     }
 
@@ -77,7 +72,6 @@ class StoreRepository extends CoreRepository {
     var canAdd = '';
     for (var storeFromList in _storeList.values) {
       if (storeFromList.name == store.name) {
-        print('Error adding store document: duplicate ' + store.name);
         canAdd = 'A store with same name already exists.'.tr();
       }
     }
@@ -110,7 +104,6 @@ class StoreRepository extends CoreRepository {
           _storeList[store.id] = store;
           result['success'] = true;
         }).catchError((dynamic error) {
-          print('Error adding store document: $error');
           result = <String, String>{
             'error': 'Error adding store document: $error'
           };
@@ -129,7 +122,6 @@ class StoreRepository extends CoreRepository {
 
     for (var storeFromList in _storeList.values) {
       if (storeFromList.id != store.id && storeFromList.name == store.name) {
-        print('Error updating store document: duplicate ' + store.name);
         canUpdate = 'A store with same name already exists.'.tr();
       }
     }
@@ -157,7 +149,6 @@ class StoreRepository extends CoreRepository {
             .then((docRef) {
           result = <String, bool>{'success': true};
         }).catchError((dynamic error) {
-          print('Error updating store document: $error');
           result = <String, String>{
             'error': 'Error updating store document: $error'
           };
@@ -185,7 +176,6 @@ class StoreRepository extends CoreRepository {
           .then((docRef) {
         _storeList.remove(store.id);
       }).catchError((dynamic error) {
-        print('Error removing store document: $error');
         return false;
       });
     }
