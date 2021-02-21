@@ -42,20 +42,19 @@ class _StoreListState extends State<StoreList> {
         if (projectSnap.connectionState == ConnectionState.none ||
             projectSnap.data == null) {
           return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [CircularProgressIndicator()]
-          );
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CircularProgressIndicator()]);
         }
         _storeList.sort((a, b) {
           return a.name.toLowerCase().compareTo(b.name.toLowerCase());
         });
 
         return ListView.builder(
-            itemCount: _storeList.length,
-            itemBuilder: (context, index) {
-              return _buildStore(_storeList[index]);
-            },
-          );
+          itemCount: _storeList.length,
+          itemBuilder: (context, index) {
+            return _buildStore(_storeList[index]);
+          },
+        );
       },
       future: _getStoreList(),
     );
