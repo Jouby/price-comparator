@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/login_signup_page.dart';
-import 'package:the_dead_masked_company.price_comparator/ui/settings.dart';
+import 'package:the_dead_masked_company.price_comparator/ui/account.dart';
 import 'mock.dart';
 
 void main() {
@@ -23,9 +23,9 @@ void main() {
 
     MockSetUp.mockI18nOMatic();
   });
-  testWidgets('Settings : empty', (WidgetTester tester) async {
-    Widget testWidget = MediaQuery(
-        data: MediaQueryData(), child: MaterialApp(home: SettingsList()));
+  testWidgets('Account : empty', (WidgetTester tester) async {
+    Widget testWidget =
+        MediaQuery(data: MediaQueryData(), child: MaterialApp(home: Account()));
 
     await tester.pumpWidget(testWidget);
 
@@ -33,7 +33,7 @@ void main() {
     expect(logoutFinder, findsOneWidget);
   });
 
-  testWidgets('Settings : logout', (WidgetTester tester) async {
+  testWidgets('Account : logout', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
     when(mockUserRepository.dispose())
@@ -52,7 +52,7 @@ void main() {
         routes: <String, WidgetBuilder>{
           Constants.loginScreen: (BuildContext context) =>
               LoginSignupPage(auth: mockAuth),
-          'settings': (BuildContext context) => SettingsList(
+          'settings': (BuildContext context) => Account(
                 userRepository: mockUserRepository,
                 itemRepository: mockItemRepository,
                 storeRepository: mockStoreRepository,

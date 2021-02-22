@@ -12,6 +12,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/user_reposito
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 import 'package:the_dead_masked_company.price_comparator/services/splashscreen.dart';
+import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item_list.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/login_signup_page.dart';
 
@@ -62,8 +63,7 @@ class App extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Price Comparator',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(primarySwatch: createMaterialColor(Colors.blue[700])),
       localizationsDelegates: [
         I18nOMatic.delegate,
         GlobalMaterialLocalizations.delegate,

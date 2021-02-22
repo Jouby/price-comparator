@@ -3,9 +3,7 @@
 format_version : 1
 
 strings : 
-  "Price Comparator" : "Comparateur de prix"
   "Stores" : "Magasins"
-  "Settings" : "Options"
   "Search" : "Recherche"
   "Add a new item" : "Ajouter un article"
   "Fill this field." : "Remplisser le champ"
@@ -31,4 +29,12 @@ strings :
   "Enter store name" : "Taper le nom du magasin"
   "Logout" : "Déconnexion"
   "A store with same name already exists." : "Un magasin avec le même nom a déjà été créé."
+  "My account" : "Mon compte"
+  "Email" : "Email"
+  "Email can't be empty" : "L'email ne peut être vide"
+  "Password" : "Mot de passe"
+  "Password can't be empty" : "Le mot de passe ne peut être vide"
+  "Have an account? Sign in" : "Avez-vous un compte? Connecter vous"
+  "Login" : "Connexion"
+  "Create account" : "Créer un compte"
 

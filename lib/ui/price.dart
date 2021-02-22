@@ -4,6 +4,7 @@ import 'package:the_dead_masked_company.price_comparator/models/price_model.dart
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:i18n_omatic/i18n_omatic.dart';
+import 'package:the_dead_masked_company.price_comparator/services/custom_theme.dart';
 
 /// The Price widget
 ///
@@ -35,10 +36,9 @@ class _PriceState extends State<Price> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add a new price'.tr()),
-        leading: IconButton(
-          icon: Icon(Icons.chevron_left),
+      appBar: CustomAppBar(
+        title: CustomAppBarTitle('Add a new price'.tr()),
+        leading: BackButton(
           onPressed: () => Navigator.pop(context, returnData),
         ),
       ),
@@ -115,7 +115,7 @@ class _PriceState extends State<Price> {
           ],
         )),
       ]),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: CustomFloatingActionButton(
           onPressed: _submitPrice,
           tooltip: 'Save'.tr().toUpperCase(),
           child: Icon(Icons.save)),

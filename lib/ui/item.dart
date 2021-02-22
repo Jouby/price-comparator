@@ -4,6 +4,7 @@ import 'package:the_dead_masked_company.price_comparator/models/price_model.dart
 import 'package:the_dead_masked_company.price_comparator/resources/item_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/services/custom_theme.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/price.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
 import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
@@ -46,24 +47,21 @@ class _ItemState extends State<Item> {
   Widget build(BuildContext context) {
     _buildMinimumPriceText();
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_item.name),
-        leading: IconButton(
-          icon: Icon(Icons.chevron_left),
+      appBar: CustomAppBar(
+        title: CustomAppBarTitle(_item.name),
+        leading: BackButton(
           onPressed: () => Navigator.pop(context, returnData),
         ),
         actions: <Widget>[
-          IconButton(
+          CustomIconButton(
             icon: Icon(CustomIcons.pencil),
-            color: Colors.white,
             tooltip: 'Edit'.tr(),
             onPressed: () {
               showEditItemScreen(_item);
             },
           ),
-          IconButton(
+          CustomIconButton(
             icon: Icon(CustomIcons.trash),
-            color: Colors.white,
             tooltip: 'Remove'.tr(),
             onPressed: () {
               _showRemoveItemDialog();
@@ -170,7 +168,7 @@ class _ItemState extends State<Item> {
   void showEditItemScreen(ItemModel item) {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return Scaffold(
-          appBar: AppBar(title: Text('Edit an item'.tr())),
+          appBar: CustomAppBar(title: CustomAppBarTitle('Edit an item'.tr())),
           body: TextField(
             autofocus: true,
             controller: TextEditingController(text: item.name),
@@ -205,22 +203,15 @@ class _ItemState extends State<Item> {
             style: TextStyle(
                 fontFamily: 'Nunito', color: Colors.black, fontSize: 25),
             children: <TextSpan>[
-              TextSpan(
+              CustomPrimaryTextSpan(
                   text: _minimumPrice.value
                           .toStringAsFixed(2)
                           .replaceAll('.', ',') +
-                      '€',
-                  style: TextStyle(
-                      fontFamily: 'Nunito',
-                      color: Colors.red[700],
-                      fontSize: 30)),
+                      '€'),
               TextSpan(text: ' in '.tr()),
-              TextSpan(
-                  text: _minimumPrice != null ? _minimumPrice.store.name : '',
-                  style: TextStyle(
-                      fontFamily: 'Nunito',
-                      color: Colors.red[700],
-                      fontSize: 30)),
+              CustomPrimaryTextSpan(
+                text: _minimumPrice != null ? _minimumPrice.store.name : '',
+              ),
             ],
           ),
         )

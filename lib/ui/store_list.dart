@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/services/custom_theme.dart';
 import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
 import 'package:i18n_omatic/i18n_omatic.dart';
 
@@ -26,9 +27,9 @@ class _StoreListState extends State<StoreList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Stores'.tr())),
+      appBar: CustomAppBar(title: CustomAppBarTitle('Stores'.tr())),
       body: _buildStoreList(),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: CustomFloatingActionButton(
           onPressed: _showAddStoreScreen,
           tooltip: 'Add a new store'.tr(),
           child: Icon(Icons.add)),

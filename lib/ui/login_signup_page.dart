@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/authentification.dart';
+import 'package:the_dead_masked_company.price_comparator/services/custom_theme.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
+import 'package:i18n_omatic/i18n_omatic.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage(
@@ -38,8 +40,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Connexion'),
+        appBar: CustomAppBar(
+          title: CustomAppBarTitle('Login'.tr()),
         ),
         body: Stack(
           children: <Widget>[
@@ -155,12 +157,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
         decoration: InputDecoration(
-            hintText: 'Email',
+            hintText: 'Email'.tr(),
             icon: Icon(
               Icons.mail,
               color: Colors.grey,
             )),
-        validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
+        validator: (value) =>
+            value.isEmpty ? 'Email can\'t be empty'.tr() : null,
         onSaved: (value) => _email = value.trim(),
       ),
     );
@@ -174,12 +177,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         obscureText: true,
         autofocus: false,
         decoration: InputDecoration(
-            hintText: 'Password',
+            hintText: 'Password'.tr(),
             icon: Icon(
               Icons.lock,
               color: Colors.grey,
             )),
-        validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+        validator: (value) =>
+            value.isEmpty ? 'Password can\'t be empty'.tr() : null,
         onSaved: (value) => _password = value.trim(),
       ),
     );
@@ -188,7 +192,9 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget showSecondaryButton() {
     return FlatButton(
         child: Text(
-            _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
+            _isLoginForm
+                ? 'Create account'.tr()
+                : 'Have an account? Sign in'.tr(),
             style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: toggleFormMode);
   }
@@ -203,7 +209,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0)),
             color: Colors.blue,
-            child: Text(_isLoginForm ? 'Login' : 'Create account',
+            child: Text(_isLoginForm ? 'Login'.tr() : 'Create account'.tr(),
                 style: TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: validateAndSubmit,
           ),

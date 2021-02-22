@@ -3,9 +3,7 @@
 format_version : 1
 
 strings : 
-  "Price Comparator" : null
   "Stores" : null
-  "Settings" : null
   "Search" : null
   "Add a new item" : null
   "Fill this field." : null
@@ -31,4 +29,12 @@ strings :
   "Enter store name" : null
   "Logout" : null
   "A store with same name already exists." : null
+  "My account" : null
+  "Email" : null
+  "Email can't be empty" : null
+  "Password" : null
+  "Password can't be empty" : null
+  "Have an account? Sign in" : null
+  "Login" : null
+  "Create account" : null
 

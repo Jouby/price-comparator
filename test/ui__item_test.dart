@@ -136,7 +136,7 @@ void main() {
 
     await tester.pumpWidget(testWidget);
 
-    var popFinder = find.byIcon(Icons.chevron_left);
+    var popFinder = find.byType(BackButton);
     expect(popFinder, findsOneWidget);
 
     await tester.tap(popFinder);

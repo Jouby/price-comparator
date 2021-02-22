@@ -5,9 +5,10 @@ import 'package:the_dead_masked_company.price_comparator/resources/item_reposito
 import 'package:the_dead_masked_company.price_comparator/resources/price_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
+import 'package:the_dead_masked_company.price_comparator/services/custom_theme.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/item.dart';
 import 'package:the_dead_masked_company.price_comparator/services/custom_icons_icons.dart';
-import 'package:the_dead_masked_company.price_comparator/ui/settings.dart';
+import 'package:the_dead_masked_company.price_comparator/ui/account.dart';
 import 'package:the_dead_masked_company.price_comparator/ui/store_list.dart';
 import 'package:the_dead_masked_company.price_comparator/services/tools.dart';
 import 'package:i18n_omatic/i18n_omatic.dart';
@@ -41,39 +42,42 @@ class _ItemListState extends State<ItemList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Price Comparator'.tr()), actions: <Widget>[
-        IconButton(
-          icon: Icon(CustomIcons.shop),
-          color: Colors.white,
-          tooltip: 'Stores'.tr(),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                    builder: (context) => StoreList(
-                          storeRepository: widget.storeRepository,
-                          priceRepository: widget.priceRepository,
-                        )));
-          },
-        ),
-        IconButton(
-            icon: Icon(CustomIcons.params),
-            color: Colors.white,
-            tooltip: 'Settings'.tr(),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                      builder: (context) => SettingsList(
-                            userRepository: widget.userRepository,
-                            priceRepository: widget.priceRepository,
-                            storeRepository: widget.storeRepository,
-                            itemRepository: widget.itemRepository,
-                          ))).then((value) {
-                setState(() {});
-              });
-            }),
-      ]),
+      appBar: CustomAppBar(
+          title: Image.asset(
+            'assets/icon/coins.png',
+            height: 30,
+          ),
+          actions: <Widget>[
+            CustomIconButton(
+              icon: Icon(CustomIcons.shop),
+              tooltip: 'Stores'.tr(),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                        builder: (context) => StoreList(
+                              storeRepository: widget.storeRepository,
+                              priceRepository: widget.priceRepository,
+                            )));
+              },
+            ),
+            CustomIconButton(
+                icon: Icon(CustomIcons.user),
+                tooltip: 'My account'.tr(),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                          builder: (context) => Account(
+                                userRepository: widget.userRepository,
+                                priceRepository: widget.priceRepository,
+                                storeRepository: widget.storeRepository,
+                                itemRepository: widget.itemRepository,
+                              ))).then((value) {
+                    setState(() {});
+                  });
+                }),
+          ]),
       body: Container(
         child: Column(
           children: <Widget>[
@@ -96,10 +100,12 @@ class _ItemListState extends State<ItemList> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: CustomFloatingActionButton(
           onPressed: _showAddItemScreen,
           tooltip: 'Add a new item'.tr(),
-          child: Icon(Icons.add)),
+          child: Icon(
+            Icons.add,
+          )),
     );
   }
 
@@ -224,7 +230,8 @@ class _ItemListState extends State<ItemList> {
     Navigator.of(context).push(PageTransition<Map<String, dynamic>>(
         type: PageTransitionType.bottomToTop,
         child: Scaffold(
-            appBar: AppBar(title: Text('Add a new item'.tr())),
+            appBar:
+                CustomAppBar(title: CustomAppBarTitle('Add a new item'.tr())),
             body: TextField(
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,

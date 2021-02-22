@@ -88,7 +88,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('ItemList: go to settings', (WidgetTester tester) async {
+  testWidgets('ItemList: go to account', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
     when(mockItemRepository.getAll()).thenAnswer((realInvocation) async => {});
@@ -102,7 +102,7 @@ void main() {
             )));
     await tester.pumpWidget(testWidget);
 
-    var paramsFinder = find.byIcon(CustomIcons.params);
+    var paramsFinder = find.byIcon(CustomIcons.user);
     expect(paramsFinder, findsOneWidget);
 
     await tester.tap(paramsFinder);
