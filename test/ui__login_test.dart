@@ -53,7 +53,7 @@ void main() {
 
     await tester.pumpWidget(testWidget);
 
-    var loginFinder = find.text('Login');
+    var loginFinder = find.byKey(Key('login_button'));
     expect(loginFinder, findsOneWidget);
 
     await tester.tap(loginFinder);
@@ -86,13 +86,13 @@ void main() {
 
     await tester.pumpWidget(testWidget);
 
-    var createFinder = find.text('Create an account');
+    var createFinder = find.byKey(Key('login_switch_button'));
     expect(createFinder, findsOneWidget);
 
     await tester.tap(createFinder);
     await tester.pumpAndSettle();
 
-    var createFinder2 = find.text('Create account');
+    var createFinder2 = find.byKey(Key('login_button'));
     expect(createFinder2, findsOneWidget);
 
     await tester.tap(createFinder2);
@@ -119,7 +119,7 @@ void main() {
 
     await tester.pumpWidget(testWidget);
 
-    var loginFinder = find.text('Login');
+    var loginFinder = find.byKey(Key('login_button'));
     expect(loginFinder, findsOneWidget);
 
     await tester.tap(loginFinder);

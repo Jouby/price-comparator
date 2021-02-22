@@ -191,6 +191,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   Widget showSecondaryButton() {
     return FlatButton(
+        key: Key('login_switch_button'),
         child: Text(
             _isLoginForm
                 ? 'Create account'.tr()
@@ -205,6 +206,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         child: SizedBox(
           height: 40.0,
           child: RaisedButton(
+            key: Key('login_button'),
             elevation: 5.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0)),
