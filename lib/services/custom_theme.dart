@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends AppBar {
-  CustomAppBar({Widget title, List<Widget> actions, Widget leading})
+  CustomAppBar(
+      {Widget title,
+      List<Widget> actions,
+      Widget leading,
+      double leadingWidth,
+      bool centerTitle = true})
       : super(
           title: title,
+          centerTitle: centerTitle,
           iconTheme: IconThemeData(
             color: Colors.black87,
           ),
           actions: actions,
           leading: leading,
+          leadingWidth: leadingWidth,
           bottom: PreferredSize(
               child: Container(
                 color: Colors.black38,
@@ -40,11 +47,7 @@ class CustomFloatingActionButton extends FloatingActionButton {
 }
 
 class CustomAppBarTitle extends Text {
-  CustomAppBarTitle(String name)
-      : super(
-          name,
-          style: TextStyle(color: Colors.black87),
-        );
+  CustomAppBarTitle(String name) : super(name);
 }
 
 class CustomRaisedButton extends RaisedButton {
@@ -62,13 +65,25 @@ class CustomRaisedButton extends RaisedButton {
         );
 }
 
-class CustomPrimaryTextSpan extends TextSpan {
-  CustomPrimaryTextSpan({String text})
+class CustomHighlightTextSpan extends TextSpan {
+  CustomHighlightTextSpan({String text})
+      : super(
+            text: text,
+            style: TextStyle(color: Colors.teal[700], fontSize: 30));
+}
+
+class CustomBasicTextSpan extends TextSpan {
+  CustomBasicTextSpan({String text, List<TextSpan> children})
       : super(
             text: text,
             style: TextStyle(
-                fontFamily: 'Nunito',
-                color: Colors.teal[700],
-                fontWeight: FontWeight.bold,
-                fontSize: 30));
+                color: Colors.black, fontSize: 25, fontFamily: 'Nunito'),
+            children: children);
+}
+
+class CustomBasicText extends Text {
+  CustomBasicText(String text, {List<TextSpan> children})
+      : super(text,
+            style: TextStyle(
+                color: Colors.black, fontSize: 25, fontFamily: 'Nunito'));
 }

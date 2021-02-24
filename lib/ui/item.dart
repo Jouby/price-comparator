@@ -194,22 +194,18 @@ class _ItemState extends State<Item> {
   void _buildMinimumPriceText() {
     if (_minimumPrice != null) {
       _minPriceTextWidget = [
-        Text('The minimum price is '.tr(),
-            style: TextStyle(
-                fontFamily: 'Nunito', color: Colors.black, fontSize: 25)),
+        CustomBasicText('The minimum price is '.tr()),
         RichText(
           textAlign: TextAlign.center,
-          text: TextSpan(
-            style: TextStyle(
-                fontFamily: 'Nunito', color: Colors.black, fontSize: 25),
+          text: CustomBasicTextSpan(
             children: <TextSpan>[
-              CustomPrimaryTextSpan(
+              CustomHighlightTextSpan(
                   text: _minimumPrice.value
                           .toStringAsFixed(2)
                           .replaceAll('.', ',') +
                       '€'),
               TextSpan(text: ' in '.tr()),
-              CustomPrimaryTextSpan(
+              CustomHighlightTextSpan(
                 text: _minimumPrice != null ? _minimumPrice.store.name : '',
               ),
             ],
@@ -217,11 +213,7 @@ class _ItemState extends State<Item> {
         )
       ];
     } else {
-      _minPriceTextWidget = [
-        Text('No data'.tr(),
-            style: TextStyle(
-                fontFamily: 'Nunito', color: Colors.black, fontSize: 25))
-      ];
+      _minPriceTextWidget = [CustomBasicText('No data'.tr())];
     }
   }
 

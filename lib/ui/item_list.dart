@@ -43,10 +43,15 @@ class _ItemListState extends State<ItemList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-          title: Image.asset(
-            'assets/icon/coins.png',
-            height: 30,
+          leading: Padding(
+            padding: EdgeInsets.only(left: 15),
+            child: Image.asset(
+              'assets/icon/coins.png',
+            ),
           ),
+          leadingWidth: 40,
+          centerTitle: false,
+          title: CustomAppBarTitle('Price Comparator'.tr()),
           actions: <Widget>[
             CustomIconButton(
               icon: Icon(CustomIcons.shop),
