@@ -37,4 +37,6 @@ strings :
   "Have an account? Sign in" : null
   "Login" : null
   "Create account" : null
+  "Email : %email" : null
+  "Price Comparator" : null
 

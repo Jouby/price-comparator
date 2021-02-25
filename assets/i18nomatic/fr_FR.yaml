@@ -37,4 +37,6 @@ strings :
   "Have an account? Sign in" : "Avez-vous un compte? Connecter vous"
   "Login" : "Connexion"
   "Create account" : "Créer un compte"
+  "Email : %email" : "Email : %email"
+  "Price Comparator" : null
 

@@ -29,14 +29,22 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
+  String username = '';
+
   @override
   Widget build(BuildContext context) {
+    widget.userRepository
+        .getUserName()
+        .then((val) => setState(() => username = val));
     return Scaffold(
         appBar: CustomAppBar(title: CustomAppBarTitle('My account'.tr())),
         body: Container(
             margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                CustomBasicText(
+                    'Email : %email'.tr(<String, String>{'email': username})),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
