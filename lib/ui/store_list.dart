@@ -61,7 +61,7 @@ class _StoreListState extends State<StoreList> {
     );
   }
 
-  /// Initialize store list
+  /// Get store list
   Future<List<StoreModel>> _getStoreList() async {
     var list = await widget.storeRepository.getAll() ?? {};
     _storeList = list.entries.map((e) => e.value).toList();

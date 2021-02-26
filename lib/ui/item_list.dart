@@ -153,7 +153,7 @@ class _ItemListState extends State<ItemList> {
     return false;
   }
 
-  /// Initialize item list
+  /// Get item list
   Future<List<ItemModel>> _getDisplayItemList() async {
     await widget.itemRepository.getAll().then((list) {
       _itemList = list.entries.map((e) => e.value).toList();
