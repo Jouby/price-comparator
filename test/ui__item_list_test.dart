@@ -11,12 +11,14 @@ void main() {
   MockItemRepository mockItemRepository;
   MockStoreRepository mockStoreRepository;
   MockPriceRepository mockPriceRepository;
+  MockUserRepository mockUserRepository;
   MockNavigatorObserver mockObserver;
 
   setUp(() {
     mockItemRepository = MockItemRepository();
     mockStoreRepository = MockStoreRepository();
     mockPriceRepository = MockPriceRepository();
+    mockUserRepository = MockUserRepository();
 
     MockSetUp.mockI18nOMatic();
   });
@@ -92,6 +94,8 @@ void main() {
     mockObserver = MockNavigatorObserver();
 
     when(mockItemRepository.getAll()).thenAnswer((realInvocation) async => {});
+    when(mockUserRepository.getUserName())
+        .thenAnswer((realInvocation) async => 'name');
 
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
@@ -99,18 +103,21 @@ void main() {
             navigatorObservers: [mockObserver],
             home: ItemList(
               itemRepository: mockItemRepository,
+              userRepository: mockUserRepository,
+              priceRepository: mockPriceRepository,
+              storeRepository: mockStoreRepository,
             )));
     await tester.pumpWidget(testWidget);
 
-    var paramsFinder = find.byIcon(CustomIcons.user);
-    expect(paramsFinder, findsOneWidget);
+    var userFinder = find.byIcon(CustomIcons.user);
+    expect(userFinder, findsOneWidget);
 
-    await tester.tap(paramsFinder);
+    await tester.tap(userFinder);
     await tester.pumpAndSettle();
 
     verify(mockObserver.didPush(any, any));
 
-    await tester.tap(find.byTooltip('Back'));
+    await tester.tap(find.byType(BackButton));
     await tester.pumpAndSettle();
   });
 

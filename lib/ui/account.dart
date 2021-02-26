@@ -32,10 +32,15 @@ class _AccountState extends State<Account> {
   String username = '';
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     widget.userRepository
         .getUserName()
         .then((val) => setState(() => username = val));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBar(title: CustomAppBarTitle('My account'.tr())),
         body: Container(

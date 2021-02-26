@@ -24,8 +24,14 @@ void main() {
     MockSetUp.mockI18nOMatic();
   });
   testWidgets('Account : empty', (WidgetTester tester) async {
-    Widget testWidget =
-        MediaQuery(data: MediaQueryData(), child: MaterialApp(home: Account()));
+    when(mockUserRepository.getUserName())
+        .thenAnswer((realInvocation) async => 'name');
+    Widget testWidget = MediaQuery(
+        data: MediaQueryData(),
+        child: MaterialApp(
+            home: Account(
+          userRepository: mockUserRepository,
+        )));
 
     await tester.pumpWidget(testWidget);
 
@@ -36,6 +42,8 @@ void main() {
   testWidgets('Account : logout', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
+    when(mockUserRepository.getUserName())
+        .thenAnswer((realInvocation) async => 'name');
     when(mockUserRepository.dispose())
         .thenAnswer((realInvocation) async => null);
     when(mockItemRepository.dispose())
