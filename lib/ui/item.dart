@@ -91,12 +91,19 @@ class _ItemState extends State<Item> {
         }
 
         projectSnap.data.sort((a, b) {
-          if (a.value == 0 || a.value == null) {
-            return 1;
+          if (_checkPriceValue(a)) {
+            if (_checkPriceValue(b)) {
+              return a.store.name
+                  .toLowerCase()
+                  .compareTo(b.store.name.toLowerCase());
+            } else {
+              return 1;
+            }
           }
-          if (b.value == 0 || b.value == null) {
+          if (_checkPriceValue(b)) {
             return -1;
           }
+
           return a.value.compareTo(b.value);
         });
 
@@ -108,14 +115,19 @@ class _ItemState extends State<Item> {
           },
         ));
       },
-      future: _initializePriceList(),
+      future: _getPriceList(),
     );
   }
 
-  /// Initialize price list
+  /// Check if price value is empty
+  bool _checkPriceValue(PriceModel price) {
+    return price.value == 0 || price.value == null;
+  }
+
+  /// Get price list
   ///
   /// For current item, we display one price by store
-  Future<List<PriceModel>> _initializePriceList() async {
+  Future<List<PriceModel>> _getPriceList() async {
     return await widget.priceRepository
         .getAllByItem(_item)
         .then((_priceList) async {
