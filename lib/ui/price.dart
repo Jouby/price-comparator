@@ -126,7 +126,8 @@ class _PriceState extends State<Price> {
 
   /// Submit price value
   void _submitPrice() {
-    price.value = (priceController.text.isEmpty) ? 0 : double.parse(priceController.text);
+    price.value =
+        (priceController.text.isEmpty) ? 0 : double.parse(priceController.text);
     price.options = options;
     widget.priceRepository.add(price);
 
