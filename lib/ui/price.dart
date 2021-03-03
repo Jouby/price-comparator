@@ -24,11 +24,13 @@ class _PriceState extends State<Price> {
   TextEditingController priceController = TextEditingController();
   PriceModel price;
   Map<String, dynamic> returnData = <String, dynamic>{};
+  Map<String, bool> options = {};
 
   @override
   void initState() {
     price = widget.price;
     priceController.text = (price.value == 0) ? '' : price.value.toString();
+    options = Map<String, bool>.from(price.options);
 
     super.initState();
   }
@@ -61,30 +63,30 @@ class _PriceState extends State<Price> {
           children: <Widget>[
             CheckboxListTile(
               title: Text('Bio'.tr()),
-              value: price.options['isBio'],
+              value: options['isBio'],
               onChanged: (val) {
                 setState(() {
-                  price.options['isBio'] = val;
+                  options['isBio'] = val;
                 });
               },
               secondary: const Icon(CustomIcons.leaf, color: Colors.green),
             ),
             CheckboxListTile(
               title: Text('Can'.tr()),
-              value: price.options['isCan'],
+              value: options['isCan'],
               onChanged: (val) {
                 setState(() {
-                  price.options['isCan'] = val;
+                  options['isCan'] = val;
                 });
               },
               secondary: const Icon(CustomIcons.boxes, color: Colors.grey),
             ),
             CheckboxListTile(
               title: Text('Freeze'.tr()),
-              value: price.options['isFreeze'],
+              value: options['isFreeze'],
               onChanged: (val) {
                 setState(() {
-                  price.options['isFreeze'] = val;
+                  options['isFreeze'] = val;
                 });
               },
               secondary:
@@ -92,10 +94,10 @@ class _PriceState extends State<Price> {
             ),
             CheckboxListTile(
               title: Text('Wrap'.tr()),
-              value: price.options['isWrap'],
+              value: options['isWrap'],
               onChanged: (val) {
                 setState(() {
-                  price.options['isWrap'] = val;
+                  options['isWrap'] = val;
                 });
               },
               secondary: const Icon(CustomIcons.prescription_bottle_alt,
@@ -103,10 +105,10 @@ class _PriceState extends State<Price> {
             ),
             CheckboxListTile(
               title: Text('Unavailable'.tr()),
-              value: price.options['isUnavailable'],
+              value: options['isUnavailable'],
               onChanged: (val) {
                 setState(() {
-                  price.options['isUnavailable'] = val;
+                  options['isUnavailable'] = val;
                 });
               },
               secondary:
@@ -124,10 +126,10 @@ class _PriceState extends State<Price> {
 
   /// Submit price value
   void _submitPrice() {
-    price.value = double.parse(priceController.text);
+    price.value = (priceController.text.isEmpty) ? 0 : double.parse(priceController.text);
+    price.options = options;
     widget.priceRepository.add(price);
 
-    // returnData['price'] = price;
     Navigator.pop(context, returnData);
   }
 }
