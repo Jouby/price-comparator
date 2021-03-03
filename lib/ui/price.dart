@@ -38,6 +38,7 @@ class _PriceState extends State<Price> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: CustomAppBar(
         title: CustomAppBarTitle('Add a new price'.tr()),
         leading: BackButton(
@@ -117,10 +118,11 @@ class _PriceState extends State<Price> {
           ],
         )),
       ]),
-      floatingActionButton: CustomFloatingActionButton(
+      floatingActionButton: CustomFloatingActionButton.extended(
           onPressed: _submitPrice,
           tooltip: 'Save'.tr().toUpperCase(),
-          child: Icon(Icons.save)),
+          label: Text('Save'.tr()),
+          icon: Icon(Icons.save)),
     );
   }
 

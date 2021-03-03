@@ -44,6 +44,17 @@ class CustomFloatingActionButton extends FloatingActionButton {
             child: child,
             elevation: 20,
             highlightElevation: 0);
+
+  CustomFloatingActionButton.extended(
+      {Function() onPressed, Widget label, Widget icon, String tooltip})
+      : super.extended(
+            onPressed: onPressed,
+            label: label,
+            icon: icon,
+            tooltip: tooltip,
+            backgroundColor: Colors.teal,
+            elevation: 20,
+            highlightElevation: 0);
 }
 
 class CustomAppBarTitle extends Text {
