@@ -175,8 +175,6 @@ class StoreRepository extends CoreRepository {
           .delete()
           .then((docRef) {
         _storeList.remove(store.id);
-      }).catchError((dynamic error) {
-        return false;
       });
     }
 

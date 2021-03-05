@@ -240,10 +240,10 @@ class _ItemState extends State<Item> {
               title: Text(
                   'Remove "%name" ?'.tr(<String, String>{'name': _item.name})),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                     child: Text('Cancel'.tr().toUpperCase()),
                     onPressed: () => Navigator.of(context).pop()),
-                FlatButton(
+                TextButton(
                     child: Text('Remove'.tr().toUpperCase()),
                     onPressed: () {
                       remove = true;

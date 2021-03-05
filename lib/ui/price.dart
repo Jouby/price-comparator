@@ -38,7 +38,7 @@ class _PriceState extends State<Price> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
         title: CustomAppBarTitle('Add a new price'.tr()),
         leading: BackButton(

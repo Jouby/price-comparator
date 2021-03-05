@@ -143,10 +143,10 @@ class _StoreListState extends State<StoreList> {
               title: Text(
                   'Remove "%name" ?'.tr(<String, String>{'name': store.name})),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                     child: Text('Cancel'.tr().toUpperCase()),
                     onPressed: () => Navigator.of(context).pop()),
-                FlatButton(
+                TextButton(
                     child: Text('Remove'.tr().toUpperCase()),
                     onPressed: () {
                       _removeStore(store);

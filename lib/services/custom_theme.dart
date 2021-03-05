@@ -61,19 +61,21 @@ class CustomAppBarTitle extends Text {
   CustomAppBarTitle(String name) : super(name);
 }
 
-class CustomRaisedButton extends RaisedButton {
-  CustomRaisedButton({Function() onPressed, Widget child})
+class CustomButton extends ElevatedButton {
+  CustomButton({Key key, Function() onPressed, Widget child})
       : super(
-          onPressed: onPressed,
-          child: child,
-          padding: EdgeInsets.all(10),
-          textColor: Colors.black87,
-          color: Colors.teal,
-          colorBrightness: Brightness.light,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25.0))),
-          elevation: 5,
-        );
+            key: key,
+            onPressed: onPressed,
+            child: child,
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(EdgeInsets.all(10)),
+              textStyle:
+                  MaterialStateProperty.all(TextStyle(color: Colors.black87)),
+              backgroundColor: MaterialStateProperty.all(Colors.teal),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              elevation: MaterialStateProperty.all(5),
+            ));
 }
 
 class CustomHighlightTextSpan extends TextSpan {

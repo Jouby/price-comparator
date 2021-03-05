@@ -190,7 +190,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget showSecondaryButton() {
-    return FlatButton(
+    return TextButton(
         key: Key('login_switch_button'),
         child: Text(
             _isLoginForm
@@ -203,18 +203,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget showPrimaryButton() {
     return Padding(
         padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
-        child: SizedBox(
-          height: 40.0,
-          child: RaisedButton(
+        child: CustomButton(
             key: Key('login_button'),
-            elevation: 5.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
-            color: Colors.blue,
-            child: Text(_isLoginForm ? 'Login'.tr() : 'Create account'.tr(),
-                style: TextStyle(fontSize: 20.0, color: Colors.white)),
+            child: Text(_isLoginForm ? 'Login'.tr().toUpperCase() : 'Create account'.tr().toUpperCase(),
+                style: TextStyle(fontSize: 20.0)
+                ),
             onPressed: validateAndSubmit,
           ),
-        ));
+        );
   }
 }

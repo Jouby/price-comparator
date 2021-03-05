@@ -53,7 +53,7 @@ class _AccountState extends State<Account> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    CustomRaisedButton(
+                    CustomButton(
                       onPressed: () async {
                         disposeAll();
                         await Navigator.of(context).pushNamedAndRemoveUntil(
