@@ -202,14 +202,16 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   Widget showPrimaryButton() {
     return Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
-        child: CustomButton(
-            key: Key('login_button'),
-            child: Text(_isLoginForm ? 'Login'.tr().toUpperCase() : 'Create account'.tr().toUpperCase(),
-                style: TextStyle(fontSize: 20.0)
-                ),
-            onPressed: validateAndSubmit,
-          ),
-        );
+      padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+      child: CustomButton(
+        key: Key('login_button'),
+        child: Text(
+            _isLoginForm
+                ? 'Login'.tr().toUpperCase()
+                : 'Create account'.tr().toUpperCase(),
+            style: TextStyle(fontSize: 20.0)),
+        onPressed: validateAndSubmit,
+      ),
+    );
   }
 }
