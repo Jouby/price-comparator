@@ -6,12 +6,12 @@ import 'package:the_dead_masked_company.price_comparator/ui/login_signup_page.da
 import 'mock.dart';
 
 void main() {
-  MockAuth mockAuth;
-  MockGlobalKeyFormState mockGlobalKeyFormState;
-  MockFormState mockFormState;
-  MockUserRepository mockUserRepository;
-  MockItemRepository mockItemRepository;
-  MockNavigatorObserver mockObserver;
+  MockAuth? mockAuth;
+  MockGlobalKeyFormState? mockGlobalKeyFormState;
+  MockFormState? mockFormState;
+  MockUserRepository? mockUserRepository;
+  MockItemRepository? mockItemRepository;
+  MockNavigatorObserver? mockObserver;
 
   setUp(() {
     mockAuth = MockAuth();
@@ -35,8 +35,8 @@ void main() {
   });
 
   testWidgets('Login : log user', (WidgetTester tester) async {
-    when(mockGlobalKeyFormState.currentState).thenReturn(mockFormState);
-    when(mockFormState.validate()).thenAnswer((realInvocation) => true);
+    when(mockGlobalKeyFormState!.currentState).thenReturn(mockFormState);
+    when(mockFormState!.validate()).thenAnswer((realInvocation) => true);
 
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
@@ -60,17 +60,17 @@ void main() {
   });
 
   testWidgets('Login : create user', (WidgetTester tester) async {
-    when(mockGlobalKeyFormState.currentState).thenReturn(mockFormState);
-    when(mockFormState.validate()).thenAnswer((realInvocation) => true);
-    when(mockUserRepository.setUserId(any))
+    when(mockGlobalKeyFormState!.currentState).thenReturn(mockFormState);
+    when(mockFormState!.validate()).thenAnswer((realInvocation) => true);
+    when(mockUserRepository!.setUserId(any!))
         .thenAnswer((realInvocation) async => true);
-    when(mockUserRepository.setUserName(any))
+    when(mockUserRepository!.setUserName(any!))
         .thenAnswer((realInvocation) async => true);
 
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
         child: MaterialApp(
-          navigatorObservers: [mockObserver],
+          navigatorObservers: [mockObserver!],
           routes: <String, WidgetBuilder>{
             'login': (BuildContext context) => LoginSignupPage(
                   auth: mockAuth,
@@ -99,9 +99,9 @@ void main() {
   });
 
   testWidgets('Login : throw error on login user', (WidgetTester tester) async {
-    when(mockGlobalKeyFormState.currentState).thenReturn(mockFormState);
-    when(mockFormState.validate()).thenAnswer((realInvocation) => true);
-    when(mockUserRepository.setUserId(any)).thenThrow(ArgumentError);
+    when(mockGlobalKeyFormState!.currentState).thenReturn(mockFormState);
+    when(mockFormState!.validate()).thenAnswer((realInvocation) => true);
+    when(mockUserRepository!.setUserId(any!)).thenThrow(ArgumentError);
     ;
 
     Widget testWidget = MediaQuery(

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends AppBar {
   CustomAppBar(
-      {Widget title,
-      List<Widget> actions,
-      Widget leading,
-      double leadingWidth,
+      {Widget? title,
+      List<Widget>? actions,
+      Widget? leading,
+      double? leadingWidth,
       bool centerTitle = true})
       : super(
           title: title,
@@ -26,7 +26,7 @@ class CustomAppBar extends AppBar {
 }
 
 class CustomIconButton extends IconButton {
-  CustomIconButton({Widget icon, String tooltip, Function() onPressed})
+  CustomIconButton({required Widget icon, String? tooltip, Function()? onPressed})
       : super(
             icon: icon,
             tooltip: tooltip,
@@ -36,7 +36,7 @@ class CustomIconButton extends IconButton {
 
 class CustomFloatingActionButton extends FloatingActionButton {
   CustomFloatingActionButton(
-      {Function() onPressed, String tooltip, Widget child})
+      {Function()? onPressed, String? tooltip, Widget? child})
       : super(
             onPressed: onPressed,
             tooltip: tooltip,
@@ -46,7 +46,7 @@ class CustomFloatingActionButton extends FloatingActionButton {
             highlightElevation: 0);
 
   CustomFloatingActionButton.extended(
-      {Function() onPressed, Widget label, Widget icon, String tooltip})
+      {Function()? onPressed, required Widget label, Widget? icon, String? tooltip})
       : super.extended(
             onPressed: onPressed,
             label: label,
@@ -62,7 +62,7 @@ class CustomAppBarTitle extends Text {
 }
 
 class CustomButton extends ElevatedButton {
-  CustomButton({Key key, Function() onPressed, Widget child})
+  CustomButton({Key? key, Function()? onPressed, Widget? child})
       : super(
             key: key,
             onPressed: onPressed,
@@ -79,14 +79,14 @@ class CustomButton extends ElevatedButton {
 }
 
 class CustomHighlightTextSpan extends TextSpan {
-  CustomHighlightTextSpan({String text})
+  CustomHighlightTextSpan({String? text})
       : super(
             text: text,
             style: TextStyle(color: Colors.teal[700], fontSize: 30));
 }
 
 class CustomBasicTextSpan extends TextSpan {
-  CustomBasicTextSpan({String text, List<TextSpan> children})
+  CustomBasicTextSpan({String? text, List<TextSpan>? children})
       : super(
             text: text,
             style: TextStyle(
@@ -95,7 +95,7 @@ class CustomBasicTextSpan extends TextSpan {
 }
 
 class CustomBasicText extends Text {
-  CustomBasicText(String text, {List<TextSpan> children})
+  CustomBasicText(String text, {List<TextSpan>? children})
       : super(text,
             style: TextStyle(
                 color: Colors.black, fontSize: 25, fontFamily: 'Nunito'));

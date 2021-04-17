@@ -11,13 +11,13 @@ import 'package:i18n_omatic/i18n_omatic.dart';
 ///
 /// Display settings list (connection parameters)
 class Account extends StatefulWidget {
-  final UserRepository userRepository;
-  final PriceRepository priceRepository;
-  final StoreRepository storeRepository;
-  final ItemRepository itemRepository;
+  final UserRepository? userRepository;
+  final PriceRepository? priceRepository;
+  final StoreRepository? storeRepository;
+  final ItemRepository? itemRepository;
 
   Account(
-      {Key key,
+      {Key? key,
       this.userRepository,
       this.priceRepository,
       this.storeRepository,
@@ -29,11 +29,11 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  String username = '';
+  String? username = '';
 
   @override
   void initState() {
-    widget.userRepository
+    widget.userRepository!
         .getUserName()
         .then((val) => setState(() => username = val));
     super.initState();
@@ -49,7 +49,7 @@ class _AccountState extends State<Account> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 CustomBasicText(
-                    'Email : %email'.tr(<String, String>{'email': username})),
+                    'Email : %email'.tr(<String, String?>{'email': username})),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -70,9 +70,9 @@ class _AccountState extends State<Account> {
   }
 
   void disposeAll() {
-    widget.userRepository.dispose();
-    widget.priceRepository.dispose();
-    widget.itemRepository.dispose();
-    widget.storeRepository.dispose();
+    widget.userRepository!.dispose();
+    widget.priceRepository!.dispose();
+    widget.itemRepository!.dispose();
+    widget.storeRepository!.dispose();
   }
 }

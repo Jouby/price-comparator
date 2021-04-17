@@ -8,11 +8,11 @@ import 'mock.dart';
 
 void main() {
   MockNavigatorObserver mockObserver;
-  MockUserRepository mockUserRepository;
-  MockItemRepository mockItemRepository;
-  MockStoreRepository mockStoreRepository;
-  MockPriceRepository mockPriceRepository;
-  MockAuth mockAuth;
+  MockUserRepository? mockUserRepository;
+  MockItemRepository? mockItemRepository;
+  MockStoreRepository? mockStoreRepository;
+  MockPriceRepository? mockPriceRepository;
+  MockAuth? mockAuth;
 
   setUp(() {
     mockUserRepository = MockUserRepository();
@@ -24,7 +24,7 @@ void main() {
     MockSetUp.mockI18nOMatic();
   });
   testWidgets('Account : empty', (WidgetTester tester) async {
-    when(mockUserRepository.getUserName())
+    when(mockUserRepository!.getUserName())
         .thenAnswer((realInvocation) async => 'name');
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
@@ -42,15 +42,15 @@ void main() {
   testWidgets('Account : logout', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
-    when(mockUserRepository.getUserName())
+    when(mockUserRepository!.getUserName())
         .thenAnswer((realInvocation) async => 'name');
-    when(mockUserRepository.dispose())
+    when(mockUserRepository!.dispose())
         .thenAnswer((realInvocation) async => null);
-    when(mockItemRepository.dispose())
+    when(mockItemRepository!.dispose())
         .thenAnswer((realInvocation) async => null);
-    when(mockStoreRepository.dispose())
+    when(mockStoreRepository!.dispose())
         .thenAnswer((realInvocation) async => null);
-    when(mockPriceRepository.dispose())
+    when(mockPriceRepository!.dispose())
         .thenAnswer((realInvocation) async => null);
 
     Widget testWidget = MediaQuery(
@@ -79,6 +79,6 @@ void main() {
     await tester.tap(logoutFinder);
     await tester.pumpAndSettle();
 
-    verify(mockObserver.didPush(any, any));
+    verify(mockObserver.didPush(any!, any));
   });
 }

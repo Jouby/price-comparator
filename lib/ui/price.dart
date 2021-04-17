@@ -10,10 +10,10 @@ import 'package:the_dead_masked_company.price_comparator/services/custom_theme.d
 ///
 /// Display price screen to update value or options
 class Price extends StatefulWidget {
-  final PriceModel price;
-  final PriceRepository priceRepository;
+  final PriceModel? price;
+  final PriceRepository? priceRepository;
 
-  Price({Key key, @required this.price, this.priceRepository})
+  Price({Key? key, required this.price, this.priceRepository})
       : super(key: key);
 
   @override
@@ -22,15 +22,15 @@ class Price extends StatefulWidget {
 
 class _PriceState extends State<Price> {
   TextEditingController priceController = TextEditingController();
-  PriceModel price;
+  PriceModel? price;
   Map<String, dynamic> returnData = <String, dynamic>{};
-  Map<String, bool> options = {};
+  Map<String, bool?> options = {};
 
   @override
   void initState() {
     price = widget.price;
-    priceController.text = (price.value == 0) ? '' : price.value.toString();
-    options = Map<String, bool>.from(price.options);
+    priceController.text = (price!.value == 0) ? '' : price!.value.toString();
+    options = Map<String, bool?>.from(price!.options!);
 
     super.initState();
   }
@@ -128,10 +128,10 @@ class _PriceState extends State<Price> {
 
   /// Submit price value
   void _submitPrice() {
-    price.value =
+    price!.value =
         (priceController.text.isEmpty) ? 0 : double.parse(priceController.text);
-    price.options = options;
-    widget.priceRepository.add(price);
+    price!.options = options;
+    widget.priceRepository!.add(price!);
 
     Navigator.pop(context, returnData);
   }

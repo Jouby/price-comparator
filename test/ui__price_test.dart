@@ -8,8 +8,8 @@ import 'package:the_dead_masked_company.price_comparator/ui/price.dart';
 import 'mock.dart';
 
 void main() {
-  MockPriceRepository mockPriceRepository;
-  PriceModel price;
+  MockPriceRepository? mockPriceRepository;
+  PriceModel? price;
 
   setUp(() {
     mockPriceRepository = MockPriceRepository();
@@ -68,7 +68,7 @@ void main() {
   });
 
   testWidgets('Price : save', (WidgetTester tester) async {
-    price.value = 3.2;
+    price!.value = 3.2;
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
         child: MaterialApp(

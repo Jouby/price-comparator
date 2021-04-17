@@ -14,14 +14,14 @@ import 'package:i18n_omatic/i18n_omatic.dart';
 ///
 /// Display item (name, price list and minimum price)
 class Item extends StatefulWidget {
-  final ItemModel item;
-  final PriceRepository priceRepository;
-  final StoreRepository storeRepository;
-  final ItemRepository itemRepository;
+  final ItemModel? item;
+  final PriceRepository? priceRepository;
+  final StoreRepository? storeRepository;
+  final ItemRepository? itemRepository;
 
   Item(
-      {Key key,
-      @required this.item,
+      {Key? key,
+      required this.item,
       this.priceRepository,
       this.storeRepository,
       this.itemRepository})
@@ -32,9 +32,9 @@ class Item extends StatefulWidget {
 }
 
 class _ItemState extends State<Item> {
-  ItemModel _item;
-  List<Widget> _minPriceTextWidget;
-  PriceModel _minimumPrice;
+  ItemModel? _item;
+  List<Widget>? _minPriceTextWidget;
+  PriceModel? _minimumPrice;
   Map<String, dynamic> returnData = <String, dynamic>{};
 
   @override
@@ -48,7 +48,7 @@ class _ItemState extends State<Item> {
     _buildMinimumPriceText();
     return Scaffold(
       appBar: CustomAppBar(
-        title: CustomAppBarTitle(_item.name),
+        title: CustomAppBarTitle(_item!.name),
         leading: BackButton(
           onPressed: () => Navigator.pop(context, returnData),
         ),
@@ -72,7 +72,7 @@ class _ItemState extends State<Item> {
       body: Column(
         children: [
           SizedBox(height: 10),
-          ..._minPriceTextWidget,
+          ..._minPriceTextWidget!,
           SizedBox(height: 10),
           ...<Widget>[_buildPriceItemList()]
         ],
@@ -81,7 +81,7 @@ class _ItemState extends State<Item> {
   }
 
   Widget _buildPriceItemList() {
-    return FutureBuilder<List<PriceModel>>(
+    return FutureBuilder<List<PriceModel>?>(
       builder: (context, projectSnap) {
         if (projectSnap.connectionState == ConnectionState.none ||
             projectSnap.data == null) {
@@ -90,12 +90,12 @@ class _ItemState extends State<Item> {
               children: [CircularProgressIndicator()]);
         }
 
-        projectSnap.data.sort((a, b) {
+        projectSnap.data!.sort((a, b) {
           if (_checkPriceValue(a)) {
             if (_checkPriceValue(b)) {
-              return a.store.name
+              return a.store!.name
                   .toLowerCase()
-                  .compareTo(b.store.name.toLowerCase());
+                  .compareTo(b.store!.name.toLowerCase());
             } else {
               return 1;
             }
@@ -104,14 +104,14 @@ class _ItemState extends State<Item> {
             return -1;
           }
 
-          return a.value.compareTo(b.value);
+          return a.value!.compareTo(b.value!);
         });
 
         return Expanded(
             child: ListView.builder(
-          itemCount: projectSnap.data.length,
+          itemCount: projectSnap.data!.length,
           itemBuilder: (context, index) {
-            return _buildPriceItem(projectSnap.data[index]);
+            return _buildPriceItem(projectSnap.data![index]);
           },
         ));
       },
@@ -127,19 +127,19 @@ class _ItemState extends State<Item> {
   /// Get price list
   ///
   /// For current item, we display one price by store
-  Future<List<PriceModel>> _getPriceList() async {
-    return await widget.priceRepository
-        .getAllByItem(_item)
+  Future<List<PriceModel>?> _getPriceList() async {
+    return await widget.priceRepository!
+        .getAllByItem(_item!)
         .then((_priceList) async {
-      await widget.storeRepository.getAll().then((storesList) {
-        checkListToGetMinimumPrice(_priceList);
+      await widget.storeRepository!.getAll().then((storesList) {
+        checkListToGetMinimumPrice(_priceList!);
 
-        storesList.forEach((key, store) {
+        storesList!.forEach((key, store) {
           var found = false;
           for (var priceIndex = 0;
               priceIndex < _priceList.length;
               priceIndex++) {
-            if (_priceList[priceIndex].store.id == store.id) {
+            if (_priceList[priceIndex].store!.id == store.id) {
               found = true;
               break;
             }
@@ -156,15 +156,15 @@ class _ItemState extends State<Item> {
   }
 
   /// Edit [item] with [name]
-  Future<bool> _editItem(ItemModel item, String name) async {
+  Future<bool> _editItem(ItemModel? item, String name) async {
     var result = false;
 
     if (name.isEmpty) {
       Tools.showError(context, 'Fill this field.'.tr());
     } else {
-      item.name = name;
-      await widget.itemRepository.add(item).then((e) async {
-        if (e['success'] == true) {
+      item!.name = name;
+      await widget.itemRepository!.add(item).then((e) async {
+        if (e!['success'] == true) {
           setState(() {});
           result = true;
         } else {
@@ -177,13 +177,13 @@ class _ItemState extends State<Item> {
   }
 
   /// Show screen to edit [item]
-  void showEditItemScreen(ItemModel item) {
+  void showEditItemScreen(ItemModel? item) {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return Scaffold(
           appBar: CustomAppBar(title: CustomAppBarTitle('Edit an item'.tr())),
           body: TextField(
             autofocus: true,
-            controller: TextEditingController(text: item.name),
+            controller: TextEditingController(text: item!.name),
             textCapitalization: TextCapitalization.sentences,
             onSubmitted: (newVal) {
               _editItem(item, newVal).then((result) {
@@ -212,13 +212,13 @@ class _ItemState extends State<Item> {
           text: CustomBasicTextSpan(
             children: <TextSpan>[
               CustomHighlightTextSpan(
-                  text: _minimumPrice.value
+                  text: _minimumPrice!.value!
                           .toStringAsFixed(2)
                           .replaceAll('.', ',') +
                       '€'),
               TextSpan(text: ' in '.tr()),
               CustomHighlightTextSpan(
-                text: _minimumPrice != null ? _minimumPrice.store.name : '',
+                text: _minimumPrice != null ? _minimumPrice!.store!.name : '',
               ),
             ],
           ),
@@ -238,7 +238,7 @@ class _ItemState extends State<Item> {
         builder: (BuildContext context) {
           return AlertDialog(
               title: Text(
-                  'Remove "%name" ?'.tr(<String, String>{'name': _item.name})),
+                  'Remove "%name" ?'.tr(<String, String>{'name': _item!.name})),
               actions: <Widget>[
                 TextButton(
                     child: Text('Cancel'.tr().toUpperCase()),
@@ -260,8 +260,8 @@ class _ItemState extends State<Item> {
 
   /// Update variables used to display minimum [price]
   void updateMinimumVariables(PriceModel price) {
-    if (price.value > 0 &&
-        (_minimumPrice == null || _minimumPrice.value > price.value)) {
+    if (price.value! > 0 &&
+        (_minimumPrice == null || _minimumPrice!.value! > price.value!)) {
       setState(() {
         _minimumPrice = price;
         _buildMinimumPriceText();
@@ -273,8 +273,8 @@ class _ItemState extends State<Item> {
   Future<bool> _editPrice(PriceModel price) async {
     _minimumPrice = null;
 
-    await widget.priceRepository.getAllByItem(_item).then((_priceList) async {
-      for (var i = 0; i < _priceList.length; i++) {
+    await widget.priceRepository!.getAllByItem(_item!).then((_priceList) async {
+      for (var i = 0; i < _priceList!.length; i++) {
         if (_priceList[i].store == price.store) {
           setState(() {
             _priceList[i] = price;
@@ -311,12 +311,12 @@ class _ItemState extends State<Item> {
     var text = '';
     var options = <Widget>[];
 
-    if (price.options['isUnavailable'] != true) {
+    if (price.options!['isUnavailable'] != true) {
       if (price.value != 0) {
-        text = price.value.toStringAsFixed(2) + '€';
+        text = price.value!.toStringAsFixed(2) + '€';
       }
 
-      if (price.options['isBio'] == true) {
+      if (price.options!['isBio'] == true) {
         options.add(Container(
           child: IconButton(
             icon: Icon(CustomIcons.leaf),
@@ -327,7 +327,7 @@ class _ItemState extends State<Item> {
         ));
       }
 
-      if (price.options['isCan'] == true) {
+      if (price.options!['isCan'] == true) {
         options.add(Container(
           child: IconButton(
             icon: Icon(CustomIcons.boxes),
@@ -338,7 +338,7 @@ class _ItemState extends State<Item> {
         ));
       }
 
-      if (price.options['isFreeze'] == true) {
+      if (price.options!['isFreeze'] == true) {
         options.add(Container(
           child: IconButton(
             icon: Icon(CustomIcons.snowflake),
@@ -349,7 +349,7 @@ class _ItemState extends State<Item> {
         ));
       }
 
-      if (price.options['isWrap'] == true) {
+      if (price.options!['isWrap'] == true) {
         options.add(Container(
           child: IconButton(
             icon: Icon(CustomIcons.prescription_bottle_alt),
@@ -363,13 +363,13 @@ class _ItemState extends State<Item> {
 
     return Card(
         child: Ink(
-      color: (price.options['isUnavailable'] == true)
+      color: (price.options!['isUnavailable'] == true)
           ? Colors.grey[200]
           : Colors.transparent,
       child: ListTile(
-        title: Text(price.store.name,
+        title: Text(price.store!.name,
             style: TextStyle(
-                color: (price.options['isUnavailable'] == true)
+                color: (price.options!['isUnavailable'] == true)
                     ? Colors.grey
                     : Colors.black)),
         subtitle: Text(text),

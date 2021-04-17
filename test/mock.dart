@@ -33,7 +33,11 @@ class MockGlobalKeyFormState extends Mock implements GlobalKey<FormState> {}
 
 class MockFormState extends MockWithExpandedToString implements FormState {}
 
-class MockI18nOMatic extends Mock implements I18nOMatic {}
+class MockI18nOMatic extends Mock implements I18nOMatic {
+  @override
+    String tr(String strToTranslate, [Map<String, dynamic>? args]) =>
+      super.noSuchMethod(Invocation.method(#tr, [strToTranslate, args])).toString();
+}
 
 class MockFirestoreNotifier extends Mock implements FirestoreNotifier {}
 
@@ -46,12 +50,11 @@ class MockUser extends Mock implements User {}
 class MockSetUp {
   static void mockI18nOMatic() {
     I18nOMatic.instance = MockI18nOMatic();
-    when(I18nOMatic.instance.tr(any, any)).thenAnswer((realInvocation) {
+    when(I18nOMatic.instance.tr('')).thenAnswer((realInvocation) {
       var strTranslated = realInvocation.positionalArguments[0].toString();
       if (realInvocation.positionalArguments[1] != null) {
         realInvocation.positionalArguments[1]
             .forEach((String key, String value) {
-          value ??= '';
           strTranslated = strTranslated.replaceAll('%$key', value.toString());
         });
       }

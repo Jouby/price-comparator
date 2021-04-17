@@ -18,14 +18,14 @@ class PriceModel implements ModelInterface {
   };
   static const num DEFAULT_VALUE = 0;
 
-  String id;
-  ItemModel item;
-  StoreModel store;
-  num value;
-  Map<String, bool> options;
+  String? id;
+  ItemModel? item;
+  StoreModel? store;
+  num? value;
+  Map<String, bool?>? options;
 
-  PriceModel(ItemModel item, StoreModel store,
-      {num value, Map<String, bool> options}) {
+  PriceModel(ItemModel? item, StoreModel? store,
+      {num? value, Map<String, bool>? options}) {
     this.item = item;
     this.store = store;
     this.value = value ?? PriceModel.DEFAULT_VALUE;
@@ -44,8 +44,8 @@ class PriceModel implements ModelInterface {
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'item': item.id,
-      'store': store.id,
+      'item': item!.id,
+      'store': store!.id,
       'value': value,
       'options': options
     };
@@ -59,12 +59,11 @@ class PriceModel implements ModelInterface {
   @override
   factory PriceModel.fromJson(Map<String, dynamic> parsedJson) {
     return PriceModel(
-      parsedJson['item'] as ItemModel,
-      parsedJson['store'] as StoreModel,
-      value: parsedJson['value'] as num ?? PriceModel.DEFAULT_VALUE,
+      parsedJson['item'] as ItemModel?,
+      parsedJson['store'] as StoreModel?,
+      value: parsedJson['value'] as num? ?? PriceModel.DEFAULT_VALUE,
       options: Map<String, bool>.from(
-              parsedJson['options'] as Map<dynamic, dynamic>) ??
-          PriceModel.DEFAULT_OPTIONS,
+              parsedJson['options'] as Map<dynamic, dynamic>),
     );
   }
 }

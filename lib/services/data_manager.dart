@@ -13,11 +13,11 @@ class DataManager {
   static const pubspecFilePath = 'pubspec.yaml';
   static const dataVersionNumber = 'data_version';
 
-  UserRepository userRepository;
+  UserRepository? userRepository;
 
   static final DataManager _singleton = DataManager._internal();
 
-  factory DataManager({UserRepository userRepository}) {
+  factory DataManager({UserRepository? userRepository}) {
     _singleton.userRepository = userRepository;
 
     return _singleton;
@@ -40,7 +40,7 @@ class DataManager {
         // apply data to local storage
         // update = true
 
-        while (currentDataVersion < appDataVersion) {
+        while (currentDataVersion < appDataVersion!) {
           switch (currentDataVersion) {
             case 1:
               await DataVersion2().upgradeData();
@@ -61,10 +61,10 @@ class DataManager {
 
   /// Load data from database
   Future<int> _loadData() async {
-    var dataFromDB = await userRepository.getUserDataFromDatabase();
+    var dataFromDB = await userRepository!.getUserDataFromDatabase();
     var dataVersionNumber =
-        dataFromDB[DataManager.dataVersionNumber] as int ?? 1;
-    DataVersionInterface dataVersionPatch;
+        dataFromDB![DataManager.dataVersionNumber] as int? ?? 1;
+    DataVersionInterface? dataVersionPatch;
 
     switch (dataVersionNumber) {
       case 1:
@@ -85,8 +85,8 @@ class DataManager {
   }
 
   /// Send new data version to database
-  Future<void> _sendData(int currentDataVersion) async {
-    DataVersionInterface dataVersionPatch;
+  Future<void> _sendData(int? currentDataVersion) async {
+    DataVersionInterface? dataVersionPatch;
 
     switch (currentDataVersion) {
       case 1:
@@ -104,15 +104,15 @@ class DataManager {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(DataManager.dataVersionNumber, currentDataVersion);
+    await prefs.setInt(DataManager.dataVersionNumber, currentDataVersion!);
   }
 
   /// Get Application data version from pubspec.yaml
-  Future<int> _getAppDataVersion() async {
+  Future<int?> _getAppDataVersion() async {
     var pubspecContent =
         await rootBundle.loadString(DataManager.pubspecFilePath);
     var yaml = loadYaml(pubspecContent) as Map;
 
-    return yaml[DataManager.dataVersionNumber] as int;
+    return yaml[DataManager.dataVersionNumber] as int?;
   }
 }

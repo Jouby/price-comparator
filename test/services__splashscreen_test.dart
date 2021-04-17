@@ -12,7 +12,7 @@ class FakeFirestoreNotifier extends FirestoreNotifier {
 }
 
 void main() {
-  MockUserRepository mockUserRepository;
+  MockUserRepository? mockUserRepository;
 
   setUp(() {
     mockUserRepository = MockUserRepository();
@@ -20,12 +20,12 @@ void main() {
 
   testWidgets('Services - splashscreen : database loaded',
       (WidgetTester tester) async {
-    when(mockUserRepository.getUserName())
+    when(mockUserRepository!.getUserName())
         .thenAnswer((realInvocation) async => null);
 
     await tester.pumpWidget(ProviderScope(
         overrides: [
-          firestoreProvider.overrideWithProvider(
+          firestoreProvider!.overrideWithProvider(
               ChangeNotifierProvider.autoDispose<FirestoreNotifier>((ref) {
             return FakeFirestoreNotifier();
           }))

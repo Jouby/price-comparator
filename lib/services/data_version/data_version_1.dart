@@ -8,7 +8,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/store_reposit
 /// For more details, see DataManager
 class DataVersion1 implements DataVersionInterface {
   @override
-  void loadData(Map<dynamic, dynamic> dataFromDB) async {
+  Future<void> loadData(Map<dynamic, dynamic> dataFromDB) async {
     if (dataFromDB.isNotEmpty) {
       final prefs = await SharedPreferences.getInstance();
 
@@ -30,8 +30,8 @@ class DataVersion1 implements DataVersionInterface {
   }
 
   @override
-  void upgradeData() async {}
+  Future<void> upgradeData() async {}
 
   @override
-  void sendData(int currentDataVersion) async {}
+  Future<void> sendData(int? currentDataVersion) async {}
 }

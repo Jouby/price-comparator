@@ -7,14 +7,14 @@ import 'package:the_dead_masked_company.price_comparator/resources/core_reposito
 class UserRepository extends CoreRepository {
   static final UserRepository _singleton = UserRepository._internal();
 
-  factory UserRepository({FirebaseFirestore databaseReference}) {
+  factory UserRepository({FirebaseFirestore? databaseReference}) {
     _singleton.setDatabaseReference(databaseReference);
     return _singleton;
   }
   UserRepository._internal();
 
   /// Get all datas from database for current user
-  Future<Map<String, dynamic>> getUserDataFromDatabase() async {
+  Future<Map<String, dynamic>?> getUserDataFromDatabase() async {
     var userId = await getUserId();
 
     if (userId.isNotEmpty) {
@@ -27,9 +27,9 @@ class UserRepository extends CoreRepository {
   }
 
   /// Get User Name from local storage
-  Future<String> getUserName() async {
+  Future<String?> getUserName() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('user_name');
+    return prefs.getString('user_name') ?? '';
   }
 
   /// Set User ID to local storage

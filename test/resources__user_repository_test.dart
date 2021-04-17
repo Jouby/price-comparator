@@ -4,12 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 
 void main() {
-  MockFirestoreInstance mockFirestoreInstance;
+  MockFirestoreInstance? mockFirestoreInstance;
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues(
-        <String, dynamic>{'user_id': 'userid', 'user_name': 'user_name_test'});
+        <String, Object>{'user_id': 'userid', 'user_name': 'user_name_test'});
 
     mockFirestoreInstance = MockFirestoreInstance();
   });
@@ -17,7 +17,7 @@ void main() {
   test('Resources - userRepository : getUserDataFromDatabase', () async {
     var data = {'test': 'test_data'};
 
-    await mockFirestoreInstance.collection('users').doc('userid').set(data);
+    await mockFirestoreInstance!.collection('users').doc('userid').set(data);
 
     final userRepository =
         UserRepository(databaseReference: mockFirestoreInstance);
@@ -62,7 +62,7 @@ void main() {
     final userRepository =
         UserRepository(databaseReference: mockFirestoreInstance);
 
-    await userRepository.dispose();
+    userRepository.dispose();
 
     var userName = await userRepository.getUserName();
     expect(userName, null);

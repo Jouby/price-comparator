@@ -5,9 +5,9 @@ import 'package:the_dead_masked_company.price_comparator/services/authentificati
 import 'mock.dart';
 
 void main() {
-  MockFirebaseAuth mockFirebaseAuth;
-  MockUserCredential mockUserCredential;
-  MockUser mockUser;
+  MockFirebaseAuth? mockFirebaseAuth;
+  MockUserCredential? mockUserCredential;
+  MockUser? mockUser;
 
   setUp(() {
     mockFirebaseAuth = MockFirebaseAuth();
@@ -17,11 +17,11 @@ void main() {
 
   testWidgets('Services - authentification : signIn',
       (WidgetTester tester) async {
-    when(mockUser.uid).thenReturn('uid_test');
-    when(mockUserCredential.user).thenReturn(mockUser);
-    when(mockFirebaseAuth.signInWithEmailAndPassword(
+    when(mockUser!.uid).thenReturn('uid_test');
+    when(mockUserCredential!.user).thenReturn(mockUser);
+    when(mockFirebaseAuth!.signInWithEmailAndPassword(
             email: 'email', password: 'password'))
-        .thenAnswer((realInvocation) async => mockUserCredential);
+        .thenAnswer(((realInvocation) async => mockUserCredential!));
     var auth = Auth(firebaseAuth: mockFirebaseAuth);
 
     var uid = await auth.signIn('email', 'password');
@@ -31,11 +31,11 @@ void main() {
 
   testWidgets('Services - authentification : signUp',
       (WidgetTester tester) async {
-    when(mockUser.uid).thenReturn('uid_test');
-    when(mockUserCredential.user).thenReturn(mockUser);
-    when(mockFirebaseAuth.createUserWithEmailAndPassword(
+    when(mockUser!.uid).thenReturn('uid_test');
+    when(mockUserCredential!.user).thenReturn(mockUser);
+    when(mockFirebaseAuth!.createUserWithEmailAndPassword(
             email: 'email', password: 'password'))
-        .thenAnswer((realInvocation) async => mockUserCredential);
+        .thenAnswer(((realInvocation) async => mockUserCredential!));
     var auth = Auth(firebaseAuth: mockFirebaseAuth);
 
     var uid = await auth.signUp('email', 'password');
@@ -45,29 +45,29 @@ void main() {
 
   testWidgets('Services - authentification : getCurrentUser',
       (WidgetTester tester) async {
-    when(mockFirebaseAuth.currentUser).thenReturn(mockUser);
+    when(mockFirebaseAuth!.currentUser).thenReturn(mockUser);
     var auth = Auth(firebaseAuth: mockFirebaseAuth);
 
-    var user = await auth.getCurrentUser();
+    var user = auth.getCurrentUser();
 
     expect(user, mockUser);
   });
 
   testWidgets('Services - authentification : signOut',
       (WidgetTester tester) async {
-    when(mockFirebaseAuth.signOut()).thenAnswer((realInvocation) async => Void);
+    when(mockFirebaseAuth!.signOut()).thenAnswer((realInvocation) async => Void);
     var auth = Auth(firebaseAuth: mockFirebaseAuth);
     await auth.signOut();
 
-    verify(mockFirebaseAuth.signOut());
+    verify(mockFirebaseAuth!.signOut());
   });
 
   testWidgets('Services - authentification : sendEmailVerification',
       (WidgetTester tester) async {
-    when(mockFirebaseAuth.currentUser).thenReturn(mockUser);
+    when(mockFirebaseAuth!.currentUser).thenReturn(mockUser);
     var auth = Auth(firebaseAuth: mockFirebaseAuth);
     await auth.sendEmailVerification();
 
-    verify(mockUser.sendEmailVerification());
+    verify(mockUser!.sendEmailVerification());
   });
 }

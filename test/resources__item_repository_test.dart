@@ -6,12 +6,12 @@ import 'package:the_dead_masked_company.price_comparator/resources/item_reposito
 import 'mock.dart';
 
 void main() {
-  MockFirestoreInstance mockFirestoreInstance;
+  MockFirestoreInstance? mockFirestoreInstance;
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues(
-        <String, dynamic>{'user_id': 'userid'});
+        <String, Object>{'user_id': 'userid'});
 
     mockFirestoreInstance = MockFirestoreInstance();
     MockSetUp.mockI18nOMatic();
@@ -20,7 +20,7 @@ void main() {
   test('Resources - itemRepository : getAll', () async {
     var item = ItemModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(ItemRepository.key)
@@ -34,7 +34,7 @@ void main() {
 
     var itemList = await itemRepository.getAll();
 
-    expect(itemList.containsValue(item), true);
+    expect(itemList!.containsValue(item), true);
 
     itemRepository.dispose();
   });
@@ -42,7 +42,7 @@ void main() {
   test('Resources - itemRepository : get', () async {
     var item = ItemModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(ItemRepository.key)
@@ -57,7 +57,7 @@ void main() {
     var itemFromDatabase = await itemRepository.get(item.id);
     expect(itemFromDatabase, item);
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(ItemRepository.key)
@@ -82,11 +82,11 @@ void main() {
         ItemRepository(databaseReference: mockFirestoreInstance);
 
     var result = await itemRepository.add(item);
-    expect(result['success'], true);
+    expect(result!['success'], true);
 
     item.id = null;
     var result2 = await itemRepository.add(item);
-    expect(result2['error'], 'An item with same name already exists.');
+    expect(result2!['error'], 'An item with same name already exists.');
 
     itemRepository.dispose();
   });
@@ -94,7 +94,7 @@ void main() {
   test('Resources - itemRepository : update', () async {
     var item = ItemModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(ItemRepository.key)
@@ -107,7 +107,7 @@ void main() {
         ItemRepository(databaseReference: mockFirestoreInstance);
 
     var result = await itemRepository.add(item);
-    expect(result['success'], true);
+    expect(result!['success'], true);
 
     itemRepository.dispose();
   });
@@ -115,7 +115,7 @@ void main() {
   test('Resources - itemRepository : remove', () async {
     var item = ItemModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(ItemRepository.key)
@@ -136,7 +136,7 @@ void main() {
   test('Resources - itemRepository : dispose', () async {
     var item = ItemModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(ItemRepository.key)
@@ -150,12 +150,12 @@ void main() {
 
     await itemRepository.add(item);
 
-    var itemList = await itemRepository.getInternalStoreList();
+    var itemList = await itemRepository.getInternalStoreList()!;
     expect(itemList.containsValue(item), true);
 
     itemRepository.dispose();
 
-    itemList = await itemRepository.getInternalStoreList();
+    itemList = await itemRepository.getInternalStoreList()!;
 
     expect(itemList, null);
   });

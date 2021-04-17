@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class Tools extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return null;
+    return Container();
   }
 
   static void showError(BuildContext context, String content) {

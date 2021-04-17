@@ -9,19 +9,19 @@ import 'package:the_dead_masked_company.price_comparator/resources/price_reposit
 import 'mock.dart';
 
 void main() {
-  MockItemRepository mockItemRepository;
-  MockStoreRepository mockStoreRepository;
-  ItemModel item;
-  MockFirestoreInstance firestoreInstance;
+  MockItemRepository? mockItemRepository;
+  MockStoreRepository? mockStoreRepository;
+  ItemModel? item;
+  MockFirestoreInstance? firestoreInstance;
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues(
-        <String, dynamic>{'user_id': 'userid'});
+        <String, Object>{'user_id': 'userid'});
     mockItemRepository = MockItemRepository();
     mockStoreRepository = MockStoreRepository();
     item = ItemModel('test');
-    item.id = '123';
+    item!.id = '123';
     firestoreInstance = MockFirestoreInstance();
   });
 
@@ -30,12 +30,12 @@ void main() {
     store.id = '12';
     var price = PriceModel(item, store);
 
-    when(mockItemRepository.get(item.id))
+    when(mockItemRepository!.get(item!.id))
         .thenAnswer((realInvocation) async => item);
-    when(mockStoreRepository.get(store.id))
+    when(mockStoreRepository!.get(store.id))
         .thenAnswer((realInvocation) async => store);
 
-    await firestoreInstance
+    await firestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(PriceRepository.key)
@@ -46,7 +46,7 @@ void main() {
         storeRepository: mockStoreRepository,
         databaseReference: firestoreInstance);
 
-    await priceRepository.getAllByItem(item);
+    await priceRepository.getAllByItem(item!);
   });
 
   test('Resources - priceRepository : add', () {

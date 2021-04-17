@@ -10,10 +10,10 @@ import 'package:i18n_omatic/i18n_omatic.dart';
 ///
 /// Display store list and functionnality to manage stores
 class StoreList extends StatefulWidget {
-  final StoreRepository storeRepository;
-  final PriceRepository priceRepository;
+  final StoreRepository? storeRepository;
+  final PriceRepository? priceRepository;
 
-  StoreList({Key key, @required this.storeRepository, this.priceRepository})
+  StoreList({Key? key, required this.storeRepository, this.priceRepository})
       : super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class StoreList extends StatefulWidget {
 
 class _StoreListState extends State<StoreList> {
   /// The store list sorted alphabetically
-  List<StoreModel> _storeList;
+  List<StoreModel>? _storeList;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class _StoreListState extends State<StoreList> {
 
   /// Build store list widget
   Widget _buildStoreList() {
-    return FutureBuilder<List<StoreModel>>(
+    return FutureBuilder<List<StoreModel>?>(
       builder: (context, projectSnap) {
         if (projectSnap.connectionState == ConnectionState.none ||
             projectSnap.data == null) {
@@ -46,14 +46,14 @@ class _StoreListState extends State<StoreList> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [CircularProgressIndicator()]);
         }
-        _storeList.sort((a, b) {
+        _storeList!.sort((a, b) {
           return a.name.toLowerCase().compareTo(b.name.toLowerCase());
         });
 
         return ListView.builder(
-          itemCount: _storeList.length,
+          itemCount: _storeList!.length,
           itemBuilder: (context, index) {
-            return _buildStore(_storeList[index]);
+            return _buildStore(_storeList![index]);
           },
         );
       },
@@ -62,8 +62,8 @@ class _StoreListState extends State<StoreList> {
   }
 
   /// Get store list
-  Future<List<StoreModel>> _getStoreList() async {
-    var list = await widget.storeRepository.getAll() ?? {};
+  Future<List<StoreModel>?> _getStoreList() async {
+    var list = await widget.storeRepository!.getAll() ?? {};
     _storeList = list.entries.map((e) => e.value).toList();
 
     return _storeList;
@@ -77,11 +77,11 @@ class _StoreListState extends State<StoreList> {
       Tools.showError(context, 'Fill this field.'.tr());
     } else {
       var store = StoreModel(name);
-      if (store.name.isNotEmpty && !_storeList.contains(store)) {
-        await widget.storeRepository.add(store).then((e) {
-          if (e['success'] == true) {
+      if (store.name.isNotEmpty && !_storeList!.contains(store)) {
+        await widget.storeRepository!.add(store).then((e) {
+          if (e!['success'] == true) {
             setState(() {
-              _storeList.add(store);
+              _storeList!.add(store);
             });
             result = true;
           } else {
@@ -96,10 +96,10 @@ class _StoreListState extends State<StoreList> {
 
   /// Delete [store] from store list
   void _removeStore(StoreModel store) async {
-    await widget.storeRepository.remove(store);
-    await widget.priceRepository.removeByStore(store);
+    await widget.storeRepository!.remove(store);
+    await widget.priceRepository!.removeByStore(store);
     setState(() {
-      _storeList.remove(store);
+      _storeList!.remove(store);
     });
   }
 

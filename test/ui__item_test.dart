@@ -9,10 +9,10 @@ import 'package:the_dead_masked_company.price_comparator/ui/item.dart';
 import 'mock.dart';
 
 void main() {
-  MockPriceRepository mockPriceRepository;
-  MockStoreRepository mockStoreRepository;
-  MockItemRepository mockItemRepository;
-  ItemModel item;
+  MockPriceRepository? mockPriceRepository;
+  MockStoreRepository? mockStoreRepository;
+  MockItemRepository? mockItemRepository;
+  ItemModel? item;
   MockNavigatorObserver mockObserver;
 
   setUp(() {
@@ -24,7 +24,7 @@ void main() {
     MockSetUp.mockI18nOMatic();
   });
   testWidgets('Item : empty', (WidgetTester tester) async {
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {});
 
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
@@ -37,7 +37,7 @@ void main() {
 
     await tester.pumpWidget(testWidget);
 
-    final itemNameFinder = find.text(item.name);
+    final itemNameFinder = find.text(item!.name);
     expect(itemNameFinder, findsOneWidget);
   });
 
@@ -49,9 +49,9 @@ void main() {
     store2.id = '2';
     store3.id = '3';
 
-    when(mockPriceRepository.getAllByItem(any))
+    when(mockPriceRepository!.getAllByItem(any!))
         .thenAnswer((realInvocation) async => []);
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {
           '1': store1,
           '2': store2,
           '3': store3,
@@ -81,13 +81,13 @@ void main() {
     store2.id = '2';
     store3.id = '3';
 
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {
           '1': store1,
           '2': store2,
           '3': store3,
         });
 
-    when(mockPriceRepository.getAllByItem(item)).thenAnswer(
+    when(mockPriceRepository!.getAllByItem(item!)).thenAnswer(
         (realInvocation) async => [
               PriceModel(item, store1, value: 2),
               PriceModel(item, store2, value: 1.3)
@@ -122,7 +122,7 @@ void main() {
   testWidgets('Item : pop to ItemList', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {});
 
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
@@ -142,14 +142,14 @@ void main() {
     await tester.tap(popFinder);
     await tester.pumpAndSettle();
 
-    verify(mockObserver.didPop(any, any));
+    verify(mockObserver.didPop(any!, any));
   });
 
   testWidgets('Item : edit', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
-    when(mockItemRepository.add(any)).thenAnswer(
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {});
+    when(mockItemRepository!.add(any!)).thenAnswer(
         (realInvocation) async => <String, dynamic>{'success': true});
 
     Widget testWidget = MediaQuery(
@@ -170,7 +170,7 @@ void main() {
     await tester.tap(editFinder);
     await tester.pumpAndSettle();
 
-    verify(mockObserver.didPush(any, any));
+    verify(mockObserver.didPush(any!, any));
 
     expect(find.text('Edit an item'), findsOneWidget);
 
@@ -190,9 +190,9 @@ void main() {
   testWidgets('Item : remove', (WidgetTester tester) async {
     mockObserver = MockNavigatorObserver();
 
-    when(mockPriceRepository.getAllByItem(any))
+    when(mockPriceRepository!.getAllByItem(any!))
         .thenAnswer((realInvocation) async => []);
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {});
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {});
 
     Widget testWidget = MediaQuery(
         data: MediaQueryData(),
@@ -218,7 +218,7 @@ void main() {
     await tester.tap(find.text('CANCEL'));
     await tester.pumpAndSettle();
 
-    verify(mockObserver.didPop(any, any));
+    verify(mockObserver.didPop(any!, any));
 
     await tester.tap(removeFinder);
     await tester.pumpAndSettle();
@@ -228,7 +228,7 @@ void main() {
     await tester.tap(find.text('REMOVE'));
     await tester.pumpAndSettle();
 
-    verify(mockObserver.didPop(any, any));
+    verify(mockObserver.didPop(any!, any));
   });
 
   testWidgets('Item : display options', (WidgetTester tester) async {
@@ -239,13 +239,13 @@ void main() {
     store2.id = '2';
     store3.id = '3';
 
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {
           '1': store1,
           '2': store2,
           '3': store3,
         });
 
-    when(mockPriceRepository.getAllByItem(item))
+    when(mockPriceRepository!.getAllByItem(item!))
         .thenAnswer((realInvocation) async => [
               PriceModel(item, store1, value: 2, options: {
                 'isBio': true,
@@ -324,13 +324,13 @@ void main() {
 
     var price1 = PriceModel(item, store1, value: 2);
 
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {
           '1': store1,
           '2': store2,
           '3': store3,
         });
 
-    when(mockPriceRepository.getAllByItem(item)).thenAnswer(
+    when(mockPriceRepository!.getAllByItem(item!)).thenAnswer(
         (realInvocation) async =>
             [price1, PriceModel(item, store2, value: 1.3)]);
 

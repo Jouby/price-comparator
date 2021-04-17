@@ -18,14 +18,14 @@ import 'package:i18n_omatic/i18n_omatic.dart';
 /// Main screen
 /// Display item list (sort alphabetically or possible to filter)
 class ItemList extends StatefulWidget {
-  final ItemRepository itemRepository;
-  final PriceRepository priceRepository;
-  final StoreRepository storeRepository;
-  final UserRepository userRepository;
+  final ItemRepository? itemRepository;
+  final PriceRepository? priceRepository;
+  final StoreRepository? storeRepository;
+  final UserRepository? userRepository;
 
   ItemList(
-      {Key key,
-      @required this.itemRepository,
+      {Key? key,
+      required this.itemRepository,
       this.priceRepository,
       this.storeRepository,
       this.userRepository})
@@ -140,10 +140,10 @@ class _ItemListState extends State<ItemList> {
 
   /// Add item by [name]
   Future<bool> _addItem(ItemModel item) async {
-    var itemList = await widget.itemRepository.getAll();
+    var itemList = await widget.itemRepository!.getAll();
 
-    if (item.name.isNotEmpty && !itemList.containsKey(item.id)) {
-      await widget.itemRepository.add(item);
+    if (item.name.isNotEmpty && !itemList!.containsKey(item.id)) {
+      await widget.itemRepository!.add(item);
       _itemList.add(item);
       _displayedItemList.add(item);
       setState(() {});
@@ -155,8 +155,8 @@ class _ItemListState extends State<ItemList> {
 
   /// Get item list
   Future<List<ItemModel>> _getDisplayItemList() async {
-    await widget.itemRepository.getAll().then((list) {
-      _itemList = list.entries.map((e) => e.value).toList();
+    await widget.itemRepository!.getAll().then((list) {
+      _itemList = list!.entries.map((e) => e.value).toList();
       _displayedItemList = List.from(_itemList);
     });
 
@@ -166,9 +166,9 @@ class _ItemListState extends State<ItemList> {
   }
 
   /// Remove [item] from item list
-  void _removeItem(ItemModel item) async {
+  void _removeItem(ItemModel? item) async {
     _itemList.remove(item);
-    await widget.itemRepository.remove(item);
+    await widget.itemRepository!.remove(item);
     setState(() {});
   }
 
@@ -201,10 +201,10 @@ class _ItemListState extends State<ItemList> {
 
     if (result != null) {
       if (result['remove'] != null) {
-        _removeItem(result['remove'] as ItemModel);
+        _removeItem(result['remove'] as ItemModel?);
       }
 
-      if (result['update'] as bool == true) {
+      if (result['update'] == true) {
         setState(() {});
       }
     }

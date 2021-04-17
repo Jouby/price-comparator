@@ -14,7 +14,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/store_reposit
 class Importer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return null;
+    return Container();
   }
 
   /// Run the importer to read in JSON file and write in Firestore database
@@ -42,7 +42,7 @@ class Importer extends StatelessWidget {
         if (priceValue['price'] != '') {
           var store = StoreModel(priceValue['store'].toString());
           var price = PriceModel(item, store,
-              value: priceValue['price'] as num,
+              value: priceValue['price'] as num?,
               options: {
                 'isBio': priceValue['isBio'].toString() == 'true',
                 'isCan': priceValue['isCan'].toString() == 'true',

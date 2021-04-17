@@ -10,11 +10,11 @@ class ItemRepository extends CoreRepository {
   static const key = 'items';
 
   /// Item list
-  Map<String, ItemModel> _itemList;
+  Map<String?, ItemModel>? _itemList;
 
   static final ItemRepository _singleton = ItemRepository._internal();
 
-  factory ItemRepository({FirebaseFirestore databaseReference}) {
+  factory ItemRepository({FirebaseFirestore? databaseReference}) {
     _singleton.setDatabaseReference(databaseReference);
     return _singleton;
   }
@@ -22,7 +22,7 @@ class ItemRepository extends CoreRepository {
   ItemRepository._internal();
 
   /// Get items
-  Future<Map<String, ItemModel>> getAll() async {
+  Future<Map<String?, ItemModel>?> getAll() async {
     if (_itemList == null) {
       /// Get all datas from database for current user
 
@@ -37,7 +37,7 @@ class ItemRepository extends CoreRepository {
         query.docs.forEach((QueryDocumentSnapshot qds) {
           var item = ItemModel.fromJson(qds.data());
           item.id = qds.id;
-          _itemList[item.id] = item;
+          _itemList![item.id] = item;
         });
       }
     }
@@ -46,11 +46,11 @@ class ItemRepository extends CoreRepository {
   }
 
   /// Get item by [id]
-  FutureOr<ItemModel> get(String id) async {
+  FutureOr<ItemModel?> get(String? id) async {
     await getAll();
 
-    if (_itemList[id] != null) {
-      return _itemList[id];
+    if (_itemList![id] != null) {
+      return _itemList![id];
     }
 
     var userId = await getUserId();
@@ -63,7 +63,7 @@ class ItemRepository extends CoreRepository {
           .get();
 
       if (doc.exists) {
-        return ItemModel.fromJson(doc.data());
+        return ItemModel.fromJson(doc.data()!);
       }
     }
 
@@ -73,7 +73,7 @@ class ItemRepository extends CoreRepository {
   /// Check if we can add [item]
   String _canAdd(ItemModel item) {
     var canAdd = '';
-    for (var itemFromList in _itemList.values) {
+    for (var itemFromList in _itemList!.values) {
       if (itemFromList.name == item.name) {
         canAdd = 'An item with same name already exists.'.tr();
       }
@@ -83,7 +83,7 @@ class ItemRepository extends CoreRepository {
   }
 
   /// Add [item]
-  Future<Map<String, dynamic>> add(ItemModel item) async {
+  Future<Map<String, dynamic>?> add(ItemModel item) async {
     Map<String, dynamic> result = <String, bool>{'success': false};
 
     if (item.id != null) {
@@ -104,7 +104,7 @@ class ItemRepository extends CoreRepository {
             .add(item.toMap())
             .then((docRef) {
           item.id = docRef.id.toString();
-          _itemList[item.id] = item;
+          _itemList![item.id] = item;
           result['success'] = true;
         }).catchError((dynamic error) {
           result = <String, String>{
@@ -123,7 +123,7 @@ class ItemRepository extends CoreRepository {
   String _canUpdate(ItemModel item) {
     var canUpdate = '';
 
-    for (var itemFromList in _itemList.values) {
+    for (var itemFromList in _itemList!.values) {
       if (itemFromList.id != item.id && itemFromList.name == item.name) {
         canUpdate = 'An item with same name already exists.'.tr();
       }
@@ -133,8 +133,8 @@ class ItemRepository extends CoreRepository {
   }
 
   /// Update [item]
-  Future<Map<String, dynamic>> _update(ItemModel item) async {
-    Map<String, dynamic> result;
+  Future<Map<String, dynamic>?> _update(ItemModel item) async {
+    Map<String, dynamic>? result;
 
     await getAll();
 
@@ -165,14 +165,14 @@ class ItemRepository extends CoreRepository {
   }
 
   /// Remove [item]
-  Future<bool> remove(ItemModel item) async {
+  Future<bool> remove(ItemModel? item) async {
     await getAll();
 
     var userId = await getUserId();
 
     if (userId.isNotEmpty) {
       var key = ItemRepository.key;
-      var itemId = item.id;
+      var itemId = item!.id;
       await getDatabaseReference()
           .doc('$userId/$key/$itemId')
           .delete()
@@ -181,7 +181,7 @@ class ItemRepository extends CoreRepository {
         return false;
       });
       ;
-      _itemList.remove(item.id);
+      _itemList!.remove(item.id);
     }
 
     return true;
@@ -192,7 +192,7 @@ class ItemRepository extends CoreRepository {
     if (_itemList != null) _itemList = null;
   }
 
-  Map<String, ItemModel> getInternalStoreList() {
+  Map<String?, ItemModel>? getInternalStoreList() {
     return _itemList;
   }
 }

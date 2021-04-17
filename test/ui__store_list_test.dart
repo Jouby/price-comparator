@@ -6,8 +6,8 @@ import 'package:the_dead_masked_company.price_comparator/ui/store_list.dart';
 import 'mock.dart';
 
 void main() {
-  MockStoreRepository mockStoreRepository;
-  MockPriceRepository mockPriceRepository;
+  MockStoreRepository? mockStoreRepository;
+  MockPriceRepository? mockPriceRepository;
   MockNavigatorObserver mockObserver;
 
   setUp(() {
@@ -22,7 +22,7 @@ void main() {
     store1.id = '1';
     store2.id = '2';
 
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {
           '1': store1,
           '2': store2,
         });
@@ -48,12 +48,12 @@ void main() {
     store1.id = '1';
     store2.id = '2';
 
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {
           '1': store1,
           '2': store2,
         });
 
-    when(mockStoreRepository.add(store3)).thenAnswer((realInvocation) async {
+    when(mockStoreRepository!.add(store3)).thenAnswer((realInvocation) async {
       return <String, bool>{'success': true};
     });
 
@@ -92,16 +92,16 @@ void main() {
     store1.id = '1';
     store2.id = '2';
 
-    when(mockStoreRepository.getAll()).thenAnswer((realInvocation) async => {
+    when(mockStoreRepository!.getAll()).thenAnswer((realInvocation) async => {
           '1': store1,
           '2': store2,
         });
 
-    when(mockStoreRepository.remove(store2)).thenAnswer((realInvocation) async {
+    when(mockStoreRepository!.remove(store2)).thenAnswer((realInvocation) async {
       return true;
     });
 
-    when(mockPriceRepository.removeByStore(store2))
+    when(mockPriceRepository!.removeByStore(store2))
         .thenAnswer((realInvocation) async {});
 
     Widget testWidget = MediaQuery(
@@ -127,7 +127,7 @@ void main() {
     await tester.tap(cancelFinder);
     await tester.pumpAndSettle();
 
-    verify(mockObserver.didPop(any, any));
+    verify(mockObserver.didPop(any!, any));
 
     await tester.tap(storeFinder.first);
     await tester.pumpAndSettle();

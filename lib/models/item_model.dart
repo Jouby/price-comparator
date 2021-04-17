@@ -6,9 +6,9 @@ import 'package:the_dead_masked_company.price_comparator/models/model_interface.
 /// 1. An item can be buy on store
 /// 2. An item have mutliple prices (maximum one per store)
 class ItemModel implements ModelInterface {
-  String id;
+  String? id;
   String name;
-  Map<String, Map<String, dynamic>> prices = {};
+  Map<String?, Map<String, dynamic>> prices = {};
 
   static List<ItemModel> all = [];
 

@@ -40,7 +40,7 @@ class StartApp extends StatelessWidget {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          context.read(firestoreProvider).loaded();
+          context.read(firestoreProvider!).loaded();
         }
 
         return App();
@@ -63,7 +63,7 @@ class App extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: createMaterialColor(Colors.blue[700])),
+      theme: ThemeData(primarySwatch: createMaterialColor(Colors.blue[700]!)),
       localizationsDelegates: [
         I18nOMatic.delegate,
         GlobalMaterialLocalizations.delegate,

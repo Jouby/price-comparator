@@ -5,12 +5,12 @@ import 'package:the_dead_masked_company.price_comparator/models/store_model.dart
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 
 void main() {
-  MockFirestoreInstance mockFirestoreInstance;
+  MockFirestoreInstance? mockFirestoreInstance;
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues(
-        <String, dynamic>{'user_id': 'userid'});
+        <String, Object>{'user_id': 'userid'});
 
     mockFirestoreInstance = MockFirestoreInstance();
   });
@@ -18,7 +18,7 @@ void main() {
   test('Resources - storeRepository : getAll', () async {
     var store = StoreModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(StoreRepository.key)
@@ -29,13 +29,13 @@ void main() {
 
     var storeList = await storeRepository.getAll();
 
-    expect(storeList.containsValue(store), true);
+    expect(storeList!.containsValue(store), true);
   });
 
   test('Resources - storeRepository : get', () async {
     var store = StoreModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(StoreRepository.key)
@@ -55,7 +55,7 @@ void main() {
     var store = StoreModel('test');
     var store2 = StoreModel('test2');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(StoreRepository.key)
@@ -68,13 +68,13 @@ void main() {
         StoreRepository(databaseReference: mockFirestoreInstance);
 
     var result = await storeRepository.add(store2);
-    expect(result['success'], true);
+    expect(result!['success'], true);
   });
 
   test('Resources - storeRepository : update', () async {
     var store = StoreModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(StoreRepository.key)
@@ -87,13 +87,13 @@ void main() {
         StoreRepository(databaseReference: mockFirestoreInstance);
 
     var result = await storeRepository.add(store);
-    expect(result['success'], true);
+    expect(result!['success'], true);
   });
 
   test('Resources - storeRepository : remove', () async {
     var store = StoreModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(StoreRepository.key)
@@ -112,7 +112,7 @@ void main() {
   test('Resources - storeRepository : dispose', () async {
     var store = StoreModel('test');
 
-    await mockFirestoreInstance
+    await mockFirestoreInstance!
         .collection('users')
         .doc('userid')
         .collection(StoreRepository.key)
@@ -126,12 +126,12 @@ void main() {
 
     await storeRepository.add(store);
 
-    var storeList = await storeRepository.getInternalStoreList();
+    var storeList = await storeRepository.getInternalStoreList()!;
     expect(storeList.containsValue(store), true);
 
     storeRepository.dispose();
 
-    storeList = await storeRepository.getInternalStoreList();
+    storeList = await storeRepository.getInternalStoreList()!;
 
     expect(storeList, null);
   });

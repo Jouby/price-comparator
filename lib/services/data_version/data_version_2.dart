@@ -11,7 +11,7 @@ import 'package:the_dead_masked_company.price_comparator/resources/store_reposit
 /// For more details, see DataManager
 class DataVersion2 implements DataVersionInterface {
   @override
-  void loadData(Map<dynamic, dynamic> dataFromDB) async {
+  Future<void> loadData(Map<dynamic, dynamic> dataFromDB) async {
     if (dataFromDB.isNotEmpty) {
       final prefs = await SharedPreferences.getInstance();
 
@@ -34,16 +34,16 @@ class DataVersion2 implements DataVersionInterface {
   }
 
   @override
-  void upgradeData() async {
+  Future<void> upgradeData() async {
     await _updateStore_1();
     await _updateItem_1();
     await _updatePrice_1();
   }
 
   @override
-  void sendData(int currentDataVersion) async {
+  Future<void> sendData(int? currentDataVersion) async {
     final prefs = await SharedPreferences.getInstance();
-    var itemList = prefs.getStringList(ItemRepository.key);
+    var itemList = prefs.getStringList(ItemRepository.key)!;
 
     var data = {
       StoreRepository.key: prefs.getStringList(StoreRepository.key),
@@ -63,9 +63,9 @@ class DataVersion2 implements DataVersionInterface {
     // await CoreRepository.sendDataToDatabase(data, resend: false);
   }
 
-  void _updateStore_1() async {
+  Future<void> _updateStore_1() async {
     final prefs = await SharedPreferences.getInstance();
-    var oldList = prefs.getStringList(StoreRepository.key);
+    var oldList = prefs.getStringList(StoreRepository.key)!;
     var newList = <String>[];
     oldList.forEach((name) {
       newList.add(jsonEncode({'name': name}));
@@ -73,9 +73,9 @@ class DataVersion2 implements DataVersionInterface {
     await prefs.setStringList(StoreRepository.key, newList);
   }
 
-  void _updateItem_1() async {
+  Future<void> _updateItem_1() async {
     final prefs = await SharedPreferences.getInstance();
-    var oldList = prefs.getStringList(ItemRepository.key);
+    var oldList = prefs.getStringList(ItemRepository.key)!;
     var newList = <String>[];
     oldList.forEach((name) {
       newList.add(jsonEncode({'name': name}));
@@ -83,11 +83,11 @@ class DataVersion2 implements DataVersionInterface {
     await prefs.setStringList(ItemRepository.key, newList);
   }
 
-  void _updatePrice_1() async {
+  Future<void> _updatePrice_1() async {
     final prefs = await SharedPreferences.getInstance();
 
     // Get item list
-    var jsonItemList = prefs.getStringList(ItemRepository.key);
+    var jsonItemList = prefs.getStringList(ItemRepository.key)!;
     var itemList = <ItemModel>[];
     jsonItemList.forEach((jsonElement) {
       itemList.add(
@@ -95,7 +95,7 @@ class DataVersion2 implements DataVersionInterface {
     });
 
     // Update price for each item
-    await itemList.forEach((item) async {
+    itemList.forEach((item) async {
       var name = item.name;
       var oldList = prefs.getStringList('price_list_$name');
       var map = <dynamic, dynamic>{};

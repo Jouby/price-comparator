@@ -9,24 +9,24 @@ class LoginSignupPage extends StatefulWidget {
   LoginSignupPage(
       {this.auth, this.globalKey, this.userRepository, this.loginCallback});
 
-  final BaseAuth auth;
-  final VoidCallback loginCallback;
-  final GlobalKey<FormState> globalKey;
-  final UserRepository userRepository;
+  final BaseAuth? auth;
+  final VoidCallback? loginCallback;
+  final GlobalKey<FormState>? globalKey;
+  final UserRepository? userRepository;
 
   @override
   State<LoginSignupPage> createState() => _LoginSignupPageState();
 }
 
 class _LoginSignupPageState extends State<LoginSignupPage> {
-  GlobalKey<FormState> _formKey;
+  GlobalKey<FormState>? _formKey;
 
-  String _email;
-  String _password;
-  String _errorMessage;
+  String? _email;
+  String? _password;
+  String? _errorMessage;
 
-  bool _isLoginForm;
-  bool _isLoading;
+  late bool _isLoginForm;
+  late bool _isLoading;
 
   @override
   void initState() {
@@ -61,13 +61,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       var userId = '';
       try {
         if (_isLoginForm) {
-          userId = await widget.auth.signIn(_email, _password);
+          userId = await widget.auth!.signIn(_email, _password);
         } else {
-          userId = await widget.auth.signUp(_email, _password);
+          userId = await widget.auth!.signUp(_email, _password);
         }
 
-        await widget.userRepository.setUserId(userId);
-        await widget.userRepository.setUserName(_email);
+        await widget.userRepository!.setUserId(userId);
+        await widget.userRepository!.setUserName(_email!);
         setState(() {
           _isLoading = false;
         });
@@ -76,7 +76,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         setState(() {
           _isLoading = false;
           _errorMessage = e.toString();
-          _formKey.currentState.reset();
+          _formKey!.currentState!.reset();
         });
       }
     }
@@ -84,7 +84,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   // Check if form is valid before perform login or signup
   bool validateAndSave() {
-    final form = _formKey.currentState;
+    final form = _formKey!.currentState!;
     if (form.validate()) {
       form.save();
       return true;
@@ -93,7 +93,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   void resetForm() {
-    _formKey.currentState.reset();
+    _formKey!.currentState!.reset();
     _errorMessage = '';
   }
 
@@ -133,9 +133,9 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget showErrorMessage() {
-    if (_errorMessage.isNotEmpty && _errorMessage != null) {
+    if (_errorMessage!.isNotEmpty && _errorMessage != null) {
       return Text(
-        _errorMessage,
+        _errorMessage!,
         style: TextStyle(
             fontSize: 13.0,
             color: Colors.red,
@@ -163,8 +163,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               color: Colors.grey,
             )),
         validator: (value) =>
-            value.isEmpty ? 'Email can\'t be empty'.tr() : null,
-        onSaved: (value) => _email = value.trim(),
+            value!.isEmpty ? 'Email can\'t be empty'.tr() : null,
+        onSaved: (value) => _email = value!.trim(),
       ),
     );
   }
@@ -183,8 +183,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               color: Colors.grey,
             )),
         validator: (value) =>
-            value.isEmpty ? 'Password can\'t be empty'.tr() : null,
-        onSaved: (value) => _password = value.trim(),
+            value!.isEmpty ? 'Password can\'t be empty'.tr() : null,
+        onSaved: (value) => _password = value!.trim(),
       ),
     );
   }

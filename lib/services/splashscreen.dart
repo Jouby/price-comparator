@@ -10,9 +10,9 @@ import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 ///
 /// Display during 2 second an image before display the main UI screen
 class ImageSplashScreen extends StatefulHookWidget {
-  final UserRepository userRepository;
+  final UserRepository? userRepository;
 
-  ImageSplashScreen({Key key, @required this.userRepository}) : super(key: key);
+  ImageSplashScreen({Key? key, required this.userRepository}) : super(key: key);
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -24,12 +24,12 @@ class _SplashScreenState extends State<ImageSplashScreen> {
   /// Image margin
   final double imageMargin = 20.0;
 
-  Timer _timer;
+  Timer? _timer;
 
-  FirestoreNotifier firestoreNotifier;
+  late FirestoreNotifier firestoreNotifier;
 
   /// Start Timer
-  Future<Timer> startTime() async {
+  Future<Timer?> startTime() async {
     var _duration = Duration(seconds: 1);
     _timer = Timer(_duration, navigationPage);
     return _timer;
@@ -38,7 +38,7 @@ class _SplashScreenState extends State<ImageSplashScreen> {
   /// Navigate to Home screen
   void navigationPage() async {
     if (firestoreNotifier.isLoaded) {
-      var username = await widget.userRepository.getUserName();
+      var username = await widget.userRepository!.getUserName();
       var route =
           username != null ? Constants.homeScreen : Constants.loginScreen;
       await Navigator.of(context).pushReplacementNamed(route);
@@ -55,13 +55,13 @@ class _SplashScreenState extends State<ImageSplashScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer!.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    firestoreNotifier = useProvider(firestoreProvider);
+    firestoreNotifier = useProvider(firestoreProvider!);
 
     return Scaffold(
       body: Container(
