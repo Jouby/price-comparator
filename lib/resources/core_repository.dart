@@ -13,7 +13,7 @@ abstract class CoreRepository {
   }
 
   /// Get the database reference
-  CollectionReference getDatabaseReference() {
+  CollectionReference<Map<String, dynamic>> getDatabaseReference() {
     return databaseReference.collection('users');
   }
 

@@ -34,7 +34,7 @@ class ItemRepository extends CoreRepository {
         var query =
             await getDatabaseReference().doc(userId).collection(key).get();
 
-        query.docs.forEach((QueryDocumentSnapshot qds) {
+        query.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> qds) {
           var item = ItemModel.fromJson(qds.data());
           item.id = qds.id;
           _itemList[item.id] = item;

@@ -1,18 +1,18 @@
-import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_dead_masked_company.price_comparator/models/store_model.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/store_repository.dart';
 
 void main() {
-  MockFirestoreInstance mockFirestoreInstance;
+  FakeFirebaseFirestore mockFirestoreInstance;
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues(
         <String, dynamic>{'user_id': 'userid'});
 
-    mockFirestoreInstance = MockFirestoreInstance();
+    mockFirestoreInstance = FakeFirebaseFirestore();
   });
 
   test('Resources - storeRepository : getAll', () async {

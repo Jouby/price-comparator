@@ -31,7 +31,7 @@ class StoreRepository extends CoreRepository {
         var query =
             await getDatabaseReference().doc(userId).collection(key).get();
 
-        query.docs.forEach((QueryDocumentSnapshot qds) {
+        query.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> qds) {
           var store = StoreModel.fromJson(qds.data());
           store.id = qds.id;
           _storeList[store.id] = store;

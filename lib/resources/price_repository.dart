@@ -48,7 +48,7 @@ class PriceRepository extends CoreRepository {
             .where('item', isEqualTo: item.id)
             .get();
 
-        await query.docs.forEach((QueryDocumentSnapshot qds) async {
+        await query.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> qds) async {
           var priceData = qds.data();
 
           priceData['item'] =
