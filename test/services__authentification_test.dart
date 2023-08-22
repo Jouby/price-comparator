@@ -48,7 +48,7 @@ void main() {
     when(mockFirebaseAuth.currentUser).thenReturn(mockUser);
     var auth = Auth(firebaseAuth: mockFirebaseAuth);
 
-    var user = await auth.getCurrentUser();
+    var user = auth.getCurrentUser();
 
     expect(user, mockUser);
   });

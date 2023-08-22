@@ -19,22 +19,22 @@ class Item extends StatefulWidget {
   final StoreRepository storeRepository;
   final ItemRepository itemRepository;
 
-  Item(
-      {Key key,
-      @required this.item,
-      this.priceRepository,
-      this.storeRepository,
-      this.itemRepository})
-      : super(key: key);
+  Item({
+    required Key key,
+    required this.item,
+    required this.priceRepository,
+    required this.storeRepository,
+    required this.itemRepository,
+  }) : super(key: key);
 
   @override
   _ItemState createState() => _ItemState();
 }
 
 class _ItemState extends State<Item> {
-  ItemModel _item;
-  List<Widget> _minPriceTextWidget;
-  PriceModel _minimumPrice;
+  ItemModel? _item;
+  List<Widget>? _minPriceTextWidget;
+  PriceModel? _minimumPrice;
   Map<String, dynamic> returnData = <String, dynamic>{};
 
   @override
@@ -48,7 +48,7 @@ class _ItemState extends State<Item> {
     _buildMinimumPriceText();
     return Scaffold(
       appBar: CustomAppBar(
-        title: CustomAppBarTitle(_item.name),
+        title: CustomAppBarTitle(_item?.name ?? ''),
         leading: BackButton(
           onPressed: () => Navigator.pop(context, returnData),
         ),
@@ -121,7 +121,7 @@ class _ItemState extends State<Item> {
 
   /// Check if price value is empty
   bool _checkPriceValue(PriceModel price) {
-    return price.value == 0 || price.value == null;
+    return price.value == 0;
   }
 
   /// Get price list
@@ -156,7 +156,7 @@ class _ItemState extends State<Item> {
   }
 
   /// Edit [item] with [name]
-  Future<bool> _editItem(ItemModel item, String name) async {
+  Future<bool> _editItem(ItemModel? item, String name) async {
     var result = false;
 
     if (name.isEmpty) {
@@ -177,13 +177,13 @@ class _ItemState extends State<Item> {
   }
 
   /// Show screen to edit [item]
-  void showEditItemScreen(ItemModel item) {
+  void showEditItemScreen(ItemModel? item) {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return Scaffold(
           appBar: CustomAppBar(title: CustomAppBarTitle('Edit an item'.tr())),
           body: TextField(
             autofocus: true,
-            controller: TextEditingController(text: item.name),
+            controller: TextEditingController(text: item?.name ?? ''),
             textCapitalization: TextCapitalization.sentences,
             onSubmitted: (newVal) {
               _editItem(item, newVal).then((result) {
@@ -260,8 +260,7 @@ class _ItemState extends State<Item> {
 
   /// Update variables used to display minimum [price]
   void updateMinimumVariables(PriceModel price) {
-    if (price.value > 0 &&
-        (_minimumPrice == null || _minimumPrice.value > price.value)) {
+    if (price.value > 0 && (_minimumPrice.value > price.value)) {
       setState(() {
         _minimumPrice = price;
         _buildMinimumPriceText();
@@ -391,8 +390,6 @@ class _ItemState extends State<Item> {
               )),
     );
 
-    if (price != null) {
-      await _editPrice(price);
-    }
+    await _editPrice(price);
   }
 }

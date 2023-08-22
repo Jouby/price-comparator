@@ -35,9 +35,9 @@ class DataVersion2 implements DataVersionInterface {
 
   @override
   void upgradeData() async {
-    await _updateStore_1();
-    await _updateItem_1();
-    await _updatePrice_1();
+    _updateStore_1();
+    _updateItem_1();
+    _updatePrice_1();
   }
 
   @override
@@ -52,7 +52,7 @@ class DataVersion2 implements DataVersionInterface {
       'price_list': <String, dynamic>{}
     };
 
-    for (var jsonItem in itemList) {
+    for (var jsonItem in itemList!) {
       var item =
           ItemModel.fromJson(json.decode(jsonItem) as Map<String, dynamic>);
       var itemName = item.name;
@@ -67,7 +67,7 @@ class DataVersion2 implements DataVersionInterface {
     final prefs = await SharedPreferences.getInstance();
     var oldList = prefs.getStringList(StoreRepository.key);
     var newList = <String>[];
-    oldList.forEach((name) {
+    oldList!.forEach((name) {
       newList.add(jsonEncode({'name': name}));
     });
     await prefs.setStringList(StoreRepository.key, newList);
@@ -77,7 +77,7 @@ class DataVersion2 implements DataVersionInterface {
     final prefs = await SharedPreferences.getInstance();
     var oldList = prefs.getStringList(ItemRepository.key);
     var newList = <String>[];
-    oldList.forEach((name) {
+    oldList!.forEach((name) {
       newList.add(jsonEncode({'name': name}));
     });
     await prefs.setStringList(ItemRepository.key, newList);
@@ -89,13 +89,13 @@ class DataVersion2 implements DataVersionInterface {
     // Get item list
     var jsonItemList = prefs.getStringList(ItemRepository.key);
     var itemList = <ItemModel>[];
-    jsonItemList.forEach((jsonElement) {
+    jsonItemList!.forEach((jsonElement) {
       itemList.add(
           ItemModel.fromJson(jsonDecode(jsonElement) as Map<String, dynamic>));
     });
 
     // Update price for each item
-    await itemList.forEach((item) async {
+    itemList.forEach((item) async {
       var name = item.name;
       var oldList = prefs.getStringList('price_list_$name');
       var map = <dynamic, dynamic>{};

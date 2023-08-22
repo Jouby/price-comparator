@@ -62,7 +62,7 @@ void main() {
     final userRepository =
         UserRepository(databaseReference: mockFirestoreInstance);
 
-    await userRepository.dispose();
+    userRepository.dispose();
 
     var userName = await userRepository.getUserName();
     expect(userName, null);

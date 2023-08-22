@@ -133,7 +133,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget showErrorMessage() {
-    if (_errorMessage.isNotEmpty && _errorMessage != null) {
+    if (_errorMessage.isNotEmpty) {
       return Text(
         _errorMessage,
         style: TextStyle(
@@ -192,12 +192,12 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget showSecondaryButton() {
     return TextButton(
         key: Key('login_switch_button'),
+        onPressed: toggleFormMode,
         child: Text(
             _isLoginForm
                 ? 'Create account'.tr()
                 : 'Have an account? Sign in'.tr(),
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-        onPressed: toggleFormMode);
+            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)));
   }
 
   Widget showPrimaryButton() {
@@ -205,12 +205,12 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
       child: CustomButton(
         key: Key('login_button'),
+        onPressed: validateAndSubmit,
         child: Text(
             _isLoginForm
                 ? 'Login'.tr().toUpperCase()
                 : 'Create account'.tr().toUpperCase(),
             style: TextStyle(fontSize: 20.0)),
-        onPressed: validateAndSubmit,
       ),
     );
   }

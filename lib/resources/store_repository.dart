@@ -10,11 +10,11 @@ class StoreRepository extends CoreRepository {
   static const key = 'stores';
 
   /// Store list
-  Map<String, StoreModel> _storeList;
+  Map<String, StoreModel>? _storeList;
 
   static final StoreRepository _singleton = StoreRepository._internal();
 
-  factory StoreRepository({FirebaseFirestore databaseReference}) {
+  factory StoreRepository({required FirebaseFirestore databaseReference}) {
     _singleton.setDatabaseReference(databaseReference);
     return _singleton;
   }
@@ -34,20 +34,20 @@ class StoreRepository extends CoreRepository {
         query.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> qds) {
           var store = StoreModel.fromJson(qds.data());
           store.id = qds.id;
-          _storeList[store.id] = store;
+          _storeList![store.id!] = store;
         });
       }
     }
 
-    return _storeList;
+    return _storeList!;
   }
 
   /// Get store by [id]
-  Future<StoreModel> get(String id) async {
+  Future<StoreModel?> get(String id) async {
     await getAll();
 
-    if (_storeList[id] != null) {
-      return _storeList[id];
+    if (_storeList![id] != null) {
+      return _storeList![id]!;
     }
 
     var userId = await getUserId();
@@ -60,7 +60,7 @@ class StoreRepository extends CoreRepository {
           .get();
 
       if (doc.exists) {
-        return StoreModel.fromJson(doc.data());
+        return StoreModel.fromJson(doc.data()!);
       }
     }
 
@@ -70,7 +70,7 @@ class StoreRepository extends CoreRepository {
   /// Check if we can add [store]
   String _canAdd(StoreModel store) {
     var canAdd = '';
-    for (var storeFromList in _storeList.values) {
+    for (var storeFromList in _storeList!.values) {
       if (storeFromList.name == store.name) {
         canAdd = 'A store with same name already exists.'.tr();
       }
@@ -80,7 +80,7 @@ class StoreRepository extends CoreRepository {
   }
 
   /// Add [store]
-  Future<Map<String, dynamic>> add(StoreModel store) async {
+  Future<Map<String, dynamic>?> add(StoreModel store) async {
     Map<String, dynamic> result = <String, bool>{'success': false};
 
     if (store.id != null) {
@@ -101,7 +101,7 @@ class StoreRepository extends CoreRepository {
             .add(store.toMap())
             .then((docRef) {
           store.id = docRef.id;
-          _storeList[store.id] = store;
+          _storeList![store.id!] = store;
           result['success'] = true;
         }).catchError((dynamic error) {
           result = <String, String>{
@@ -120,7 +120,7 @@ class StoreRepository extends CoreRepository {
   String _canUpdate(StoreModel store) {
     var canUpdate = '';
 
-    for (var storeFromList in _storeList.values) {
+    for (var storeFromList in _storeList!.values) {
       if (storeFromList.id != store.id && storeFromList.name == store.name) {
         canUpdate = 'A store with same name already exists.'.tr();
       }
@@ -130,8 +130,8 @@ class StoreRepository extends CoreRepository {
   }
 
   /// Update [store]
-  Future<Map<String, dynamic>> _update(StoreModel store) async {
-    Map<String, dynamic> result;
+  Future<Map<String, dynamic>?> _update(StoreModel store) async {
+    Map<String, dynamic>? result;
 
     await getAll();
 
@@ -174,7 +174,7 @@ class StoreRepository extends CoreRepository {
           .doc('$userId/$key/$id')
           .delete()
           .then((docRef) {
-        _storeList.remove(store.id);
+        _storeList!.remove(store.id);
       });
     }
 
@@ -183,10 +183,10 @@ class StoreRepository extends CoreRepository {
 
   /// Dispose store data
   void dispose() {
-    if (_storeList != null) _storeList = null;
+    _storeList = null;
   }
 
-  Map<String, StoreModel> getInternalStoreList() {
+  Map<String, StoreModel>? getInternalStoreList() {
     return _storeList;
   }
 }

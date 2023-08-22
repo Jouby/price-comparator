@@ -10,11 +10,11 @@ class ItemRepository extends CoreRepository {
   static const key = 'items';
 
   /// Item list
-  Map<String, ItemModel> _itemList;
+  Map<String, ItemModel>? _itemList;
 
   static final ItemRepository _singleton = ItemRepository._internal();
 
-  factory ItemRepository({FirebaseFirestore databaseReference}) {
+  factory ItemRepository({FirebaseFirestore? databaseReference}) {
     _singleton.setDatabaseReference(databaseReference);
     return _singleton;
   }
@@ -37,20 +37,20 @@ class ItemRepository extends CoreRepository {
         query.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> qds) {
           var item = ItemModel.fromJson(qds.data());
           item.id = qds.id;
-          _itemList[item.id] = item;
+          _itemList![item.id!] = item;
         });
       }
     }
 
-    return _itemList;
+    return _itemList!;
   }
 
   /// Get item by [id]
-  FutureOr<ItemModel> get(String id) async {
+  FutureOr<ItemModel?> get(String id) async {
     await getAll();
 
-    if (_itemList[id] != null) {
-      return _itemList[id];
+    if (_itemList?[id] != null) {
+      return _itemList![id];
     }
 
     var userId = await getUserId();
@@ -63,7 +63,7 @@ class ItemRepository extends CoreRepository {
           .get();
 
       if (doc.exists) {
-        return ItemModel.fromJson(doc.data());
+        return ItemModel.fromJson(doc.data()!);
       }
     }
 
@@ -73,7 +73,7 @@ class ItemRepository extends CoreRepository {
   /// Check if we can add [item]
   String _canAdd(ItemModel item) {
     var canAdd = '';
-    for (var itemFromList in _itemList.values) {
+    for (var itemFromList in _itemList!.values) {
       if (itemFromList.name == item.name) {
         canAdd = 'An item with same name already exists.'.tr();
       }
@@ -83,7 +83,7 @@ class ItemRepository extends CoreRepository {
   }
 
   /// Add [item]
-  Future<Map<String, dynamic>> add(ItemModel item) async {
+  Future<Map<String, dynamic>?> add(ItemModel item) async {
     Map<String, dynamic> result = <String, bool>{'success': false};
 
     if (item.id != null) {
@@ -104,7 +104,7 @@ class ItemRepository extends CoreRepository {
             .add(item.toMap())
             .then((docRef) {
           item.id = docRef.id.toString();
-          _itemList[item.id] = item;
+          _itemList![item.id!] = item;
           result['success'] = true;
         }).catchError((dynamic error) {
           result = <String, String>{
@@ -123,7 +123,7 @@ class ItemRepository extends CoreRepository {
   String _canUpdate(ItemModel item) {
     var canUpdate = '';
 
-    for (var itemFromList in _itemList.values) {
+    for (var itemFromList in _itemList!.values) {
       if (itemFromList.id != item.id && itemFromList.name == item.name) {
         canUpdate = 'An item with same name already exists.'.tr();
       }
@@ -133,8 +133,8 @@ class ItemRepository extends CoreRepository {
   }
 
   /// Update [item]
-  Future<Map<String, dynamic>> _update(ItemModel item) async {
-    Map<String, dynamic> result;
+  Future<Map<String, dynamic>?> _update(ItemModel item) async {
+    Map<String, dynamic>? result;
 
     await getAll();
 
@@ -178,10 +178,10 @@ class ItemRepository extends CoreRepository {
           .delete()
           .catchError((dynamic error) {
         print('Error removing item document: $error');
-        return false;
+        return;
       });
       ;
-      _itemList.remove(item.id);
+      _itemList!.remove(item.id);
     }
 
     return true;
@@ -193,6 +193,6 @@ class ItemRepository extends CoreRepository {
   }
 
   Map<String, ItemModel> getInternalStoreList() {
-    return _itemList;
+    return _itemList!;
   }
 }

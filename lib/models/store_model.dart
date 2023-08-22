@@ -4,7 +4,7 @@ import 'package:the_dead_masked_company.price_comparator/models/model_interface.
 
 /// The Store model
 class StoreModel implements ModelInterface {
-  String id;
+  String? id;
   String name;
 
   static List<StoreModel> all = [];

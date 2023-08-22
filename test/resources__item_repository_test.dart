@@ -150,12 +150,12 @@ void main() {
 
     await itemRepository.add(item);
 
-    var itemList = await itemRepository.getInternalStoreList();
+    var itemList = itemRepository.getInternalStoreList();
     expect(itemList.containsValue(item), true);
 
     itemRepository.dispose();
 
-    itemList = await itemRepository.getInternalStoreList();
+    itemList = itemRepository.getInternalStoreList();
 
     expect(itemList, null);
   });

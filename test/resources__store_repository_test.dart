@@ -126,12 +126,12 @@ void main() {
 
     await storeRepository.add(store);
 
-    var storeList = await storeRepository.getInternalStoreList();
+    var storeList = storeRepository.getInternalStoreList();
     expect(storeList.containsValue(store), true);
 
     storeRepository.dispose();
 
-    storeList = await storeRepository.getInternalStoreList();
+    storeList = storeRepository.getInternalStoreList();
 
     expect(storeList, null);
   });

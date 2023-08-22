@@ -12,18 +12,19 @@ class PriceRepository extends CoreRepository {
   /// Price key index
   static const key = 'prices';
 
-  ItemRepository itemRepository;
-  StoreRepository storeRepository;
+  ItemRepository? itemRepository;
+  StoreRepository? storeRepository;
 
   /// Price list
   static Map<String, List<PriceModel>> _priceList = {};
 
   static final PriceRepository _singleton = PriceRepository._internal();
 
-  factory PriceRepository(
-      {ItemRepository itemRepository,
-      StoreRepository storeRepository,
-      FirebaseFirestore databaseReference}) {
+  factory PriceRepository({
+    required ItemRepository itemRepository,
+    required StoreRepository storeRepository,
+    required FirebaseFirestore databaseReference,
+  }) {
     _singleton.itemRepository = itemRepository;
     _singleton.storeRepository = storeRepository;
     _singleton.setDatabaseReference(databaseReference);
@@ -33,12 +34,16 @@ class PriceRepository extends CoreRepository {
   PriceRepository._internal();
 
   /// Get prices by [item]
-  Future<List<PriceModel>> getAllByItem(ItemModel item) async {
+  Future<List<PriceModel>> getAllByItem(ItemModel? item) async {
+    if (item == null) {
+      return [];
+    }
+
     if (_priceList[item.id] == null) {
       /// Get all datas from database for current user
 
       var userId = await getUserId();
-      _priceList[item.id] = [];
+      _priceList[item.id!] = [];
 
       if (userId.isNotEmpty) {
         var priceKey = PriceRepository.key;
@@ -48,23 +53,24 @@ class PriceRepository extends CoreRepository {
             .where('item', isEqualTo: item.id)
             .get();
 
-        await query.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> qds) async {
+        query.docs
+            .forEach((QueryDocumentSnapshot<Map<String, dynamic>> qds) async {
           var priceData = qds.data();
 
           priceData['item'] =
-              await itemRepository.get(priceData['item'].toString());
+              await itemRepository!.get(priceData['item'].toString());
           priceData['store'] =
-              await storeRepository.get(priceData['store'].toString());
+              await storeRepository!.get(priceData['store'].toString());
 
           var price = PriceModel.fromJson(priceData);
           price.id = qds.id;
-          price.item.id = item.id;
-          _priceList[item.id].add(price);
+          price.item!.id = item.id;
+          _priceList[item.id]!.add(price);
         });
       }
     }
 
-    return _priceList[item.id];
+    return _priceList[item.id]!;
   }
 
   /// Add [price]
@@ -73,7 +79,7 @@ class PriceRepository extends CoreRepository {
       return _update(price);
     }
 
-    await getAllByItem(price.item);
+    await getAllByItem(price.item!);
 
     var userId = await getUserId();
 
@@ -86,20 +92,20 @@ class PriceRepository extends CoreRepository {
           .add(price.toMap())
           .then((docRef) {
         price.id = docRef.id;
-        price.item.prices[price.id] = price.toMap();
-        var index = _priceList[price.item.id]
-            .indexWhere((_price) => _price.store.id == price.store.id);
+        price.item!.prices[price.id!] = price.toMap();
+        var index = _priceList[price.item!.id]!
+            .indexWhere((_price) => _price.store!.id == price.store!.id);
         if (index == -1) {
-          _priceList[price.item.id].add(price);
+          _priceList[price.item!.id]!.add(price);
         } else {
-          _priceList[price.item.id][index] = price;
+          _priceList[price.item!.id]![index] = price;
         }
       }).catchError((dynamic error) {
         print('Error adding price document: $error');
       });
     }
 
-    return _priceList[price.item.id];
+    return _priceList[price.item!.id]!;
   }
 
   /// Update [price]
@@ -121,7 +127,7 @@ class PriceRepository extends CoreRepository {
       });
     }
 
-    return _priceList[price.item.id];
+    return _priceList[price.item!.id]!;
   }
 
   /// Remove [price]
@@ -145,7 +151,7 @@ class PriceRepository extends CoreRepository {
       });
     }
 
-    return _priceList[price.id];
+    return _priceList[price.id]!;
   }
 
   Future<void> removeByStore(StoreModel store) async {
@@ -163,7 +169,7 @@ class PriceRepository extends CoreRepository {
         var batch = getRootDatabaseReference().batch();
         querySnapshot.docs.forEach((DocumentSnapshot doc) {
           batch.delete(doc.reference);
-          _priceList[doc.get('item')]
+          _priceList[doc.get('item')]!
               .removeWhere((price) => price.id == doc.id);
         });
         return batch.commit();
@@ -173,6 +179,6 @@ class PriceRepository extends CoreRepository {
 
   /// Dispose price data
   void dispose() {
-    if (_priceList != null) _priceList = {};
+    _priceList = {};
   }
 }

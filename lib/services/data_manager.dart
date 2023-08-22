@@ -13,11 +13,11 @@ class DataManager {
   static const pubspecFilePath = 'pubspec.yaml';
   static const dataVersionNumber = 'data_version';
 
-  UserRepository userRepository;
+  late UserRepository userRepository;
 
   static final DataManager _singleton = DataManager._internal();
 
-  factory DataManager({UserRepository userRepository}) {
+  factory DataManager({required UserRepository userRepository}) {
     _singleton.userRepository = userRepository;
 
     return _singleton;
@@ -43,7 +43,7 @@ class DataManager {
         while (currentDataVersion < appDataVersion) {
           switch (currentDataVersion) {
             case 1:
-              await DataVersion2().upgradeData();
+              DataVersion2().upgradeData();
               update = true;
               break;
             default:
@@ -63,8 +63,8 @@ class DataManager {
   Future<int> _loadData() async {
     var dataFromDB = await userRepository.getUserDataFromDatabase();
     var dataVersionNumber =
-        dataFromDB[DataManager.dataVersionNumber] as int ?? 1;
-    DataVersionInterface dataVersionPatch;
+        dataFromDB[DataManager.dataVersionNumber] as int? ?? 1;
+    DataVersionInterface? dataVersionPatch;
 
     switch (dataVersionNumber) {
       case 1:
@@ -77,16 +77,14 @@ class DataManager {
         dataVersionPatch = null;
     }
 
-    if (dataVersionPatch != null) {
-      await dataVersionPatch.loadData(dataFromDB);
-    }
+    dataVersionPatch?.loadData(dataFromDB);
 
     return dataVersionNumber;
   }
 
   /// Send new data version to database
   Future<void> _sendData(int currentDataVersion) async {
-    DataVersionInterface dataVersionPatch;
+    DataVersionInterface? dataVersionPatch;
 
     switch (currentDataVersion) {
       case 1:
@@ -99,9 +97,7 @@ class DataManager {
         dataVersionPatch = null;
     }
 
-    if (dataVersionPatch != null) {
-      await dataVersionPatch.sendData(currentDataVersion);
-    }
+    dataVersionPatch?.sendData(currentDataVersion);
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(DataManager.dataVersionNumber, currentDataVersion);

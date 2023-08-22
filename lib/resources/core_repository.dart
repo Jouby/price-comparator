@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// The Core repository
 abstract class CoreRepository {
   /// Database reference
-  FirebaseFirestore databaseReference;
+  late FirebaseFirestore databaseReference;
 
   /// Get the root database reference
   FirebaseFirestore getRootDatabaseReference() {
@@ -17,7 +17,7 @@ abstract class CoreRepository {
     return databaseReference.collection('users');
   }
 
-  void setDatabaseReference(FirebaseFirestore databaseReference) {
+  void setDatabaseReference(FirebaseFirestore? databaseReference) {
     this.databaseReference = (databaseReference != null)
         ? databaseReference
         : FirebaseFirestore.instance;

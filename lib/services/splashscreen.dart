@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:the_dead_masked_company.price_comparator/resources/user_repository.dart';
 import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 
@@ -11,7 +10,10 @@ import 'package:the_dead_masked_company.price_comparator/services/globals.dart';
 class ImageSplashScreen extends StatefulHookWidget {
   final UserRepository userRepository;
 
-  ImageSplashScreen({Key key, @required this.userRepository}) : super(key: key);
+  ImageSplashScreen({
+    required Key key,
+    required this.userRepository,
+  }) : super(key: key);
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -23,20 +25,20 @@ class _SplashScreenState extends State<ImageSplashScreen> {
   /// Image margin
   final double imageMargin = 20.0;
 
-  Timer _timer;
+  Timer? _timer;
 
-  FirestoreNotifier firestoreNotifier;
+  FirestoreNotifier? firestoreNotifier;
 
   /// Start Timer
   Future<Timer> startTime() async {
     var _duration = Duration(seconds: 1);
     _timer = Timer(_duration, navigationPage);
-    return _timer;
+    return _timer!;
   }
 
   /// Navigate to Home screen
   void navigationPage() async {
-    if (firestoreNotifier.isLoaded) {
+    if (firestoreNotifier != null && firestoreNotifier!.isLoaded) {
       var username = await widget.userRepository.getUserName();
       var route =
           username != null ? Constants.homeScreen : Constants.loginScreen;
@@ -54,7 +56,7 @@ class _SplashScreenState extends State<ImageSplashScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
